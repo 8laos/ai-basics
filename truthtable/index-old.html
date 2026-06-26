@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>명제 논리 진리표 생성기</title>
+<style>
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumMedium.woff') format('woff');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumBold.woff') format('woff');
+  font-weight: 700;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #6b8c63;
+  color: #f2f1df;
+  font-family: 'KoPub World 돋움', 'Malgun Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  gap: 14px;
+}
+h1 { font-size: 1.15rem; color: #f2f1df; }
+.subtitle { font-size: .72rem; color: #b0c4a0; text-align: center; }
+
+.panel {
+  background: #567050;
+  border: 2px solid #4d6646;
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 기호 버튼 */
+.sym-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sym-label { font-size: .75rem; color: #b0c4a0; margin-right: 2px; }
+.sym-btn {
+  padding: 5px 11px;
+  background: #4d6646;
+  color: #f2f1df;
+  border: 1px solid #3d5236;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .95rem;
+  font-family: inherit;
+  transition: background .12s;
+}
+.sym-btn:hover { background: #3d5236; }
+.sym-btn.var { background: #425740; color: #e8f5d0; font-weight: 700; }
+
+/* 수식 입력 */
+.expr-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.expr-input {
+  flex: 1;
+  padding: 9px 12px;
+  background: #f2f1df;
+  color: #2a3820;
+  border: 2px solid #4d6646;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'KoPub World 돋움', monospace;
+}
+.expr-input:focus { outline: none; border-color: #e8a0aa; }
+.expr-list { display: flex; flex-direction: column; gap: 6px; }
+.expr-item { display: flex; gap: 6px; align-items: center; }
+.expr-item .expr-input { font-size: .9rem; padding: 7px 10px; }
+.del-btn {
+  padding: 6px 10px; background: #7a3a3a; color: #fcc;
+  border: none; border-radius: 6px; cursor: pointer; font-size: .8rem;
+}
+.del-btn:hover { background: #6a2a2a; }
+
+button.primary {
+  padding: 9px 20px; background: #e8a0aa; color: #2a1a1a;
+  border: none; border-radius: 8px; cursor: pointer;
+  font-size: .88rem; font-family: inherit; font-weight: 700;
+  transition: background .12s;
+}
+button.primary:hover { background: #f0b0bc; }
+button.secondary {
+  padding: 7px 14px; background: #4d6646; color: #f2f1df;
+  border: none; border-radius: 7px; cursor: pointer;
+  font-size: .82rem; font-family: inherit;
+}
+button.secondary:hover { background: #425740; }
+
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.tip { font-size: .72rem; color: #8aaa78; line-height: 1.5; }
+
+/* 에러 */
+.error { color: #f87171; font-size: .82rem; min-height: 18px; }
+
+/* 진리표 */
+.table-wrap {
+  width: 100%;
+  max-width: 960px;
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .88rem;
+  background: #f2f1df;
+  border-radius: 10px;
+  overflow: hidden;
+}
+th {
+  background: #567050;
+  color: #f2f1df;
+  padding: 9px 14px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid #4d6646;
+}
+th.var-col { background: #4d6646; }
+th.main-col { background: #c07888; }
+td {
+  padding: 7px 14px;
+  text-align: center;
+  color: #2a3820;
+  border: 1px solid #c8d8b0;
+  white-space: nowrap;
+}
+tr:nth-child(even) td { background: #e8eedd; }
+.cell-t { color: #1a6a30; font-weight: 700; }
+.cell-f { color: #a02020; font-weight: 700; }
+td.main-col { font-weight: 700; font-size: 1rem; }
+td.main-col.cell-t { background: #c8f0d0; }
+td.main-col.cell-f { background: #f8c8c8; }
+
+/* 예제 */
+.examples {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.ex-btn {
+  padding: 4px 10px; background: #425740; color: #d0e8c0;
+  border: 1px solid #3d5236; border-radius: 6px;
+  cursor: pointer; font-size: .78rem; font-family: monospace;
+}
+.ex-btn:hover { background: #3d5236; }
+
+.legend {
+  display: flex; gap: 16px; font-size: .74rem; color: #b0c4a0;
+  flex-wrap: wrap; justify-content: center;
+}
+.litem { display: flex; align-items: center; gap: 4px; }
+.ldot { width:14px; height:14px; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<h1>🔣 명제 논리 진리표 생성기</h1>
+<p class="subtitle">수식을 입력하면 모든 경우의 진리표를 자동으로 생성합니다<br>부분식도 자동으로 컬럼으로 표시됩니다</p>
+
+<div class="panel">
+  <!-- 기호 버튼 -->
+  <div class="sym-row">
+    <span class="sym-label">변수</span>
+    <button class="sym-btn var" onclick="ins('p')">p</button>
+    <button class="sym-btn var" onclick="ins('q')">q</button>
+    <button class="sym-btn var" onclick="ins('r')">r</button>
+    <button class="sym-btn var" onclick="ins('s')">s</button>
+    &nbsp;
+    <span class="sym-label">연산자</span>
+    <button class="sym-btn" onclick="ins('~')" title="NOT (부정)">~ <small>not</small></button>
+    <button class="sym-btn" onclick="ins('∧')" title="AND (그리고)">∧ <small>and</small></button>
+    <button class="sym-btn" onclick="ins('∨')" title="OR (또는)">∨ <small>or</small></button>
+    <button class="sym-btn" onclick="ins('→')" title="implies (이면)">→ <small>implies</small></button>
+    <button class="sym-btn" onclick="ins('↔')" title="if and only if (일 때만)">↔ <small>iff</small></button>
+    <button class="sym-btn" onclick="ins('(')">(</button>
+    <button class="sym-btn" onclick="ins(')')">)</button>
+  </div>
+
+  <!-- 수식 입력 -->
+  <div>
+    <div style="font-size:.8rem;color:#b0c4a0;margin-bottom:6px;">수식 입력 <span style="font-size:.68rem">(여러 개 입력 가능 — 각각 컬럼으로 표시됨)</span></div>
+    <div class="expr-list" id="exprList">
+      <div class="expr-item">
+        <input class="expr-input" id="main-input" placeholder="예: p∧q→r" oninput="clearErr()">
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="secondary" onclick="addExpr()">+ 수식 추가</button>
+    <button class="primary" onclick="generate()">▶ 진리표 생성</button>
+    <button class="secondary" onclick="clearAll()">↺ 초기화</button>
+  </div>
+
+  <div class="error" id="err"></div>
+
+  <!-- 예제 -->
+  <div>
+    <div style="font-size:.75rem;color:#b0c4a0;margin-bottom:5px;">예제 클릭해보기</div>
+    <div class="examples">
+      <button class="ex-btn" onclick="loadEx('~p')">~p</button>
+      <button class="ex-btn" onclick="loadEx('p∧q')">p∧q</button>
+      <button class="ex-btn" onclick="loadEx('p∨q')">p∨q</button>
+      <button class="ex-btn" onclick="loadEx('p→q')">p→q</button>
+      <button class="ex-btn" onclick="loadEx('p↔q')">p↔q</button>
+      <button class="ex-btn" onclick="loadEx('~p∨q')">~p∨q</button>
+      <button class="ex-btn" onclick="loadEx('(p→q)∧(q→p)')">p→q 와 q→p</button>
+      <button class="ex-btn" onclick="loadEx2('p→q','~q→~p')">대우 비교</button>
+      <button class="ex-btn" onclick="loadEx2('p∧q','~(~p∨~q)')">드모르간</button>
+    </div>
+  </div>
+
+  <div class="tip">
+    💡 키보드 단축: ~ | &amp; (∧) | v (∨) | -&gt; (→) | &lt;-&gt; (↔) 도 입력 가능해요
+  </div>
+</div>
+
+<!-- 진리표 출력 -->
+<div class="table-wrap" id="tableWrap"></div>
+
+<div class="legend" id="legend" style="display:none">
+  <span class="litem"><span class="ldot" style="background:#c8f0d0;border:1px solid #a0d0a0"></span>참(T)</span>
+  <span class="litem"><span class="ldot" style="background:#f8c8c8;border:1px solid #e0a0a0"></span>거짓(F) — 최종 수식 강조</span>
+  <span class="litem" style="color:#c07888">■ 분홍 헤더 = 최종 수식</span>
+</div>
+
+<script>
+'use strict';
+
+// ── 파서 ─────────────────────────────────────────────────────────
+// 우선순위: ~ > ∧ > ∨ > → > ↔
+// 각 노드: {fn, label, prec, children:[]}
+
+const PREC={bic:1,imp:2,or:3,and:4,not:5,atom:6};
+
+function makeVar(n){return{fn:e=>e[n]===true,label:n,prec:PREC.atom,children:[]};}
+function makeNot(a){
+  const al=a.prec<PREC.not?`(${a.label})`:a.label;
+  return{fn:e=>!a.fn(e),label:`~${al}`,prec:PREC.not,children:[a]};
+}
+function makeAnd(a,b){
+  const al=a.prec<PREC.and?`(${a.label})`:a.label;
+  const bl=b.prec<PREC.and?`(${b.label})`:b.label;
+  return{fn:e=>a.fn(e)&&b.fn(e),label:`${al}∧${bl}`,prec:PREC.and,children:[a,b]};
+}
+function makeOr(a,b){
+  const al=a.prec<PREC.or?`(${a.label})`:a.label;
+  const bl=b.prec<PREC.or?`(${b.label})`:b.label;
+  return{fn:e=>a.fn(e)||b.fn(e),label:`${al}∨${bl}`,prec:PREC.or,children:[a,b]};
+}
+function makeImp(a,b){
+  const al=a.prec<=PREC.imp?`(${a.label})`:a.label;
+  const bl=b.prec<PREC.imp?`(${b.label})`:b.label;
+  return{fn:e=>!a.fn(e)||b.fn(e),label:`${al}→${bl}`,prec:PREC.imp,children:[a,b]};
+}
+function makeBic(a,b){
+  const al=a.prec<PREC.bic?`(${a.label})`:a.label;
+  const bl=b.prec<PREC.bic?`(${b.label})`:b.label;
+  return{fn:e=>a.fn(e)===b.fn(e),label:`${al}↔${bl}`,prec:PREC.bic,children:[a,b]};
+}
+
+function tokenize(s){
+  // 정규화
+  s=s.replace(/<->/g,'↔').replace(/->/g,'→').replace(/&/g,'∧')
+     .replace(/\|/g,'∨').replace(/\bv\b/gi,'∨');
+  const toks=[];
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(c===' ') continue;
+    if(/[a-z]/i.test(c)) toks.push({t:'var',v:c.toLowerCase()});
+    else if(c==='~') toks.push({t:'not'});
+    else if(c==='∧'||c==='^'||c==='*') toks.push({t:'and'});
+    else if(c==='∨') toks.push({t:'or'});
+    else if(c==='→') toks.push({t:'imp'});
+    else if(c==='↔') toks.push({t:'bic'});
+    else if(c==='(') toks.push({t:'lp'});
+    else if(c===')') toks.push({t:'rp'});
+    else throw new Error(`알 수 없는 기호: '${c}'`);
+  }
+  return toks;
+}
+
+function parse(exprStr){
+  const toks=tokenize(exprStr);
+  let pos=0;
+  const peek=()=>toks[pos]||{t:'eof'};
+  const next=()=>toks[pos++];
+
+  function parseBic(){
+    let a=parseImp();
+    while(peek().t==='bic'){next();const b=parseImp();a=makeBic(a,b);}
+    return a;
+  }
+  function parseImp(){
+    let a=parseOr();
+    if(peek().t==='imp'){next();const b=parseImp();return makeImp(a,b);}
+    return a;
+  }
+  function parseOr(){
+    let a=parseAnd();
+    while(peek().t==='or'){next();const b=parseAnd();a=makeOr(a,b);}
+    return a;
+  }
+  function parseAnd(){
+    let a=parseNot();
+    while(peek().t==='and'){next();const b=parseNot();a=makeAnd(a,b);}
+    return a;
+  }
+  function parseNot(){
+    if(peek().t==='not'){next();return makeNot(parseNot());}
+    return parseAtom();
+  }
+  function parseAtom(){
+    const t=peek();
+    if(t.t==='var'){next();return makeVar(t.v);}
+    if(t.t==='lp'){
+      next();
+      const a=parseBic();
+      if(peek().t!=='rp') throw new Error('닫는 괄호 ) 가 없어요');
+      next();
+      return a;
+    }
+    throw new Error(`예상치 못한 토큰: '${t.v||t.t}'`);
+  }
+
+  const root=parseBic();
+  if(pos<toks.length) throw new Error('수식이 올바르지 않아요');
+  return root;
+}
+
+// 부분식 수집 (변수 → 복합식 순서)
+function collectSubs(node,seen=new Map()){
+  for(const c of node.children) collectSubs(c,seen);
+  if(!seen.has(node.label)) seen.set(node.label,node);
+  return seen;
+}
+
+// 변수 추출
+function getVars(node,s=new Set()){
+  if(node.children.length===0) s.add(node.label);
+  else node.children.forEach(c=>getVars(c,s));
+  return [...s].sort();
+}
+
+// ── 진리표 생성 ────────────────────────────────────────────────
+function generate(){
+  const inputs=getInputs();
+  if(!inputs.length){setErr('수식을 입력해주세요');return;}
+
+  let roots;
+  try{
+    roots=inputs.map(s=>{
+      if(!s.trim()) throw new Error('빈 수식이 있어요');
+      return {expr:s.trim(),node:parse(s.trim())};
+    });
+  }catch(e){setErr(e.message);return;}
+
+  clearErr();
+
+  // 전체 변수 수집
+  const allVars=new Set();
+  roots.forEach(({node})=>getVars(node).forEach(v=>allVars.add(v)));
+  const vars=[...allVars].sort();
+
+  // 부분식 수집 (각 root의 모든 sub)
+  const subMap=new Map();
+  roots.forEach(({node})=>collectSubs(node,subMap));
+
+  // 열 순서: 변수 → 비변수 부분식
+  const varCols=vars.map(v=>subMap.get(v)).filter(Boolean);
+  const compCols=[...subMap.values()].filter(n=>n.children.length>0);
+  const allCols=[...varCols,...compCols];
+
+  // 최종 수식 레이블 집합
+  const mainLabels=new Set(roots.map(r=>r.node.label));
+
+  // 행 생성
+  const n=vars.length;
+  const rows=[];
+  for(let i=0;i<(1<<n);i++){
+    const env={};
+    vars.forEach((v,j)=>{env[v]=!!((i>>(n-1-j))&1);});
+    rows.push({env,vals:allCols.map(c=>c.fn(env))});
+  }
+
+  // 렌더링
+  let html='<table>';
+  // 헤더
+  html+='<tr>';
+  allCols.forEach(c=>{
+    const isVar=c.children.length===0;
+    const isMain=mainLabels.has(c.label);
+    const cls=isVar?'var-col':isMain?'main-col':'';
+    html+=`<th class="${cls}">${esc(c.label)}</th>`;
+  });
+  html+='</tr>';
+  // 행
+  rows.forEach(({vals})=>{
+    html+='<tr>';
+    allCols.forEach((c,i)=>{
+      const v=vals[i];
+      const isMain=mainLabels.has(c.label);
+      const cls=`${v?'cell-t':'cell-f'}${isMain?' main-col':''}`;
+      html+=`<td class="${cls}">${v?'T':'F'}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</table>';
+
+  document.getElementById('tableWrap').innerHTML=html;
+  document.getElementById('legend').style.display='flex';
+}
+
+// ── UI 헬퍼 ──────────────────────────────────────────────────────
+function getInputs(){
+  return [...document.querySelectorAll('.expr-input')].map(el=>el.value.trim()).filter(s=>s);
+}
+
+function getFocusedInput(){
+  const active=document.activeElement;
+  if(active&&active.classList.contains('expr-input')) return active;
+  return document.getElementById('main-input');
+}
+
+function ins(ch){
+  const el=getFocusedInput();
+  const s=el.selectionStart, e=el.selectionEnd;
+  el.value=el.value.slice(0,s)+ch+el.value.slice(e);
+  el.selectionStart=el.selectionEnd=s+ch.length;
+  el.focus();
+}
+
+function addExpr(){
+  const list=document.getElementById('exprList');
+  const item=document.createElement('div');
+  item.className='expr-item';
+  const inp=document.createElement('input');
+  inp.className='expr-input';
+  inp.placeholder='수식 입력...';
+  inp.addEventListener('input',clearErr);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter') generate();});
+  const btn=document.createElement('button');
+  btn.className='del-btn'; btn.textContent='✕';
+  btn.onclick=()=>{list.removeChild(item);};
+  item.appendChild(inp); item.appendChild(btn);
+  list.appendChild(item);
+  inp.focus();
+}
+
+function clearAll(){
+  document.querySelectorAll('.expr-input').forEach(el=>el.value='');
+  // 추가된 수식 행 제거
+  const list=document.getElementById('exprList');
+  [...list.querySelectorAll('.del-btn')].forEach(btn=>btn.click());
+  document.getElementById('tableWrap').innerHTML='';
+  document.getElementById('legend').style.display='none';
+  clearErr();
+  document.getElementById('main-input').focus();
+}
+
+function loadEx(expr){
+  clearAll();
+  document.getElementById('main-input').value=expr;
+  generate();
+}
+function loadEx2(a,b){
+  clearAll();
+  document.getElementById('main-input').value=a;
+  addExpr();
+  document.querySelectorAll('.expr-input')[1].value=b;
+  generate();
+}
+
+function setErr(msg){document.getElementById('err').textContent='⚠ '+msg;}
+function clearErr(){document.getElementById('err').textContent='';}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// 엔터 키로 생성
+document.getElementById('main-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter') generate();
+});
+</script>
+</body>
+</html>

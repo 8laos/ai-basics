@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>교사용 가이드 — 인공지능 기초 시뮬레이션</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  background: #f5f5f0;
+  color: #333;
+  font-size: 14px;
+}
+.topbar {
+  background: #2e7d32;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 48px;
+}
+.topbar h1 { font-size: 16px; font-weight: 600; }
+.topbar a { color: #fff; text-decoration: none; opacity: .7; margin-right: 8px; }
+.topbar a:hover { opacity: 1; }
+
+.layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 48px);
+}
+
+/* 왼쪽 네비게이션 */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.sidebar-title {
+  font-size: 12px;
+  color: #888;
+  padding: 8px 20px 4px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.sidebar a {
+  display: block;
+  padding: 8px 20px;
+  color: #555;
+  text-decoration: none;
+  font-size: 13px;
+  border-left: 3px solid transparent;
+  transition: all .15s;
+}
+.sidebar a:hover {
+  background: #f0f4ee;
+  color: #1b5e20;
+}
+.sidebar a.active {
+  border-left-color: #2e7d32;
+  color: #1b5e20;
+  font-weight: 600;
+  background: #f0f4ee;
+}
+
+/* 오른쪽 본문 */
+.content {
+  flex: 1;
+  padding: 32px 40px 60px;
+  max-width: 800px;
+}
+.content h2 {
+  font-size: 24px;
+  color: #1b5e20;
+  margin-bottom: 8px;
+  padding-top: 20px;
+}
+.content h3 {
+  font-size: 16px;
+  color: #2e7d32;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+.content p {
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 12px;
+}
+.content ul {
+  margin: 8px 0 16px 20px;
+  line-height: 1.8;
+  color: #444;
+}
+.content li { margin-bottom: 4px; }
+.section {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #e8e8e0;
+}
+.section:last-child { border-bottom: none; }
+.tag-category {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.tip {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #e8a0aa;
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: #555;
+}
+.tip-label {
+  font-weight: 700;
+  color: #c0392b;
+  margin-bottom: 4px;
+}
+.link-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background: #2e7d32;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.link-btn:hover { background: #1b5e20; }
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.section-header-text { flex: 1; }
+.section-thumb {
+  width: 200px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  object-fit: cover;
+  aspect-ratio: 16/9;
+}
+.topbar h1, .content h2 { font-family: 'Orbit', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../index.html">← 홈</a>
+  <h1>교사용 가이드</h1>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-title">개요</div>
+    <a href="#overview">시뮬레이션 소개</a>
+
+    <div class="sidebar-title" style="margin-top:16px;">탐색과 문제해결</div>
+    <a href="#4queen">4-Queen 탐색</a>
+    <a href="#search-compare">탐색 알고리즘 비교</a>
+    <a href="#river-crossing">강 건너기 문제</a>
+
+    <div class="sidebar-title" style="margin-top:16px;">논리와 추론</div>
+    <a href="#truthtable">진리표 생성기</a>
+    <a href="#predicate">술어 논리 추론</a>
+
+    <div class="sidebar-title" style="margin-top:16px;">기계학습</div>
+    <a href="#gradient-descent">경사하강법</a>
+    <a href="#duck-or-goose">분류 알고리즘 비교</a>
+    <a href="#kmeans">K-Means 클러스터링</a>
+    <a href="#reinforced-duck">강화오리!</a>
+
+    <div class="sidebar-title" style="margin-top:16px;">딥러닝</div>
+    <a href="#nn">순전파 · 역전파</a>
+  </nav>
+
+  <main class="content">
+
+    <!-- 개요 -->
+    <div class="section" id="overview">
+      <h2>시뮬레이션 소개</h2>
+      <p>이 사이트는 인공지능 기초 수업에서 활용할 수 있는 인터랙티브 시뮬레이션 10종을 모아 놓은 교육 자료입니다. 탐색, 논리, 기계학습, 딥러닝의 핵심 개념을 학생이 직접 조작하며 이해할 수 있도록 설계했습니다.</p>
+      <p>모든 시뮬레이션은 웹 브라우저에서 바로 실행되며, 별도 설치가 필요 없습니다.</p>
+    </div>
+
+
+    <!-- 탐색과 문제해결 -->
+    <div class="section" id="4queen">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">탐색과 문제해결</span>
+          <h2>4-Queen 탐색 시각화</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/4queen.png" alt="4-Queen">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>깊이 우선 탐색(DFS)과 백트래킹의 동작 원리를 이해한다.</li>
+        <li>상태 공간 트리에서 탐색 과정을 시각적으로 추적할 수 있다.</li>
+        <li>가지치기가 탐색 효율에 미치는 영향을 설명할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>"AI 자동 탐색" 버튼으로 전체 과정을 자동 실행합니다.</li>
+        <li>속도 슬라이더로 탐색 속도를 조절할 수 있습니다.</li>
+        <li>왼쪽 체스판에서 퀸의 배치를, 오른쪽 트리에서 탐색 경로를 확인합니다.</li>
+        <li>초록 노드는 안전한 배치, 빨간 노드는 충돌(가지치기)을 의미합니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        학생에게 먼저 4×4 체스판에 퀸 4개를 직접 배치해보게 한 뒤, 컴퓨터가 같은 문제를 어떻게 푸는지 시뮬레이션으로 비교하면 효과적입니다.
+      </div>
+      <a class="link-btn" href="../4queen/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="search-compare">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">탐색과 문제해결</span>
+          <h2>탐색 알고리즘 비교</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/search-compare.png" alt="탐색 알고리즘 비교">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>언덕 등반, 최상 우선, A* 탐색 알고리즘의 차이를 이해한다.</li>
+        <li>휴리스틱 함수(h값)가 탐색에 미치는 영향을 설명할 수 있다.</li>
+        <li>같은 문제에서 알고리즘마다 탐색 경로가 달라지는 이유를 설명할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>격자에 장애물을 클릭하여 배치한 뒤, 상단 탭으로 알고리즘을 선택합니다.</li>
+        <li>"탐색 시작" 버튼으로 실행하면 탐색 과정이 애니메이션으로 표시됩니다.</li>
+        <li>각 칸의 숫자는 목표까지의 예상 거리(h값)입니다.</li>
+        <li>장애물 배치를 바꿔가며 각 알고리즘의 행동 차이를 비교해보세요.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        같은 장애물 배치에서 세 알고리즘을 순서대로 실행하고, 방문한 칸 수와 최종 경로를 비교하게 하면 알고리즘의 효율 차이를 체감할 수 있습니다.
+      </div>
+      <a class="link-btn" href="../search-compare/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="river-crossing">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">탐색과 문제해결</span>
+          <h2>강 건너기 탐색 시각화</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/river-crossing.png" alt="강 건너기">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>DFS와 BFS의 탐색 전략 차이를 이해한다.</li>
+        <li>상태 공간 표현으로 문제를 모델링하는 방법을 이해한다.</li>
+        <li>유효/무효 상태의 개념과 제약 조건을 설명할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>상단 탭에서 DFS 또는 BFS를 선택합니다.</li>
+        <li>"자동 탐색" 버튼으로 실행하면 왼쪽에 강 건너기 애니메이션이, 오른쪽에 상태 공간 트리가 표시됩니다.</li>
+        <li>속도 슬라이더로 애니메이션 속도를 조절할 수 있습니다.</li>
+        <li>빨간 노드는 무효 상태(늑대+양 또는 양+배추가 혼자 남는 경우)를 의미합니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        DFS와 BFS를 같은 문제에 적용한 결과를 비교하며, 어떤 탐색이 해를 먼저 찾는지, 어떤 탐색이 더 많은 상태를 방문하는지 토론해보세요.
+      </div>
+      <a class="link-btn" href="../river-crossing/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <!-- 논리와 추론 -->
+    <div class="section" id="truthtable">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">논리와 추론</span>
+          <h2>명제 논리 진리표 생성기</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/truthtable.png" alt="진리표">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>논리 연산자(NOT, AND, OR, IMPLIES, IFF)의 의미를 이해한다.</li>
+        <li>복합 명제의 진리값을 진리표로 확인할 수 있다.</li>
+        <li>대우, 드모르간 법칙 등 논리 법칙을 진리표로 검증할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>변수 버튼(p, q, r, s)과 연산자 버튼으로 수식을 입력합니다.</li>
+        <li>"진리표 생성" 버튼을 누르면 모든 경우의 진리표가 생성됩니다.</li>
+        <li>부분식도 자동으로 컬럼에 표시되어 단계별 계산을 확인할 수 있습니다.</li>
+        <li>하단 예제 버튼으로 대표적인 논리식을 바로 입력할 수 있습니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        "p→q 와 q→p" 예제를 입력하여 역과 원래 명제의 진리값이 다름을 직접 확인하게 하면, 역·이·대우 개념을 효과적으로 전달할 수 있습니다.
+      </div>
+      <a class="link-btn" href="../truthtable/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="predicate">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">논리와 추론</span>
+          <h2>술어 논리 추론 도구</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/predicate.png" alt="술어 논리">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>전칭(∀)과 존재(∃) 양화사의 차이를 이해한다.</li>
+        <li>규칙과 사실로부터 새로운 결론을 도출하는 연역적 추론을 체험한다.</li>
+        <li>인공지능의 지식 표현과 추론 과정을 이해한다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>섹션 1에서 "모든(∀)" 또는 "어떤(∃)" 규칙을 자연어로 입력합니다.</li>
+        <li>섹션 2에서 새 개체의 이름을 입력하고 알려진 속성을 체크합니다.</li>
+        <li>"추론하기" 버튼을 누르면 ∀ 규칙이 적용되어 새로운 속성이 도출됩니다.</li>
+        <li>추론 과정이 단계별로 표시되어 어떤 규칙이 적용되었는지 확인할 수 있습니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        학생에게 친숙한 예시("모든 학생은 사람이다", "모든 사람은 호흡한다")로 시작하여 연쇄 추론이 일어나는 과정을 보여주면, AI의 추론 원리를 직관적으로 이해할 수 있습니다.
+      </div>
+      <a class="link-btn" href="../predicate/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <!-- 기계학습 -->
+    <div class="section" id="gradient-descent">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">기계학습</span>
+          <h2>경사하강법 시각화</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/gradient-descent.png" alt="경사하강법">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>경사하강법의 기본 원리(기울기 방향으로 이동)를 이해한다.</li>
+        <li>학습률(α)이 학습 과정에 미치는 영향을 설명할 수 있다.</li>
+        <li>수렴, 진동, 발산의 개념을 체험적으로 이해한다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>학습률 슬라이더로 α 값을 조절합니다.</li>
+        <li>"한 스텝" 버튼으로 한 단계씩 진행하거나, "자동 실행"으로 연속 실행합니다.</li>
+        <li>하단 정보 패널에서 현재 x, y(손실), 기울기, 다음 x 값을 확인합니다.</li>
+        <li>학습률을 0.9 이상으로 올려 진동과 발산을 직접 관찰해보세요.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        학습률 0.1, 0.5, 0.95, 1.1을 차례로 시도하게 하면 "적절한 학습률 선택"이 왜 중요한지 체감할 수 있습니다.
+      </div>
+      <a class="link-btn" href="../gradient-descent/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="duck-or-goose">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">기계학습</span>
+          <h2>오리일까 거위일까? — 분류 알고리즘 비교</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/duck-or-goose.png" alt="분류 알고리즘">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>KNN, 결정트리, SVM, 로지스틱 회귀의 분류 방식 차이를 이해한다.</li>
+        <li>같은 데이터에서 알고리즘마다 결정 경계가 다르게 형성됨을 확인한다.</li>
+        <li>매개변수(k값, 트리 깊이 등)가 분류 결과에 미치는 영향을 설명할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>소개 페이지에서 4개 알고리즘의 특징을 확인한 뒤 "체험하기"로 진입합니다.</li>
+        <li>왼쪽 사이드바에서 알고리즘을 선택하면 해당 결정 경계가 표시됩니다.</li>
+        <li>각 알고리즘의 매개변수(k값, 깊이 등)를 조절해볼 수 있습니다.</li>
+        <li>산점도를 클릭/Shift+클릭하여 오리/거위 데이터를 추가할 수 있습니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        결정트리의 깊이를 1에서 10까지 올리며 경계선 변화를 관찰하게 하면, 과적합(overfitting) 개념을 자연스럽게 도입할 수 있습니다.
+      </div>
+      <a class="link-btn" href="../duck-or-goose/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="kmeans">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">기계학습</span>
+          <h2>K-Means 클러스터링</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/kmeans.png" alt="K-Means">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>비지도 학습과 군집화의 개념을 이해한다.</li>
+        <li>K-Means 알고리즘의 반복 과정(배정→갱신)을 단계별로 추적할 수 있다.</li>
+        <li>K값 선택이 군집화 결과에 미치는 영향을 설명할 수 있다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>실루엣 그래프를 참고하여 적절한 K값을 선택하고 "K 확정"을 누릅니다.</li>
+        <li>캔버스를 클릭하여 초기 중심점을 배치합니다.</li>
+        <li>"다음 단계" 버튼으로 배정과 갱신을 번갈아 진행합니다.</li>
+        <li>중심점이 더 이상 변하지 않으면 수렴 완료입니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        같은 K값으로 초기 중심점을 다르게 배치하여 결과가 달라지는 것을 보여주면, 초기값의 중요성과 K-Means의 한계를 이해시킬 수 있습니다.
+      </div>
+      <a class="link-btn" href="../kmeans/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+    <div class="section" id="reinforced-duck">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">기계학습</span>
+          <h2>강화오리!</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/reinforced-duck.png" alt="강화오리">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>강화학습의 기본 개념(에이전트, 환경, 보상)을 이해한다.</li>
+        <li>시행착오를 통한 학습 과정을 직접 체험한다.</li>
+        <li>보상 신호가 행동 선택에 미치는 영향을 설명할 수 있다.</li>
+      </ul>
+      <h3>수업 순서</h3>
+      <ul>
+        <li>학생들은 게임에서 강화학습 에이전트가 됩니다.</li>
+        <li>규칙은 제시하지 말고, 최대한 높은 점수를 얻는 것이라는 목표만 알려준 뒤 학생들이 직접 게임을 플레이하게 합니다.</li>
+        <li>학생들은 시행착오를 거치면서 자연스럽게 조작 방법(스페이스 이단 점프)과 먹어도 되는 과일/안 되는 과일을 학습합니다. 그 과정에서 회차별 점수를 학습지에 표시하게 할 수도 있습니다.</li>
+        <li>일정 시간 후 게임을 종료하고, 어떤 것을 학습했는지 이야기해보게 합니다. 자신의 플레이 경험과 강화학습 에이전트의 학습 과정을 비교하며, 명시적 규칙 없이도 보상만으로 학습이 가능하다는 점을 이해하게 됩니다.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        일부 학교 환경에서는 플레이가 되지 않을 수 있습니다. 미리 확인하세요.
+      </div>
+      <a class="link-btn" href="https://8laos.github.io/reinforced-duck/" target="_blank">시뮬레이션 열기 →</a>
+    </div>
+
+    <!-- 딥러닝 -->
+    <div class="section" id="nn">
+      <div class="section-header">
+        <div class="section-header-text">
+          <span class="tag-category">딥러닝</span>
+          <h2>순전파 · 역전파 시각화</h2>
+        </div>
+        <img class="section-thumb" src="../thumbnails/nn.png" alt="순전파 역전파">
+      </div>
+      <h3>학습 목표</h3>
+      <ul>
+        <li>신경망의 구조(입력층, 은닉층, 출력층)를 이해한다.</li>
+        <li>순전파에서 가중치와 활성화 함수가 어떻게 적용되는지 추적할 수 있다.</li>
+        <li>역전파를 통해 가중치가 업데이트되는 원리를 이해한다.</li>
+      </ul>
+      <h3>조작 가이드</h3>
+      <ul>
+        <li>"다음" 버튼으로 순전파 7단계를 하나씩 진행합니다.</li>
+        <li>각 단계에서 하단 설명 패널에 현재 단계의 수식과 의미가 표시됩니다.</li>
+        <li>"전체 재생"으로 전체 과정을 자동 실행할 수 있습니다.</li>
+        <li>학습 횟수가 늘어날수록 손실값이 줄어드는 것을 관찰해보세요.</li>
+      </ul>
+      <div class="tip">
+        <div class="tip-label">수업 팁</div>
+        오리와 거위의 특성값(목 길이, 부리 크기)이 입력되어 분류 결과가 나오는 과정을 추적하면, 신경망이 "왜" 그렇게 판단했는지를 이해하는 데 도움이 됩니다.
+      </div>
+      <a class="link-btn" href="../nn/index.html">시뮬레이션 열기 →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// 스크롤 시 사이드바 active 상태 업데이트
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.sidebar a');
+
+function updateActive() {
+  let current = '';
+  sections.forEach(s => {
+    const top = s.getBoundingClientRect().top;
+    if (top < 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+
+window.addEventListener('scroll', updateActive);
+updateActive();
+
+// 클릭 시 부드러운 스크롤
+navLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

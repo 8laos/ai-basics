@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>술어 논리 추론 도구</title>
+<style>
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumMedium.woff') format('woff');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumBold.woff') format('woff');
+  font-weight: 700;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #6b8c63;
+  color: #f2f1df;
+  font-family: 'KoPub World 돋움', 'Malgun Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px 16px; gap: 14px;
+}
+h1 { font-size: 1.15rem; color: #f2f1df; }
+.subtitle { font-size: .72rem; color: #b0c4a0; text-align: center; line-height: 1.6; }
+
+.section {
+  width: 100%; max-width: 780px;
+  background: #567050; border: 2px solid #4d6646;
+  border-radius: 12px; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sec-title {
+  font-size: .92rem; font-weight: 700; color: #f2f1df;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-num {
+  background: #e8a0aa; color: #2a1a1a;
+  border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 700; flex-shrink: 0;
+}
+input[type=text] {
+  padding: 7px 10px; background: #f2f1df; color: #2a3820;
+  border: 2px solid #4d6646; border-radius: 7px;
+  font-size: .85rem; font-family: inherit;
+}
+input[type=text]:focus { outline: none; border-color: #e8a0aa; }
+select {
+  padding: 7px 10px; background: #f2f1df; color: #2a3820;
+  border: 2px solid #4d6646; border-radius: 7px;
+  font-size: .85rem; font-family: inherit;
+}
+button {
+  padding: 7px 14px; border: none; border-radius: 7px;
+  cursor: pointer; font-size: .82rem; font-family: inherit; transition: background .12s;
+}
+.btn-add  { background: #4d6646; color: #f2f1df; }
+.btn-add:hover  { background: #3d5236; }
+.btn-main { background: #e8a0aa; color: #2a1a1a; font-weight: 700; }
+.btn-main:hover { background: #f0b0bc; }
+.btn-del  { background: #7a3a3a; color: #fcc; padding: 3px 9px; font-size: .75rem; }
+.btn-del:hover { background: #6a2a2a; }
+
+/* 규칙 입력 */
+.rule-input {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  background: #4d6646; border-radius: 8px; padding: 10px 12px;
+}
+.rule-input span { font-size: .88rem; color: #c0d0b0; }
+
+/* 규칙 카드 */
+.rule-list { display: flex; flex-direction: column; gap: 6px; }
+.rule-card {
+  display: flex; align-items: center; gap: 10px;
+  border-radius: 8px; padding: 10px 13px;
+}
+.rule-card.univ { background: #3d5830; border-left: 4px solid #4ade80; }
+.rule-card.exis { background: #3a4a5a; border-left: 4px solid #93c5fd; }
+.rule-text { flex: 1; }
+.rule-ko    { font-size: .88rem; color: #f2f1df; }
+.rule-ko b  { color: #fde68a; }
+.rule-logic { font-size: .76rem; color: #8aaa78; font-family: monospace; margin-top: 2px; }
+.rule-badge {
+  font-size: .72rem; padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
+}
+.badge-univ { background: #4ade8033; color: #4ade80; }
+.badge-exis { background: #93c5fd33; color: #93c5fd; }
+.empty-msg  { font-size: .8rem; color: #7a9a70; font-style: italic; }
+.tip        { font-size: .72rem; color: #8aaa78; }
+
+/* 추론 체크박스 */
+.check-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.check-label {
+  display: flex; align-items: center; gap: 6px;
+  background: #4d6646; border: 1px solid #3d5236;
+  border-radius: 14px; padding: 5px 12px;
+  font-size: .85rem; cursor: pointer;
+}
+.check-label:hover { background: #3d5236; }
+.check-label input { accent-color: #e8a0aa; width: 15px; height: 15px; }
+
+/* 추론 결과 */
+.result-box {
+  background: #425740; border-radius: 10px; padding: 14px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.res-label { font-size: .78rem; color: #b0c4a0; margin-bottom: 4px; }
+.tag-row   { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { padding: 5px 13px; border-radius: 12px; font-size: .85rem; font-weight: 700; }
+.tag.known   { background: #4d7a5a; color: #c8f0d0; border: 1px solid #6aab7a; }
+.tag.derived { background: #b87080; color: #ffe8ec; border: 1px solid #d09098; }
+.step-list { display: flex; flex-direction: column; gap: 6px; }
+.step {
+  background: #4d6646; border-left: 3px solid #e8a0aa;
+  border-radius: 8px; padding: 9px 13px;
+}
+.step-rule { font-size: .75rem; color: #8aaa78; font-family: monospace; }
+.step-ko   { font-size: .85rem; color: #f2f1df; margin-top: 3px; }
+.step-ko .arr { color: #e8a0aa; font-weight: 700; margin: 0 4px; }
+.step-ko .new { color: #fde68a; font-weight: 700; }
+.ex-box { background: #3a4a5a; border-radius: 8px; padding: 10px 13px; }
+.ex-title { font-size: .78rem; color: #93c5fd; font-weight: 700; margin-bottom: 5px; }
+.ex-item  { font-size: .82rem; color: #c0d0e0; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>🧠 술어 논리 추론 도구</h1>
+<p class="subtitle">
+  ∀ 규칙과 ∃ 규칙을 직접 입력 → 새 개체에 알려진 속성을 선택 → ∀ 규칙으로 연역적 추론<br>
+  <span style="color:#8aaa78">∀ = 추론에 사용 &nbsp;|&nbsp; ∃ = 배경 지식 기록 (추론 불가)</span>
+</p>
+
+<!-- ① 규칙 정의 -->
+<div class="section">
+  <div class="sec-title"><span class="sec-num">1</span> 규칙 정의</div>
+
+  <div class="rule-input">
+    <select id="qType">
+      <option value="all">모든 (∀)</option>
+      <option value="some">어떤 (∃)</option>
+    </select>
+    <input type="text" id="ruleA" placeholder="A 속성" style="width:150px">
+    <span>은(는)</span>
+    <input type="text" id="ruleB" placeholder="B 속성" style="width:150px">
+    <span>이다</span>
+    <button class="btn-add" onclick="addRule()">+ 추가</button>
+  </div>
+
+  <div class="rule-list" id="ruleList">
+    <div class="empty-msg">아직 정의된 규칙이 없습니다.</div>
+  </div>
+
+  <p class="tip">∀ 예: 모든 <i>안경씀</i>은(는) <i>중학교</i>이다 &nbsp;|&nbsp; ∃ 예: 어떤 <i>학생</i>은(는) <i>서울출신</i>이다</p>
+</div>
+
+<!-- ② 새 개체로 추론 -->
+<div class="section" id="sec2" style="display:none">
+  <div class="sec-title"><span class="sec-num">2</span> 새 개체로 추론</div>
+
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input type="text" id="indName" placeholder="이름 (예: 민수)" style="width:140px">
+    <span style="font-size:.85rem;color:#b0c4a0">에 대해 알고 있는 속성:</span>
+  </div>
+
+  <div class="check-grid" id="propChecks"></div>
+
+  <button class="btn-main" onclick="doInfer()" style="align-self:flex-start">▶ 추론하기</button>
+  <div id="resultArea"></div>
+</div>
+
+<script>
+'use strict';
+
+let rules = []; // {type:'all'|'some', A, B}
+
+// ── 규칙 추가 ─────────────────────────────────────────────────────
+function addRule() {
+  const type = document.getElementById('qType').value;
+  const A = document.getElementById('ruleA').value.trim();
+  const B = document.getElementById('ruleB').value.trim();
+  if (!A || !B) { alert('A와 B 속성을 모두 입력해주세요'); return; }
+  if (A === B)  { alert('A와 B가 같습니다'); return; }
+  if (rules.find(r => r.type===type && r.A===A && r.B===B)) { alert('이미 있는 규칙입니다'); return; }
+  rules.push({type, A, B});
+  document.getElementById('ruleA').value = '';
+  document.getElementById('ruleB').value = '';
+  renderRules();
+  renderChecks();
+  document.getElementById('sec2').style.display = '';
+  document.getElementById('resultArea').innerHTML = '';
+}
+
+function delRule(i) {
+  rules.splice(i, 1);
+  renderRules();
+  renderChecks();
+  if (!rules.length) document.getElementById('sec2').style.display = 'none';
+  document.getElementById('resultArea').innerHTML = '';
+}
+
+function renderRules() {
+  const el = document.getElementById('ruleList');
+  if (!rules.length) { el.innerHTML = '<div class="empty-msg">아직 정의된 규칙이 없습니다.</div>'; return; }
+  el.innerHTML = rules.map((r, i) => {
+    const isAll = r.type === 'all';
+    return `<div class="rule-card ${isAll?'univ':'exis'}">
+      <div class="rule-text">
+        <div class="rule-ko">${isAll?'모든':'어떤'} <b>${r.A}</b>은(는) <b>${r.B}</b>이다</div>
+        <div class="rule-logic">${isAll?'∀':'∃'}x (${r.A}(x) ${isAll?'→':'∧'} ${r.B}(x))</div>
+      </div>
+      <span class="rule-badge ${isAll?'badge-univ':'badge-exis'}">${isAll?'∀ 추론':'∃ 참고'}</span>
+      <button class="btn-del" onclick="delRule(${i})">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+// ── 체크박스: 규칙에 등장한 속성 ─────────────────────────────────
+function renderChecks() {
+  const all = new Set();
+  rules.forEach(r => { all.add(r.A); all.add(r.B); });
+  document.getElementById('propChecks').innerHTML = [...all].map(p => `
+    <label class="check-label">
+      <input type="checkbox" value="${p}"> ${p}
+    </label>`).join('');
+}
+
+// ── 추론 ─────────────────────────────────────────────────────────
+function doInfer() {
+  const name    = document.getElementById('indName').value.trim() || '이 개체';
+  const checked = [...document.querySelectorAll('#propChecks input:checked')].map(el => el.value);
+  if (!checked.length) { alert('속성을 하나 이상 선택해주세요'); return; }
+
+  const univRules = rules.filter(r => r.type === 'all');
+  const exisRules = rules.filter(r => r.type === 'some');
+
+  const known = new Set(checked);
+  const steps = [];
+
+  // ∀ 규칙으로 forward chaining (연역)
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const r of univRules) {
+      if (known.has(r.A) && !known.has(r.B)) {
+        known.add(r.B);
+        steps.push(r);
+        changed = true;
+      }
+    }
+  }
+
+  // ∃ 중 checked 속성이 A인 것 → "이 개체가 예시일 수 있다"
+  const exNotes = exisRules.filter(r => known.has(r.A));
+
+  const initial = new Set(checked);
+  const derived = new Set(steps.map(s => s.B));
+
+  let html = `<div class="result-box">`;
+
+  // 처음부터 알던 것
+  html += `<div><div class="res-label">처음부터 알고 있던 것</div>
+    <div class="tag-row">`;
+  [...initial].forEach(p => { html += `<span class="tag known">${p}(${name})</span>`; });
+  html += `</div></div>`;
+
+  if (steps.length) {
+    html += `<div><div class="res-label">📎 추론 과정 (∀ 규칙 적용 — 연역)</div>
+      <div class="step-list">`;
+    steps.forEach(s => {
+      html += `<div class="step">
+        <div class="step-rule">∀x (${s.A}(x) → ${s.B}(x))</div>
+        <div class="step-ko">
+          ${s.A}(${name}) 참
+          <span class="arr">→</span>
+          <span class="new">${s.B}(${name}) 도출!</span>
+          &nbsp;→&nbsp; "${name}은(는) <b>${s.B}</b>이다"
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+
+    html += `<div><div class="res-label">추론으로 새로 알게 된 것</div>
+      <div class="tag-row">`;
+    [...derived].forEach(p => { html += `<span class="tag derived">${p}(${name})</span>`; });
+    html += `</div></div>`;
+  } else {
+    html += `<div style="font-size:.85rem;color:#8aaa78">적용 가능한 ∀ 규칙이 없어 새로 도출된 사실이 없습니다.</div>`;
+  }
+
+  if (exNotes.length) {
+    html += `<div class="ex-box">
+      <div class="ex-title">∃ 참고 — 확정할 수 없지만 가능한 사실</div>`;
+    exNotes.forEach(r => {
+      html += `<div class="ex-item">"어떤 <b>${r.A}</b>은(는) <b>${r.B}</b>이다"
+        → ${name}이(가) ${r.A}이므로, <b>${r.B}</b>일 수도 있습니다
+        <span style="font-size:.74rem;color:#6a8a9a">(∃ 규칙으로는 확정 불가)</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  document.getElementById('resultArea').innerHTML = html;
+}
+
+// 엔터 키
+document.getElementById('ruleB').addEventListener('keydown', e => { if(e.key==='Enter') addRule(); });
+</script>
+</body>
+</html>

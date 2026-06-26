@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4-Queen 탐색 시각화</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #f5f5f0;
+  color: #333;
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/* 상단 바 */
+.topbar {
+  background: #2e7d32;
+  color: #fff;
+  height: 48px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+h1 { font-size: 16px; color: #fff; letter-spacing: .04em; font-weight: 700; }
+/* 소개 영역 */
+.intro {
+  text-align: center;
+  padding: 28px 24px 12px;
+}
+.intro h2 {
+  font-size: 32px;
+  color: #1b5e20;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.subtitle { font-size: 15px; color: #666; }
+/* 본문 컨텐츠 */
+.content-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+  width: 100%;
+}
+.main {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+}
+.left  { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+.right { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+canvas { border-radius: 8px; display: block; }
+#chess { background: #fafaf5; border: 1px solid #e0e0e0; }
+#tree  { background: #fafaf5; border: 1px solid #e0e0e0; }
+.panel {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+}
+.speed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .82rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+input[type=range] { flex: 1; accent-color: #e8a0aa; }
+.btns { display: flex; gap: 8px; }
+button {
+  flex: 1; padding: 10px 24px; border: none;
+  border-radius: 6px; cursor: pointer;
+  font-size: .88rem; font-family: inherit;
+  font-weight: 600;
+  transition: background .15s;
+}
+#startBtn { background: #e8a0aa; color: #333; }
+#startBtn:hover { background: #f0b0bc; }
+#startBtn:disabled { background: #ccc; color: #999; cursor: default; }
+#resetBtn { background: #fff; color: #333; border: 1px solid #ddd; }
+#resetBtn:hover { background: #f5f5f0; }
+.sbox {
+  text-align: center; font-size: .84rem;
+  padding: 9px 14px; border-radius: 8px;
+  background: #fff; border: 1px solid #e0e0e0;
+  color: #666; min-height: 38px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sbox.ok { color: #2e7d32; background: #e8f5e9; border-color: #a5d6a7; }
+.tree-hdr {
+  display: flex; justify-content: space-between;
+  align-items: center; font-size: .82rem; color: #1b5e20;
+  font-weight: 700;
+}
+.legend {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  font-size: .76rem; color: #666;
+}
+.litem { display: flex; align-items: center; gap: 4px; }
+.ldot  { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🤖 4-Queen 탐색 시각화</h1>
+</div>
+
+<div class="intro">
+  <h2>4-Queen 탐색 시각화</h2>
+  <p class="subtitle">깊이 우선 탐색(DFS) + 백트래킹으로 4-Queen 문제를 푸는 과정</p>
+</div>
+
+<div class="content-wrap">
+<div class="main">
+  <div class="left">
+    <canvas id="chess" width="272" height="272"></canvas>
+    <div class="panel">
+      <div class="speed-row">
+        <span>⚡ 속도</span>
+        <input type="range" id="speed" min="1" max="10" value="4">
+      </div>
+      <div class="btns">
+        <button id="resetBtn">↺ 초기화</button>
+        <button id="startBtn">🤖 AI 자동 탐색</button>
+      </div>
+    </div>
+    <div class="sbox" id="sbox">탐색 준비 중...</div>
+  </div>
+
+  <div class="right">
+    <div class="tree-hdr">
+      <span>🌳 상태 공간 트리</span>
+      <span id="vcnt">방문: 0</span>
+    </div>
+    <canvas id="tree" width="720" height="540"></canvas>
+    <div class="legend">
+      <span class="litem"><span class="ldot" style="background:#f5c518"></span>탐색 시도</span>
+      <span class="litem"><span class="ldot" style="background:#4ade80"></span>배치(안전)</span>
+      <span class="litem"><span class="ldot" style="background:#f87171"></span>충돌(가지치기)</span>
+      <span class="litem"><span class="ldot" style="background:#777"></span>백트래킹(후퇴)</span>
+      <span class="litem"><span class="ldot" style="background:#60a5fa"></span>해(Solution)</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+'use strict';
+
+const N    = 4;
+const CELL = 68;
+const TW   = 720, TH = 540;
+const NR   = 20; // 노드 반지름
+
+const COL = {
+  trying:    '#f5c518',
+  safe:      '#4ade80',
+  conflict:  '#f87171',
+  backtrack: '#777',
+  solution:  '#60a5fa',
+};
+
+// ── 퀸 충돌 검사 ────────────────────────────────────────────────
+function isSafe(placed, row, col) {
+  for (let r = 0; r < placed.length; r++) {
+    const c = placed[r];
+    if (c === col) return false;
+    if (Math.abs(r - row) === Math.abs(c - col)) return false;
+  }
+  return true;
+}
+
+// ── 탐색 단계 생성 ──────────────────────────────────────────────
+let steps   = [];
+let nodeMap = {};   // id → {id, parentId, row, col, level, x, y, children[]}
+let edgeList = [];
+
+function buildSteps() {
+  steps    = [];
+  nodeMap  = {};
+  edgeList = [];
+  let uid  = 0;
+
+  // 루트 노드 (초기 상태)
+  const root = { id: uid++, parentId: null, row: -1, col: -1, level: 0, children: [] };
+  nodeMap[root.id] = root;
+  steps.push({ t: 'node', id: root.id, parentId: null, row: -1, col: -1, status: 'safe' });
+
+  function dfs(row, parentId, placed, pathIds) {
+    if (row === N) {
+      steps.push({ t: 'solved', queens: [...placed], pathIds: [...pathIds] });
+      return true;
+    }
+    for (let col = 0; col < N; col++) {
+      const id   = uid++;
+      const node = { id, parentId, row, col, level: row + 1, children: [] };
+      nodeMap[id] = node;
+      nodeMap[parentId].children.push(id);
+      edgeList.push({ from: parentId, to: id });
+
+      const safe = isSafe(placed, row, col);
+
+      steps.push({ t: 'node',  id, parentId, row, col, status: 'trying' });
+      steps.push({ t: 'board', queens: [...placed, col], tryRow: row, tryCol: col, safe });
+
+      if (safe) {
+        steps.push({ t: 'upd', id, status: 'safe' });
+        placed.push(col);
+        pathIds.push(id);
+        const found = dfs(row + 1, id, placed, pathIds);
+        pathIds.pop();
+        placed.pop();
+        if (found) return true;
+        steps.push({ t: 'upd',   id, status: 'backtrack' });
+        steps.push({ t: 'board', queens: [...placed], tryRow: -1 });
+      } else {
+        steps.push({ t: 'upd', id, status: 'conflict' });
+      }
+    }
+    return false;
+  }
+
+  dfs(0, root.id, [], []);
+}
+
+// ── 트리 레이아웃 계산 ──────────────────────────────────────────
+function assignPositions() {
+  const levels = {};
+  for (const s of steps) {
+    if (s.t !== 'node') continue;
+    const n = nodeMap[s.id];
+    (levels[n.level] = levels[n.level] || []).push(s.id);
+  }
+  const maxLv = Math.max(...Object.keys(levels).map(Number));
+  const PX = 30, PY = 38;
+
+  for (let lv = 0; lv <= maxLv; lv++) {
+    const ids = levels[lv] || [];
+    const y   = PY + lv * (TH - PY * 2) / maxLv;
+    ids.forEach((id, i) => {
+      nodeMap[id].x = PX + (i + 1) * (TW - PX * 2) / (ids.length + 1);
+      nodeMap[id].y = y;
+    });
+  }
+}
+
+// ── 체스판 그리기 ───────────────────────────────────────────────
+const chessCtx = document.getElementById('chess').getContext('2d');
+
+function drawBoard(queens, hl) {
+  const ctx = chessCtx;
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      let fill = (r + c) % 2 === 0 ? '#b8cce4' : '#6888b0';
+      if (hl && hl.row === r && hl.col === c)
+        fill = hl.safe ? '#5dcc80' : '#e07070';
+      ctx.fillStyle = fill;
+      ctx.fillRect(c * CELL, r * CELL, CELL, CELL);
+    }
+  }
+  for (let r = 0; r < N; r++) {
+    if (queens[r] < 0) continue;
+    const c = queens[r];
+    ctx.font = `${Math.round(CELL * .62)}px serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle    = '#1a1a4e';
+    ctx.fillText('♛', c * CELL + CELL / 2, r * CELL + CELL / 2);
+  }
+}
+
+// ── 상태 공간 트리 그리기 ────────────────────────────────────────
+const treeCtx = document.getElementById('tree').getContext('2d');
+
+let revealed  = new Set();
+let nodeState = {};
+let activeId  = null;
+
+function drawTree() {
+  const ctx = treeCtx;
+  ctx.clearRect(0, 0, TW, TH);
+
+  // 행 레이블
+  const PY = 38, maxLv = 4;
+  const labels = ['시작', '0행', '1행', '2행', '3행'];
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'left';
+  for (let lv = 0; lv <= maxLv; lv++) {
+    const y = PY + lv * (TH - PY * 2) / maxLv;
+    ctx.fillStyle = '#3a3a60';
+    ctx.fillText(labels[lv], 2, y + 4);
+  }
+
+  // 엣지
+  for (const e of edgeList) {
+    if (!revealed.has(e.from) || !revealed.has(e.to)) continue;
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    const hot = (e.to === activeId);
+    ctx.strokeStyle = hot ? '#f5c518' : '#2e4522';
+    ctx.lineWidth   = hot ? 2.5 : 1.2;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+
+  // 노드
+  for (const id of revealed) {
+    const n   = nodeMap[id];
+    const st  = nodeState[id] || 'trying';
+    const cl  = COL[st] || '#888';
+    const hot = (id == activeId);
+
+    // 활성 노드 글로우
+    if (hot) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, NR + 6, 0, Math.PI * 2);
+      ctx.fillStyle = cl + '33';
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, NR, 0, Math.PI * 2);
+    ctx.fillStyle   = cl;
+    ctx.fill();
+    ctx.strokeStyle = hot ? '#ffffff' : '#00000030';
+    ctx.lineWidth   = hot ? 2 : 1;
+    ctx.stroke();
+
+    // 노드 레이블 (R행C열 형식)
+    ctx.fillStyle    = '#ffffffdd';
+    ctx.font         = `bold ${n.row >= 0 ? 9 : 10}px Arial`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    const label = n.row >= 0 ? `R${n.row + 1}C${n.col + 1}` : '시작';
+    ctx.fillText(label, n.x, n.y);
+  }
+}
+
+// ── 애니메이션 ──────────────────────────────────────────────────
+let runId    = 0;
+let visitCnt = 0;
+
+function getDelay() {
+  const s = parseInt(document.getElementById('speed').value);
+  return Math.max(60, 1250 - s * 115);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function setStatus(msg, ok = false) {
+  const el = document.getElementById('sbox');
+  el.textContent = msg;
+  el.className   = 'sbox' + (ok ? ' ok' : '');
+}
+
+async function runAnim() {
+  const myId = ++runId;
+  document.getElementById('startBtn').disabled = true;
+
+  for (const step of steps) {
+    if (runId !== myId) return;
+
+    switch (step.t) {
+      case 'node': {
+        revealed.add(step.id);
+        nodeState[step.id] = step.status;
+        activeId = step.id;
+        if (step.status === 'trying' && step.row >= 0) {
+          visitCnt++;
+          document.getElementById('vcnt').textContent = `방문: ${visitCnt}`;
+          setStatus(`${step.row}행 ${step.col}열 시도 중...`);
+        }
+        break;
+      }
+      case 'upd': {
+        nodeState[step.id] = step.status;
+        activeId = step.id;
+        const n = nodeMap[step.id];
+        if (step.status === 'safe')
+          setStatus(`✅ ${n.row}행 ${n.col}열 — 안전! 다음 행으로`);
+        else if (step.status === 'conflict')
+          setStatus(`❌ ${n.row}행 ${n.col}열 — 충돌! 가지치기`);
+        else if (step.status === 'backtrack')
+          setStatus(`↩ ${n.row}행 ${n.col}열 — 백트래킹`);
+        break;
+      }
+      case 'board': {
+        const qs = new Array(N).fill(-1);
+        step.queens.forEach((c, r) => { qs[r] = c; });
+        drawBoard(qs, step.tryRow >= 0
+          ? { row: step.tryRow, col: step.tryCol, safe: step.safe }
+          : null);
+        break;
+      }
+      case 'solved': {
+        const qs = new Array(N).fill(-1);
+        step.queens.forEach((c, r) => { qs[r] = c; });
+        drawBoard(qs, null);
+        // 해 경로 노드를 파란색으로 표시
+        step.pathIds.forEach(id => { nodeState[id] = 'solution'; });
+        setStatus('🎉 탐색 성공! 4-Queen 완벽한 배치를 찾았습니다.', true);
+        break;
+      }
+    }
+
+    drawTree();
+    await sleep(getDelay());
+  }
+
+  if (runId === myId)
+    document.getElementById('startBtn').disabled = false;
+}
+
+// ── 초기화 ─────────────────────────────────────────────────────
+function reset() {
+  runId++;
+  visitCnt  = 0;
+  revealed  = new Set();
+  nodeState = {};
+  activeId  = null;
+  document.getElementById('vcnt').textContent = '방문: 0';
+  document.getElementById('startBtn').disabled = false;
+  setStatus('탐색 준비 중...');
+  drawBoard(new Array(N).fill(-1), null);
+  drawTree();
+}
+
+// ── 이벤트 & 시작 ───────────────────────────────────────────────
+document.getElementById('startBtn').addEventListener('click', () => {
+  reset();
+  setTimeout(runAnim, 80);
+});
+document.getElementById('resetBtn').addEventListener('click', reset);
+
+buildSteps();
+assignPositions();
+reset();
+</script>
+</body>
+</html>

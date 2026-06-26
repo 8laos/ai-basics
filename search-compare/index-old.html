@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정보 이용 탐색 알고리즘 비교</title>
+<style>
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumMedium.woff') format('woff');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumBold.woff') format('woff');
+  font-weight: 700;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #6b8c63;
+  color: #f2f1df;
+  font-family: 'KoPub World 돋움', 'Malgun Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 12px;
+  gap: 12px;
+}
+h1 { font-size: 1.15rem; color: #f2f1df; }
+.subtitle { font-size: .72rem; color: #b0c4a0; }
+
+/* 탭 */
+.tabs { display: flex; gap: 6px; }
+.tab {
+  padding: 9px 20px; border: 2px solid #4d6646;
+  border-radius: 8px 8px 0 0; cursor: pointer;
+  font-size: .88rem; font-family: inherit;
+  background: #4d6646; color: #b0c4a0;
+  transition: all .15s; border-bottom: none;
+}
+.tab.active { background: #567050; color: #f2f1df; font-weight: 700; border-color: #4d6646; }
+
+/* 메인 패널 */
+.panel {
+  background: #567050;
+  border: 2px solid #4d6646;
+  border-radius: 0 8px 8px 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 620px;
+}
+.algo-desc {
+  font-size: .78rem; color: #c0d0b0;
+  text-align: center; max-width: 500px;
+  line-height: 1.5;
+}
+
+/* 캔버스 */
+canvas {
+  border-radius: 6px;
+  border: 2px solid #4d6646;
+  display: block;
+  cursor: crosshair;
+}
+
+/* 컨트롤 */
+.controls {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.ctrl-label { font-size: .8rem; color: #c0d0b0; }
+input[type=range] { accent-color: #e8a0aa; width: 100px; }
+button {
+  padding: 7px 14px; border: none; border-radius: 7px;
+  cursor: pointer; font-size: .82rem; font-family: inherit; transition: background .15s;
+}
+.btn-maze  { background: #4d6646; color: #f2f1df; }
+.btn-maze:hover  { background: #425740; }
+.btn-reset { background: #425740; color: #c0d0b0; }
+.btn-reset:hover { background: #374d35; }
+.btn-start { background: #e8a0aa; color: #3a2a2a; font-weight: 700; }
+.btn-start:hover { background: #f0b0bc; }
+.btn-start:disabled { background: #4d6646; color: #888; cursor: default; }
+
+/* 통계 */
+.stats {
+  font-size: .8rem; color: #c0d0b0;
+  background: #4d6646; border-radius: 7px;
+  padding: 8px 16px; text-align: center; min-height: 34px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+}
+.stats b { color: #f2f1df; }
+.ok   { color: #4ade80; font-weight: 700; }
+.fail { color: #f87171; font-weight: 700; }
+
+/* 범례 */
+.legend {
+  display: flex; gap: 8px; flex-wrap: wrap; font-size: .72rem;
+  color: #b0c4a0; justify-content: center;
+  background: #4d6646; border-radius: 7px; padding: 7px 12px;
+}
+.litem { display: flex; align-items: center; gap: 3px; }
+.ldot  { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+.tip { font-size: .68rem; color: #8a9a80; }
+</style>
+</head>
+<body>
+
+<h1>🗺️ 정보 이용 탐색 알고리즘 비교</h1>
+<p class="subtitle">격자에 장애물을 그린 뒤, 탭을 골라 각 알고리즘이 어떻게 탐색하는지 확인해보세요</p>
+
+<div class="tabs">
+  <div class="tab active" id="tab0" onclick="switchTab(0)">🏔️ 언덕 등반</div>
+  <div class="tab"        id="tab1" onclick="switchTab(1)">⭐ 최상 우선</div>
+  <div class="tab"        id="tab2" onclick="switchTab(2)">🎯 A*</div>
+</div>
+
+<div class="panel">
+  <div class="algo-desc" id="desc"></div>
+
+  <div class="controls">
+    <button class="btn-maze"  id="clearBtn">🗑️ 장애물 초기화</button>
+    <span class="ctrl-label">⚡ 속도</span>
+    <input type="range" id="speed" min="1" max="10" value="5">
+    <button class="btn-reset" id="resetBtn">↺ 탐색 초기화</button>
+    <button class="btn-start" id="startBtn">▶ 탐색 시작</button>
+  </div>
+
+  <canvas id="grid"></canvas>
+
+  <div class="stats" id="stats">탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요</div>
+
+  <div class="legend">
+    <span class="litem"><span class="ldot" style="background:#60a5fa"></span>시작(S)</span>
+    <span class="litem"><span class="ldot" style="background:#e8a0aa"></span>목표(G)</span>
+    <span class="litem"><span class="ldot" style="background:#2a3820"></span>장애물</span>
+    <span class="litem"><span class="ldot" style="background:#fde68a"></span>방문</span>
+    <span class="litem"><span class="ldot" style="background:#d0edbc"></span>대기(frontier)</span>
+    <span class="litem"><span class="ldot" style="background:#f59e0b"></span>현재 탐색</span>
+    <span class="litem"><span class="ldot" style="background:#f97316"></span>최종 경로</span>
+    <span class="litem"><span class="ldot" style="background:#f87171"></span>막힘</span>
+    <span class="litem"><span class="ldot" style="background:#f2f1df;border:1px solid #999"></span>숫자=h값</span>
+  </div>
+  <p class="tip">💡 빈 칸 클릭 → 장애물 추가 &nbsp;|&nbsp; 장애물 클릭 → 제거 &nbsp;|&nbsp; 탐색 중엔 편집 불가</p>
+</div>
+
+<script>
+'use strict';
+
+const ROWS=12, COLS=18, CELL=26;
+const W=COLS*CELL, H=ROWS*CELL;
+
+const startPos={r:0,c:0}, goalPos={r:ROWS-1,c:COLS-1};
+
+const ALGO_INFO=[
+  {
+    name:'언덕 등반 탐색',
+    desc:'현재 위치의 이웃 중 h값(목표까지 거리)이 가장 작은 곳으로 한 칸씩 이동합니다. 빠르지만 막다른 곳에 도달하면 실패합니다.',
+    visited:'#fde68a', frontier:null,    current:'#f59e0b', path:'#f97316', stuck:'#f87171'
+  },
+  {
+    name:'최상 우선 탐색',
+    desc:'우선순위 큐를 사용해 h값이 가장 낮은 노드를 우선 탐색합니다. 언덕 등반보다 탐색 범위가 넓어 막히지 않지만, 최단 경로를 보장하지 않습니다.',
+    visited:'#c4b5fd', frontier:'#d0edbc', current:'#8b5cf6', path:'#7c3aed', stuck:'#f87171'
+  },
+  {
+    name:'A* 탐색',
+    desc:'f(n) = g(n) + h(n)을 사용합니다. 실제 이동 비용(g)과 예상 거리(h)를 함께 고려하므로 최단 경로를 보장합니다.',
+    visited:'#a5f3fc', frontier:'#d0edbc', current:'#06b6d4', path:'#0284c7', stuck:'#f87171'
+  },
+];
+
+// 격자 상태
+let grid=Array.from({length:ROWS},()=>new Array(COLS).fill(0)); // 0=빈칸, 1=벽
+
+// 알고리즘별 셀 상태 (3개 독립 저장)
+let cellSt=Array.from({length:3},()=>Array.from({length:ROWS},()=>new Array(COLS).fill('empty')));
+let algoRan=[false,false,false]; // 각 탭이 탐색을 완료했는지
+
+let currentTab=0;
+let runId=0;
+
+// ── 캔버스 ─────────────────────────────────────────────────────
+const canvas=document.getElementById('grid');
+canvas.width=W; canvas.height=H;
+const ctx=canvas.getContext('2d');
+
+// ── 유틸 ───────────────────────────────────────────────────────
+const pk=(r,c)=>r*COLS+c;
+const H_=(r,c)=>Math.abs(r-goalPos.r)+Math.abs(c-goalPos.c);
+
+function nbrs(r,c){
+  return [[-1,0],[1,0],[0,-1],[0,1]]
+    .map(([dr,dc])=>({r:r+dr,c:c+dc}))
+    .filter(n=>n.r>=0&&n.r<ROWS&&n.c>=0&&n.c<COLS&&grid[n.r][n.c]===0);
+}
+
+// ── 그리기 ─────────────────────────────────────────────────────
+function draw(){
+  const ai=currentTab;
+  const cs=cellSt[ai];
+  const cl=ALGO_INFO[ai];
+
+  ctx.fillStyle='#f2f1df'; ctx.fillRect(0,0,W,H);
+
+  // 격자선
+  ctx.strokeStyle='#c0d4a8'; ctx.lineWidth=.5;
+  for(let r=0;r<=ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*CELL);ctx.lineTo(W,r*CELL);ctx.stroke();}
+  for(let c=0;c<=COLS;c++){ctx.beginPath();ctx.moveTo(c*CELL,0);ctx.lineTo(c*CELL,H);ctx.stroke();}
+
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const isSt=r===startPos.r&&c===startPos.c;
+    const isGl=r===goalPos.r&&c===goalPos.c;
+    const isWl=grid[r][c]===1;
+    let fill=null;
+
+    if(isWl)      fill='#2a3820';
+    else if(isSt) fill='#60a5fa';
+    else if(isGl) fill='#e8a0aa';
+    else{
+      const st=cs[r][c];
+      if     (st==='current')  fill=cl.current;
+      else if(st==='visited')  fill=cl.visited;
+      else if(st==='frontier') fill=cl.frontier||'#d0edbc';
+      else if(st==='path')     fill=cl.path;
+      else if(st==='stuck')    fill=cl.stuck;
+    }
+    if(fill){ctx.fillStyle=fill;ctx.fillRect(c*CELL+1,r*CELL+1,CELL-2,CELL-2);}
+
+    // 현재 탐색 강조 테두리
+    if(cs[r][c]==='current'&&!isSt&&!isGl){
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2;
+      ctx.strokeRect(c*CELL+1,r*CELL+1,CELL-2,CELL-2);
+    }
+
+    // h값
+    if(!isWl&&!isSt&&!isGl){
+      ctx.fillStyle='rgba(0,0,0,0.40)';
+      ctx.font='bold 11px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(H_(r,c),c*CELL+CELL/2,r*CELL+CELL/2);
+    }
+    if(isSt){ctx.fillStyle='#fff';ctx.font='bold 9px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('S',c*CELL+CELL/2,r*CELL+CELL/2);}
+    if(isGl){ctx.fillStyle='#fff';ctx.font='bold 9px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('G',c*CELL+CELL/2,r*CELL+CELL/2);}
+  }
+}
+
+// ── 통계 ───────────────────────────────────────────────────────
+function updateStats(){
+  const cs=cellSt[currentTab];
+  let vis=0,path=0,found=false,stuck=false,front=0;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const st=cs[r][c];
+    if(st==='visited'||st==='current') vis++;
+    if(st==='frontier') front++;
+    if(st==='path'){path++;found=true;}
+    if(st==='stuck') stuck=true;
+  }
+  if(!algoRan[currentTab]){
+    document.getElementById('stats').innerHTML='탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요';
+    return;
+  }
+  const status=found?`<span class="ok">✅ 성공</span>`:stuck?`<span class="fail">❌ 실패 (막힘)</span>`:'⏳ 탐색 중';
+  document.getElementById('stats').innerHTML=
+    `방문 <b>${vis}</b>칸 &nbsp;|&nbsp; 대기 <b>${front}</b>칸 &nbsp;|&nbsp; 경로 <b>${found?path+' 칸':'—'}</b> &nbsp; ${status}`;
+}
+
+// ── 단계 생성 ──────────────────────────────────────────────────
+
+function buildHillClimbing(){
+  const steps=[];
+  const trail=[startPos], trailSet=new Set([pk(startPos.r,startPos.c)]);
+  let cur=startPos;
+  steps.push([{r:cur.r,c:cur.c,st:'current'}]);
+  for(let i=0;i<ROWS*COLS*3;i++){
+    if(cur.r===goalPos.r&&cur.c===goalPos.c){
+      steps.push(trail.map(p=>({r:p.r,c:p.c,st:'path'})));
+      return steps;
+    }
+    const ns=nbrs(cur.r,cur.c).filter(n=>!trailSet.has(pk(n.r,n.c)));
+    if(!ns.length||Math.min(...ns.map(n=>H_(n.r,n.c)))>=H_(cur.r,cur.c)){
+      steps.push([{r:cur.r,c:cur.c,st:'stuck'}]);
+      return steps;
+    }
+    const best=ns.reduce((a,b)=>H_(a.r,a.c)<=H_(b.r,b.c)?a:b);
+    steps.push([{r:cur.r,c:cur.c,st:'visited'},{r:best.r,c:best.c,st:'current'}]);
+    trail.push(best); trailSet.add(pk(best.r,best.c)); cur=best;
+  }
+  steps.push([{r:cur.r,c:cur.c,st:'stuck'}]);
+  return steps;
+}
+
+function buildBestFirst(){
+  const steps=[], vis=new Set(), inF=new Set(), par={};
+  const pq=[];
+  const push=(r,c,p)=>{pq.push({r,c,p});pq.sort((a,b)=>a.p-b.p);};
+  push(startPos.r,startPos.c,H_(startPos.r,startPos.c));
+  inF.add(pk(startPos.r,startPos.c));
+  steps.push([{r:startPos.r,c:startPos.c,st:'frontier'}]);
+  while(pq.length){
+    const {r,c}=pq.shift(); const k=pk(r,c);
+    if(vis.has(k)) continue;
+    vis.add(k);
+    steps.push([{r,c,st:'current'}]);
+    if(r===goalPos.r&&c===goalPos.c){
+      const path=[]; let pos={r,c};
+      while(pos){path.push(pos);pos=par[pk(pos.r,pos.c)];}
+      steps.push(path.map(p=>({r:p.r,c:p.c,st:'path'})));
+      return steps;
+    }
+    steps.push([{r,c,st:'visited'}]);
+    for(const n of nbrs(r,c)){
+      const nk=pk(n.r,n.c);
+      if(!vis.has(nk)&&!inF.has(nk)){
+        par[nk]={r,c}; inF.add(nk);
+        push(n.r,n.c,H_(n.r,n.c));
+        steps.push([{r:n.r,c:n.c,st:'frontier'}]);
+      }
+    }
+  }
+  steps.push([{r:goalPos.r,c:goalPos.c,st:'stuck'}]);
+  return steps;
+}
+
+function buildAStar(){
+  const steps=[], vis=new Set(), par={};
+  const gCost={[pk(startPos.r,startPos.c)]:0};
+  const pq=[];
+  const push=(r,c,f)=>{pq.push({r,c,f});pq.sort((a,b)=>a.f-b.f);};
+  push(startPos.r,startPos.c,H_(startPos.r,startPos.c));
+  steps.push([{r:startPos.r,c:startPos.c,st:'frontier'}]);
+  while(pq.length){
+    const {r,c}=pq.shift(); const k=pk(r,c);
+    if(vis.has(k)) continue;
+    vis.add(k);
+    steps.push([{r,c,st:'current'}]);
+    if(r===goalPos.r&&c===goalPos.c){
+      const path=[]; let pos={r,c};
+      while(pos){path.push(pos);pos=par[pk(pos.r,pos.c)];}
+      steps.push(path.map(p=>({r:p.r,c:p.c,st:'path'})));
+      return steps;
+    }
+    steps.push([{r,c,st:'visited'}]);
+    const g=(gCost[k]??0)+1;
+    for(const n of nbrs(r,c)){
+      const nk=pk(n.r,n.c);
+      if(!vis.has(nk)&&g<(gCost[nk]??Infinity)){
+        gCost[nk]=g; par[nk]={r,c};
+        push(n.r,n.c,g+H_(n.r,n.c));
+        steps.push([{r:n.r,c:n.c,st:'frontier'}]);
+      }
+    }
+  }
+  steps.push([{r:goalPos.r,c:goalPos.c,st:'stuck'}]);
+  return steps;
+}
+
+const builders=[buildHillClimbing,buildBestFirst,buildAStar];
+
+// ── 애니메이션 ─────────────────────────────────────────────────
+function getDelay(){const s=parseInt(document.getElementById('speed').value);return Math.max(20,520-s*48);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function runAnim(){
+  const ai=currentTab;
+  const myId=++runId;
+  document.getElementById('startBtn').disabled=true;
+
+  const steps=builders[ai]();
+  algoRan[ai]=true;
+
+  for(const step of steps){
+    if(runId!==myId) return;
+    step.forEach(({r,c,st})=>{
+      if(grid[r][c]===1) return;
+      if((r===startPos.r&&c===startPos.c)||(r===goalPos.r&&c===goalPos.c)) return;
+      cellSt[ai][r][c]=st;
+    });
+    draw(); updateStats();
+    await sleep(getDelay());
+  }
+  if(runId===myId) document.getElementById('startBtn').disabled=false;
+}
+
+// ── 탭 전환 ────────────────────────────────────────────────────
+function switchTab(ai){
+  runId++; // 진행 중인 애니메이션 중단
+  currentTab=ai;
+  [0,1,2].forEach(i=>{
+    document.getElementById(`tab${i}`).className='tab'+(i===ai?' active':'');
+  });
+  document.getElementById('desc').textContent=ALGO_INFO[ai].desc;
+  document.getElementById('startBtn').disabled=false;
+  draw(); updateStats();
+}
+
+// ── 탐색 초기화 (현재 탭만) ────────────────────────────────────
+function resetAlgo(){
+  runId++;
+  cellSt[currentTab]=Array.from({length:ROWS},()=>new Array(COLS).fill('empty'));
+  algoRan[currentTab]=false;
+  document.getElementById('startBtn').disabled=false;
+  draw(); updateStats();
+}
+
+// ── 장애물 초기화 ──────────────────────────────────────────────
+function clearMaze(){
+  runId++;
+  grid=Array.from({length:ROWS},()=>new Array(COLS).fill(0));
+  cellSt=Array.from({length:3},()=>Array.from({length:ROWS},()=>new Array(COLS).fill('empty')));
+  algoRan=[false,false,false];
+  document.getElementById('startBtn').disabled=false;
+  draw(); updateStats();
+}
+
+// ── 벽 편집 ────────────────────────────────────────────────────
+let drawing=false, drawMode=0;
+canvas.addEventListener('mousedown',e=>{
+  if(document.getElementById('startBtn').disabled) return;
+  const rect=canvas.getBoundingClientRect();
+  const c=Math.floor((e.clientX-rect.left)/CELL);
+  const r=Math.floor((e.clientY-rect.top)/CELL);
+  if(r<0||r>=ROWS||c<0||c>=COLS) return;
+  if((r===startPos.r&&c===startPos.c)||(r===goalPos.r&&c===goalPos.c)) return;
+  drawMode=grid[r][c]===1?0:1; // 현재가 벽이면 지우기, 아니면 그리기
+  grid[r][c]=drawMode;
+  // 장애물 변경 시 모든 탐색 초기화
+  cellSt=Array.from({length:3},()=>Array.from({length:ROWS},()=>new Array(COLS).fill('empty')));
+  algoRan=[false,false,false];
+  draw(); updateStats();
+  drawing=true;
+});
+canvas.addEventListener('mousemove',e=>{
+  if(!drawing||document.getElementById('startBtn').disabled) return;
+  const rect=canvas.getBoundingClientRect();
+  const c=Math.floor((e.clientX-rect.left)/CELL);
+  const r=Math.floor((e.clientY-rect.top)/CELL);
+  if(r<0||r>=ROWS||c<0||c>=COLS) return;
+  if((r===startPos.r&&c===startPos.c)||(r===goalPos.r&&c===goalPos.c)) return;
+  if(grid[r][c]===drawMode) return;
+  grid[r][c]=drawMode;
+  draw(); updateStats();
+});
+canvas.addEventListener('mouseup',()=>{ drawing=false; });
+canvas.addEventListener('mouseleave',()=>{ drawing=false; });
+
+// ── 이벤트 ─────────────────────────────────────────────────────
+document.getElementById('clearBtn').addEventListener('click',clearMaze);
+document.getElementById('resetBtn').addEventListener('click',resetAlgo);
+document.getElementById('startBtn').addEventListener('click',()=>{resetAlgo();setTimeout(runAnim,80);});
+
+// ── 초기 렌더 ──────────────────────────────────────────────────
+switchTab(0);
+</script>
+</body>
+</html>

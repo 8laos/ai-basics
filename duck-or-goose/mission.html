@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미션 체험 — 분류 알고리즘의 비교</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { font-size: 13px; }
+.main {
+  display: flex;
+  height: calc(100vh - 48px - 57px);
+}
+
+/* 왼쪽 네비 (좁은 바) */
+.nav-bar {
+  width: 140px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.nav-item {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.15s;
+}
+.nav-item:hover { background: #f5f5f0; color: #555; }
+.nav-item.active {
+  background: #e8f5e9;
+  color: #1b5e20;
+  font-weight: 600;
+  border-right: 3px solid #2e7d32;
+}
+.nav-label {
+  padding: 8px 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #bbb;
+  letter-spacing: 1px;
+  background: #fafaf5;
+  border-bottom: 1px solid #eee;
+}
+.nav-finish {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #ddd;
+}
+.nav-finish a {
+  display: block; text-align: center;
+  padding: 10px; background: #2e7d32; color: #fff;
+  border-radius: 4px; text-decoration: none;
+  font-size: 12px; font-weight: 600;
+}
+.nav-finish a:hover { background: #1b5e20; }
+
+/* 상세 패널 (클릭하면 열림) */
+.detail-panel {
+  width: 260px;
+  background: #fafaf5;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: none;
+}
+.detail-panel.open { display: block; }
+.detail-header {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1b5e20;
+  background: #e8f5e9;
+  border-bottom: 1px solid #c8e6c9;
+}
+/* 파라미터 (상단) */
+.detail-param {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+}
+.detail-param .param-label {
+  display: flex; justify-content: space-between;
+  margin-bottom: 4px; font-size: 12px; color: #666;
+}
+.detail-param .param-label span { color: #2e7d32; font-weight: 700; font-size: 14px; }
+.detail-param input[type="range"] { width: 100%; accent-color: #2e7d32; }
+.detail-param .algo-desc {
+  font-size: 11px; color: #888; line-height: 1.4; margin-top: 6px;
+}
+/* 미션 질문 */
+.detail-mission {
+  padding: 12px 16px;
+}
+.q-item {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border: 1px solid #e8e8e0;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #555;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.15s;
+}
+.q-item:hover { border-color: #a5d6a7; background: #f1f8e9; }
+.q-item.active { border-color: #2e7d32; background: #e8f5e9; color: #1b5e20; font-weight: 600; }
+.q-num { color: #2e7d32; font-weight: 700; margin-right: 4px; }
+
+/* 캔버스 */
+.canvas-area {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px; position: relative;
+}
+canvas {
+  border: 1px solid #ccc; border-radius: 4px;
+  cursor: crosshair; background: #fff; max-width: 100%;
+}
+.canvas-footer {
+  display: flex; gap: 24px; margin-top: 10px;
+  font-size: 12px; color: #888; align-items: center;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* 상단 바 */
+.topbar-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 12px;
+}
+.topbar-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: rgba(255,255,255,0.85);
+}
+.topbar-item select {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; padding: 3px 6px; border-radius: 3px; font-size: 12px;
+}
+.topbar-item select option { color: #333; background: #fff; }
+.acc-display {
+  font-size: 14px; font-weight: 700;
+  padding: 4px 10px; border-radius: 4px;
+  background: rgba(255,255,255,0.15);
+}
+.data-info { font-size: 11px; color: rgba(255,255,255,0.7); }
+.btn-sm {
+  padding: 5px 10px; border: 1px solid rgba(255,255,255,0.4); border-radius: 3px;
+  background: transparent; cursor: pointer; font-size: 11px; color: #fff;
+}
+.btn-sm:hover { background: rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>기계학습 &gt; 분류 알고리즘의 비교</h1>
+  <div class="topbar-sep"></div>
+  <div class="topbar-item">
+    데이터셋
+    <select id="ds" onchange="changeDs(this.value)">
+      <option value="normal">기본</option>
+      <option value="easy">쉬움</option>
+      <option value="hard">어려움</option>
+      <option value="moon">초승달</option>
+    </select>
+  </div>
+  <button class="btn-sm" onclick="resetData()">초기화</button>
+  <div class="topbar-right">
+    <div class="data-info" id="dataInfo">오리 60 / 거위 60</div>
+    <div class="topbar-sep"></div>
+    <div class="acc-display" id="accDisplay">정확도 —</div>
+  </div>
+</div>
+
+<div class="progress">
+  <div class="progress-step done"><div class="step-circle">✓</div>소개</div>
+  <span class="progress-arrow">›</span>
+  <div class="progress-step active"><div class="step-circle">2</div>체험</div>
+</div>
+
+<div class="main">
+  <!-- 좁은 사이드바 -->
+  <div class="nav-bar">
+    <div class="nav-item active" data-sec="observe" onclick="openSection('observe')">데이터 관찰</div>
+    <div class="nav-label">알고리즘</div>
+    <div class="nav-item" data-sec="knn" onclick="openSection('knn')">KNN</div>
+    <div class="nav-item" data-sec="dt" onclick="openSection('dt')">결정트리</div>
+    <div class="nav-item" data-sec="svm" onclick="openSection('svm')">SVM</div>
+    <div class="nav-item" data-sec="lr" onclick="openSection('lr')">로지스틱 회귀</div>
+    <div class="nav-label">심화</div>
+    <div class="nav-item" data-sec="experiment" onclick="openSection('experiment')">추가 실험</div>
+  </div>
+
+  <!-- 상세 패널 -->
+  <div class="detail-panel open" id="detailPanel">
+    <div class="detail-header" id="detailHeader">데이터 관찰</div>
+    <div id="detailParam"></div>
+    <div class="detail-mission" id="detailMission"></div>
+  </div>
+
+  <!-- 캔버스 -->
+  <div class="canvas-area">
+    <canvas id="plotCanvas" width="600" height="600"></canvas>
+    <div class="canvas-footer">
+      <div class="legend-item"><div class="legend-dot" style="background:#FF8F00"></div> 오리</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2e7d32"></div> 거위</div>
+      <span style="color:#ccc">|</span>
+      <span>클릭 = 오리</span><span>Shift+클릭 = 거위</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// === 섹션 데이터 ===
+const sections = {
+  observe: {
+    title: '데이터 관찰',
+    param: null,
+    missions: [
+      {id:'Q1-1', text:'산점도에서 오리(주황)와 거위(초록)가 어떻게 분포되어 있나요?'},
+      {id:'Q1-2', text:'두 그룹이 겹치는 영역이 있나요? 왜 겹칠까요?'}
+    ]
+  },
+  knn: {
+    title: 'KNN (K-최근접 이웃)',
+    param: {
+      label: 'k값', id: 'kV', min:1, max:25, step:2, value:5,
+      desc: '가까운 k개의 데이터를 보고 다수결로 분류합니다.',
+      onchange: (v) => { params.knn.k = v; }
+    },
+    missions: [
+      {id:'Q2-1', text:'k=1로 설정해보세요. 경계선이 어떤 모양인가요?'},
+      {id:'Q2-2', text:'k=15로 바꿔보세요. 경계선이 어떻게 변했나요?'},
+      {id:'Q2-3', text:'k=1일 때 정확도가 100%입니다. 이게 정말 좋은 건가요?'}
+    ]
+  },
+  dt: {
+    title: '결정트리',
+    param: {
+      label: '트리 깊이', id: 'dV', min:1, max:10, step:1, value:4,
+      desc: '특성값을 기준으로 반복 분할합니다. 수직/수평 직선으로 나눕니다.',
+      onchange: (v) => { params.dt.depth = v; }
+    },
+    missions: [
+      {id:'Q3-1', text:'깊이를 1로 설정해보세요. 경계선이 어떤가요?'},
+      {id:'Q3-2', text:'깊이를 점점 늘려보세요. 경계가 어떻게 변하나요?'},
+      {id:'Q3-3', text:'깊이 10일 때 경계선 모양을 관찰해보세요. 과적합일까요?'}
+    ]
+  },
+  svm: {
+    title: 'SVM',
+    param: {
+      label: '감마 (γ)', id: 'gV', min:0.1, max:5, step:0.1, value:1.0,
+      desc: '두 클래스 사이에 가장 넓은 마진의 경계를 찾습니다.',
+      onchange: (v) => { params.svm.gamma = v; },
+      format: (v) => (+v).toFixed(1)
+    },
+    missions: [
+      {id:'Q4-1', text:'감마를 0.1로 설정해보세요. 경계선이 어떤가요?'},
+      {id:'Q4-2', text:'감마를 5.0으로 올려보세요. 어떤 변화가 있나요?'},
+      {id:'Q4-3', text:'KNN의 k값과 SVM의 감마는 어떤 공통점이 있을까요?'}
+    ]
+  },
+  lr: {
+    title: '로지스틱 회귀',
+    param: {
+      label: null,
+      desc: '각 클래스에 속할 확률을 계산하여 0.5 기준으로 분류합니다. 조정할 파라미터가 없습니다.'
+    },
+    missions: [
+      {id:'Q5-1', text:'다른 알고리즘과 경계선 모양을 비교해보세요.'},
+      {id:'Q5-2', text:'왜 항상 부드러운 직선 경계가 나올까요?'}
+    ]
+  },
+  experiment: {
+    title: '추가 실험',
+    param: null,
+    missions: [
+      {id:'Q6-1', text:'상단에서 데이터셋을 "초승달"로 바꿔보세요.'},
+      {id:'Q6-2', text:'초승달 데이터에서 어떤 알고리즘이 잘 분류하나요?'},
+      {id:'Q6-3', text:'경계 근처를 클릭해서 데이터를 추가해보세요. 경계가 어떻게 변하나요?'}
+    ]
+  }
+};
+
+let curSection = 'observe';
+
+function openSection(sec) {
+  curSection = sec;
+  const s = sections[sec];
+
+  // 사이드바 활성화
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.sec === sec));
+
+  // 패널 열기
+  const panel = document.getElementById('detailPanel');
+  panel.classList.add('open');
+  document.getElementById('detailHeader').textContent = s.title;
+
+  // 파라미터
+  const paramDiv = document.getElementById('detailParam');
+  if (s.param && s.param.label) {
+    const fmt = s.param.format || (v => v);
+    paramDiv.innerHTML = `<div class="detail-param">
+      <div class="param-label">${s.param.label} <span id="${s.param.id}">${fmt(s.param.value)}</span></div>
+      <input type="range" min="${s.param.min}" max="${s.param.max}" step="${s.param.step}" value="${s.param.value}"
+        oninput="sectionParamChange('${sec}',this.value)">
+      <div class="algo-desc">${s.param.desc}</div>
+    </div>`;
+  } else if (s.param && !s.param.label) {
+    paramDiv.innerHTML = `<div class="detail-param"><div class="algo-desc">${s.param.desc}</div></div>`;
+  } else {
+    paramDiv.innerHTML = '';
+  }
+
+  // 미션
+  const mDiv = document.getElementById('detailMission');
+  mDiv.innerHTML = s.missions.map((m, i) =>
+    `<div class="q-item" onclick="selectQ(this)"><span class="q-num">${m.id}</span> ${m.text}</div>`
+  ).join('');
+
+  // 알고리즘 전환
+  const algoMap = {observe:'knn', knn:'knn', dt:'dt', svm:'svm', lr:'lr', experiment:'knn'};
+  curAlgo = algoMap[sec];
+  render();
+}
+
+function sectionParamChange(sec, val) {
+  const s = sections[sec];
+  const fmt = s.param.format || (v => v);
+  s.param.value = +val;
+  document.getElementById(s.param.id).textContent = fmt(val);
+  s.param.onchange(+val);
+  render();
+}
+
+function selectQ(el) {
+  document.querySelectorAll('.q-item').forEach(q => q.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// === 데이터 ===
+function rand(m,s){const u1=Math.random(),u2=Math.random();return m+s*Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);}
+function genData(t='normal'){
+  const d=[];
+  if(t==='easy'){for(let i=0;i<60;i++){d.push({x:rand(35,5),y:rand(10,2),label:0});}for(let i=0;i<60;i++){d.push({x:rand(85,5),y:rand(32,2),label:1});}}
+  else if(t==='hard'){for(let i=0;i<60;i++){d.push({x:rand(50,12),y:rand(16,5),label:0});}for(let i=0;i<60;i++){d.push({x:rand(65,12),y:rand(24,5),label:1});}}
+  else if(t==='moon'){for(let i=0;i<80;i++){const a=Math.PI*Math.random();d.push({x:50+20*Math.cos(a)+rand(0,2),y:20+15*Math.sin(a)+rand(0,2),label:0});}for(let i=0;i<80;i++){const a=Math.PI*Math.random();d.push({x:60-20*Math.cos(a)+rand(0,2),y:15-15*Math.sin(a)+rand(0,2),label:1});}}
+  else{for(let i=0;i<60;i++){d.push({x:rand(45,8),y:rand(12,3),label:0});}for(let i=0;i<60;i++){d.push({x:rand(75,12),y:rand(28,5),label:1});}for(let i=0;i<15;i++){d.push({x:rand(60,6),y:rand(20,4),label:Math.random()>0.5?1:0});}}
+  return d;
+}
+let data=genData(),curAlgo='knn',curDs='normal';
+let params={knn:{k:5},dt:{depth:4},svm:{gamma:1.0},lr:{}};
+function changeDs(t){curDs=t;data=genData(t);render();}
+function resetData(){data=genData(curDs);render();}
+
+// === ML ===
+function dist(a,b){return Math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2);}
+function normalize(d){const xs=d.map(v=>v.x),ys=d.map(v=>v.y);const xM=xs.reduce((a,b)=>a+b)/xs.length,yM=ys.reduce((a,b)=>a+b)/ys.length;const xS=Math.sqrt(xs.reduce((a,b)=>a+(b-xM)**2,0)/xs.length)||1,yS=Math.sqrt(ys.reduce((a,b)=>a+(b-yM)**2,0)/ys.length)||1;return{norm:d.map(v=>[(v.x-xM)/xS,(v.y-yM)/yS,v.label]),xM,yM,xS,yS};}
+function knnP(tr,pt,k){return tr.map(d=>({d:dist([d[0],d[1]],pt),l:d[2]})).sort((a,b)=>a.d-b.d).slice(0,k).filter(d=>d.l===0).length>k/2?0:1;}
+class NN{constructor(){this.f=null;this.t=null;this.l=null;this.r=null;this.p=null;}}
+function gini(ls){if(!ls.length)return 0;const p=ls.filter(l=>l===1).length/ls.length;return 1-p*p-(1-p)*(1-p);}
+function bTree(d,dep,mx){const n=new NN();const ls=d.map(x=>x[2]);n.p=ls.filter(l=>l===1).length>ls.length/2?1:0;if(dep>=mx||ls.length<4||gini(ls)===0)return n;let bg=0,bf=0,bt=0;for(let f=0;f<2;f++){const vs=[...new Set(d.map(x=>x[f]))].sort((a,b)=>a-b);for(let i=0;i<vs.length-1;i++){const th=(vs[i]+vs[i+1])/2;const l=d.filter(x=>x[f]<=th),r=d.filter(x=>x[f]>th);if(!l.length||!r.length)continue;const g=gini(ls)-(l.length/d.length)*gini(l.map(x=>x[2]))-(r.length/d.length)*gini(r.map(x=>x[2]));if(g>bg){bg=g;bf=f;bt=th;}}}if(bg<=0)return n;n.f=bf;n.t=bt;n.l=bTree(d.filter(x=>x[bf]<=bt),dep+1,mx);n.r=bTree(d.filter(x=>x[bf]>bt),dep+1,mx);return n;}
+function dtP(n,pt){if(n.f===null)return n.p;return pt[n.f]<=n.t?dtP(n.l,pt):dtP(n.r,pt);}
+function svmP(tr,pt,g){let s=0;for(const d of tr){s+=(d[2]===1?1:-1)*Math.exp(-g*((d[0]-pt[0])**2+(d[1]-pt[1])**2));}return s>0?1:0;}
+function trainLR(d){let w0=0,w1=0,b=0;for(let e=0;e<200;e++){let d0=0,d1=0,db=0;for(const v of d){const z=w0*v[0]+w1*v[1]+b;const p=1/(1+Math.exp(-z));const err=p-v[2];d0+=err*v[0];d1+=err*v[1];db+=err;}w0-=0.1*d0/d.length;w1-=0.1*d1/d.length;b-=0.1*db/d.length;}return{w0,w1,b};}
+function lrP(m,pt){return 1/(1+Math.exp(-(m.w0*pt[0]+m.w1*pt[1]+m.b)))>0.5?1:0;}
+
+// === 시각화 ===
+const cv=document.getElementById('plotCanvas'),cx=cv.getContext('2d'),W=cv.width,H=cv.height;
+function render(){
+  const{norm,xM,yM,xS,yS}=normalize(data);const mg=.5;
+  const xMin=Math.min(...norm.map(d=>d[0]))-mg,xMax=Math.max(...norm.map(d=>d[0]))+mg;
+  const yMin=Math.min(...norm.map(d=>d[1]))-mg,yMax=Math.max(...norm.map(d=>d[1]))+mg;
+  let tree=null,lrM=null;
+  if(curAlgo==='dt')tree=bTree(norm,0,params.dt.depth);
+  else if(curAlgo==='lr')lrM=trainLR(norm);
+  const step=4,img=cx.createImageData(W,H);
+  for(let px=0;px<W;px+=step){for(let py=0;py<H;py+=step){
+    const nx=xMin+(px/W)*(xMax-xMin),ny=yMax-(py/H)*(yMax-yMin);let pred;
+    switch(curAlgo){case'knn':pred=knnP(norm,[nx,ny],params.knn.k);break;case'dt':pred=dtP(tree,[nx,ny]);break;case'svm':pred=svmP(norm,[nx,ny],params.svm.gamma);break;case'lr':pred=lrP(lrM,[nx,ny]);break;}
+    const r=pred===0?255:180,g=pred===0?220:230,b=pred===0?180:180;
+    for(let dx=0;dx<step&&px+dx<W;dx++){for(let dy=0;dy<step&&py+dy<H;dy++){const idx=((py+dy)*W+(px+dx))*4;img.data[idx]=r;img.data[idx+1]=g;img.data[idx+2]=b;img.data[idx+3]=180;}}
+  }}
+  cx.fillStyle='#fafaf5';cx.fillRect(0,0,W,H);cx.putImageData(img,0,0);
+  cx.strokeStyle='rgba(0,0,0,0.05)';cx.lineWidth=1;
+  for(let i=0;i<=10;i++){cx.beginPath();cx.moveTo(i*W/10,0);cx.lineTo(i*W/10,H);cx.stroke();cx.beginPath();cx.moveTo(0,i*H/10);cx.lineTo(W,i*H/10);cx.stroke();}
+  for(const d of norm){const px=((d[0]-xMin)/(xMax-xMin))*W,py=((yMax-d[1])/(yMax-yMin))*H;cx.beginPath();cx.arc(px,py,5,0,Math.PI*2);cx.fillStyle=d[2]===0?'#FF8F00':'#2e7d32';cx.fill();cx.strokeStyle='#fff';cx.lineWidth=1.5;cx.stroke();}
+  let correct=0;for(const d of norm){let pred;switch(curAlgo){case'knn':pred=knnP(norm,[d[0],d[1]],params.knn.k);break;case'dt':pred=dtP(tree,[d[0],d[1]]);break;case'svm':pred=svmP(norm,[d[0],d[1]],params.svm.gamma);break;case'lr':pred=lrP(lrM,[d[0],d[1]]);break;}if(pred===d[2])correct++;}
+  document.getElementById('accDisplay').textContent='정확도 '+(correct/norm.length*100).toFixed(1)+'%';
+  const dk=data.filter(d=>d.label===0).length,gs=data.filter(d=>d.label===1).length;
+  document.getElementById('dataInfo').textContent=`오리 ${dk} / 거위 ${gs}`;
+  cv._r={xMin,xMax,yMin,yMax,xM,yM,xS,yS};
+}
+cv.addEventListener('click',(e)=>{const rect=cv.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const px=(e.clientX-rect.left)*sx,py=(e.clientY-rect.top)*sy;const r=cv._r;if(!r)return;const nx=r.xMin+(px/W)*(r.xMax-r.xMin),ny=r.yMax-(py/H)*(r.yMax-r.yMin);data.push({x:nx*r.xS+r.xM,y:ny*r.yS+r.yM,label:e.shiftKey?1:0});render();});
+
+// 초기화
+openSection('observe');
+render();
+</script>
+</body>
+</html>

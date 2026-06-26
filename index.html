@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인공지능 기초 시뮬레이션</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumMedium.woff') format('woff');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KoPub World 돋움';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumBold.woff') format('woff');
+  font-weight: 700;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #f5f3e8;
+  color: #3a3a2a;
+  font-family: 'KoPub World 돋움', 'Malgun Gothic', sans-serif;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+h1 {
+  font-family: 'Orbit', 'KoPub World 돋움', sans-serif;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: .04em;
+  color: #3a3a2a;
+}
+.subtitle {
+  text-align: center;
+  font-size: .95rem;
+  color: #888;
+  margin-bottom: 32px;
+}
+.category {
+  margin-bottom: 28px;
+  background: #6b8c63;
+  border-radius: 14px;
+  padding: 22px 22px 24px;
+}
+.category-header {
+  display: inline-block;
+  background: #e8a0aa;
+  border-radius: 10px;
+  padding: 10px 24px;
+  margin-bottom: 8px;
+}
+.category-title {
+  font-family: 'Orbit', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: .03em;
+  font-weight: 700;
+  color: #f2f1df;
+}
+.category-desc {
+  font-size: .95rem;
+  color: #b0c4a0;
+  margin-bottom: 14px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: rgba(255,255,255,.85);
+  border-radius: 10px;
+  text-decoration: none;
+  color: #3a3a2a;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-4px);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+}
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform .3s;
+}
+.card:hover .card-thumb {
+  transform: scale(1.05);
+}
+.card-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(107,140,99,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+.card-body {
+  padding: 14px 18px;
+}
+.card-title {
+  font-family: 'Orbit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #2a2a1a;
+}
+.tag {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 700;
+  background: #e8a0aa;
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+.card-desc {
+  font-size: .82rem;
+  color: #666;
+  line-height: 1.5;
+}
+footer {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,.12);
+  font-size: .7rem;
+  color: #9a9a7a;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>인공지능 기초 시뮬레이션</h1>
+  <p class="subtitle">인터랙티브 교육 자료 모음</p>
+
+  <div class="category">
+    <div class="category-header"><div class="category-title">탐색과 문제해결</div>
+    </div><div class="category-desc">인공지능은 문제의 정답을 어떻게 탐색할까요?</div>
+    <div class="cards">
+      <a class="card" href="4queen/index.html">
+        <img class="card-thumb" src="thumbnails/4queen.png" alt="4-Queen 탐색 시각화">
+        <div class="card-body">
+          <div class="card-title">4-Queen 탐색 시각화</div>
+          <div class="card-desc">DFS + 백트래킹으로 4-Queen 문제를 푸는 과정을 상태 공간 트리로 시각화</div>
+        </div>
+      </a>
+      <a class="card" href="search-compare/index.html">
+        <img class="card-thumb" src="thumbnails/search-compare.png" alt="탐색 알고리즘 비교">
+        <div class="card-body">
+          <div class="card-title">탐색 알고리즘 비교</div>
+          <div class="card-desc">언덕 등반 · 최상 우선 · A* 탐색을 같은 격자에서 동시 비교</div>
+        </div>
+      </a>
+      <a class="card" href="river-crossing/index.html">
+        <img class="card-thumb" src="thumbnails/river-crossing.png" alt="강 건너기 탐색 시각화">
+        <div class="card-body">
+          <div class="card-title">강 건너기 탐색 시각화</div>
+          <div class="card-desc">강 건너기 문제를 DFS · BFS로 푸는 과정을 상태 공간 트리로 시각화</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-header"><div class="category-title">논리와 추론</div>
+    </div><div class="category-desc">인공지능은 지식을 어떻게 표현하고, 새로운 결론을 도출할까요?</div>
+    <div class="cards">
+      <a class="card" href="truthtable/index.html">
+        <img class="card-thumb" src="thumbnails/truthtable.png" alt="명제 논리 진리표 생성기">
+        <div class="card-body">
+          <div class="card-title">명제 논리 진리표 생성기</div>
+          <div class="card-desc">명제 논리 수식을 입력하면 진리표를 자동 생성</div>
+        </div>
+      </a>
+      <a class="card" href="predicate/index.html">
+        <img class="card-thumb" src="thumbnails/predicate.png" alt="술어 논리 추론 도구">
+        <div class="card-body">
+          <div class="card-title">술어 논리 추론 도구</div>
+          <div class="card-desc">학생 데이터로 명제를 도출하고 새 개체를 추론하는 술어 논리 교육 도구</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-header"><div class="category-title">기계학습</div>
+    </div><div class="category-desc">인공지능은 데이터에서 어떻게 패턴을 학습할까요?</div>
+    <div class="cards">
+      <a class="card" href="gradient-descent/index.html">
+        <img class="card-thumb" src="thumbnails/gradient-descent.png" alt="경사하강법 시각화">
+        <div class="card-body">
+          <div class="card-title">경사하강법 시각화</div>
+          <div class="card-desc">경사하강법의 동작 과정을 인터랙티브로 체험</div>
+        </div>
+      </a>
+      <a class="card" href="duck-or-goose/index.html">
+        <img class="card-thumb" src="thumbnails/duck-or-goose.png" alt="오리일까 거위일까?">
+        <div class="card-body">
+          <div class="card-title"><span class="tag">지도</span> 오리일까 거위일까?</div>
+          <div class="card-desc">분류 알고리즘(KNN · SVM · 결정트리 · 로지스틱 회귀)의 결정 경계 비교</div>
+        </div>
+      </a>
+      <a class="card" href="kmeans/index.html">
+        <img class="card-thumb" src="thumbnails/kmeans.png" alt="K-means 클러스터링">
+        <div class="card-body">
+          <div class="card-title"><span class="tag">비지도</span> K-means 클러스터링</div>
+          <div class="card-desc">K-means 알고리즘의 군집화 과정을 단계별로 시각화</div>
+        </div>
+      </a>
+      <a class="card" href="https://8laos.github.io/reinforced-duck/" target="_blank">
+        <img class="card-thumb" src="thumbnails/reinforced-duck.png" alt="강화학습 게임">
+        <div class="card-body">
+          <div class="card-title"><span class="tag">강화</span> 강화학습 게임</div>
+          <div class="card-desc">강화학습 에이전트가 학습하는 과정을 게임으로 체험</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-header"><div class="category-title">딥러닝</div>
+    </div><div class="category-desc">신경망은 어떻게 학습할까요?</div>
+    <div class="cards">
+      <a class="card" href="nn/index.html">
+        <img class="card-thumb" src="thumbnails/nn.png" alt="순전파 · 역전파 시각화">
+        <div class="card-body">
+          <div class="card-title">순전파 · 역전파 시각화</div>
+          <div class="card-desc">신경망의 순전파와 역전파 과정을 오리 vs 거위 분류로 시각화</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div>인공지능기초 교육자료 · <a href="guide/index.html" style="color:#9a9a7a;text-decoration:underline;">교사 가이드 페이지</a></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
+      만든 사람 · <img src="thumbnails/avatar.png" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;object-fit:cover;"> · <a href="mailto:seok1251@knue.ac.kr" style="color:#9a9a7a;text-decoration:underline;">문의하기</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbit&display=swap");
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  background: #f5f5f0;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 공통 상단 바 */
+.topbar {
+  background: #2e7d32;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 48px;
+  gap: 16px;
+}
+.topbar h1 { font-size: 16px; font-weight: 600; }
+.topbar-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.3); }
+
+/* 진행 표시 */
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: #bbb;
+  position: relative;
+}
+.progress-step.done { color: #a5d6a7; }
+.progress-step.active { color: #2e7d32; font-weight: 700; }
+.progress-arrow { color: #ccc; font-size: 18px; margin: 0 4px; }
+.step-circle {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  border: 2px solid #ddd;
+  color: #bbb;
+}
+.progress-step.active .step-circle { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+.progress-step.done .step-circle { background: #a5d6a7; color: #fff; border-color: #a5d6a7; }
+
+/* 컨텐츠 영역 */
+.content {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
+
+/* 카드 */
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 32px;
+  margin-bottom: 20px;
+}
+.card h2 {
+  font-size: 20px;
+  color: #1b5e20;
+  margin-bottom: 16px;
+}
+.card p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+/* 퀴즈 */
+.quiz-q {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.quiz-q strong { color: #1b5e20; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.quiz-opt {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.quiz-opt:hover { border-color: #a5d6a7; background: #f1f8e9; }
+.quiz-opt.selected { border-color: #2e7d32; background: #e8f5e9; font-weight: 600; }
+.quiz-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 20px;
+}
+.quiz-textarea:focus { outline: none; border-color: #a5d6a7; }
+
+/* 버튼 */
+.btn-next {
+  display: inline-block;
+  padding: 12px 32px;
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-next:hover { background: #1b5e20; }
+.btn-center { text-align: center; margin-top: 20px; }
+
+/* 소개 페이지 */
+.intro-hero {
+  text-align: center;
+  padding: 48px 24px 32px;
+}
+.intro-hero h2 {
+  font-size: 32px;
+  color: #1b5e20;
+  margin-bottom: 12px;
+}
+.intro-hero p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+.feature-item {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+.feature-item h3 {
+  font-size: 14px;
+  color: #2e7d32;
+  margin-bottom: 6px;
+}
+.feature-item p {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+}
+.flow-steps {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 24px 0;
+  align-items: center;
+}
+.flow-item {
+  background: #e8f5e9;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1b5e20;
+}
+.flow-arrow { color: #a5d6a7; font-size: 20px; }
+.topbar h1, .intro-hero h2 { font-family: 'Orbit', sans-serif; }

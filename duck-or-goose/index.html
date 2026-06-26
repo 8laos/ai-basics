@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분류 알고리즘의 비교</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <h1>기계학습 &gt; 분류 알고리즘의 비교</h1>
+</div>
+
+<div class="progress">
+  <div class="progress-step active"><div class="step-circle">1</div>소개</div>
+  <span class="progress-arrow">›</span>
+  <div class="progress-step"><div class="step-circle">2</div>체험</div>
+</div>
+
+<div class="intro-hero">
+  <style>
+    @keyframes groove {
+      0%,100% { transform: rotate(0deg) scaleY(1); }
+      25% { transform: rotate(-5deg) scaleY(0.95); }
+      50% { transform: rotate(0deg) scaleY(1); }
+      75% { transform: rotate(5deg) scaleY(0.95); }
+    }
+    .duck-anim { animation: groove 0.8s ease-in-out infinite; transform-origin: bottom center; }
+    .goose-anim { animation: groove 0.8s ease-in-out infinite 0.4s; transform-origin: bottom center; }
+  </style>
+  <div style="display:flex; align-items:center; justify-content:space-between; width:100%; max-width:960px; margin:0 auto; padding:0 24px;">
+    <svg class="duck-anim" width="80" height="90" viewBox="0 0 80 90">
+      <ellipse cx="40" cy="55" rx="24" ry="20" fill="#FF8F00"/>
+      <circle cx="40" cy="30" r="16" fill="#FFB300"/>
+      <circle cx="33" cy="26" r="3" fill="#fff"/>
+      <circle cx="47" cy="26" r="3" fill="#fff"/>
+      <circle cx="34" cy="25" r="1.5" fill="#333"/>
+      <circle cx="48" cy="25" r="1.5" fill="#333"/>
+      <ellipse cx="40" cy="34" rx="5" ry="3" fill="#E65100"/>
+      <ellipse cx="40" cy="78" rx="7" ry="3" fill="#E65100"/>
+      <ellipse cx="33" cy="78" rx="7" ry="3" fill="#E65100"/>
+    </svg>
+    <div>
+      <h2>오리와 거위 분류하기</h2>
+      <p>같은 데이터를 4개의 분류 알고리즘으로 나눠보세요.<br>알고리즘마다 분류 경계가 어떻게 달라지는지 직접 확인할 수 있습니다.</p>
+    </div>
+    <svg class="goose-anim" width="80" height="100" viewBox="0 0 80 100">
+      <ellipse cx="40" cy="60" rx="22" ry="18" fill="#2e7d32"/>
+      <rect x="35" y="38" width="10" height="16" rx="5" fill="#2e7d32"/>
+      <circle cx="40" cy="28" r="14" fill="#43a047"/>
+      <circle cx="34" cy="24" r="3" fill="#fff"/>
+      <circle cx="46" cy="24" r="3" fill="#fff"/>
+      <circle cx="35" cy="23" r="1.5" fill="#333"/>
+      <circle cx="47" cy="23" r="1.5" fill="#333"/>
+      <ellipse cx="40" cy="32" rx="4" ry="2.5" fill="#E65100"/>
+      <ellipse cx="40" cy="82" rx="7" ry="3" fill="#E65100"/>
+      <ellipse cx="33" cy="82" rx="7" ry="3" fill="#E65100"/>
+      <style>
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+      </style>
+    </svg>
+  </div>
+</div>
+
+<div class="content">
+  <div class="feature-grid">
+    <div class="feature-item">
+      <h3>K-최근접 이웃 (KNN)</h3>
+      <p>가까운 데이터를 보고 다수결로 분류합니다. k값에 따라 경계가 달라집니다.</p>
+    </div>
+    <div class="feature-item">
+      <h3>결정트리</h3>
+      <p>데이터를 기준에 따라 반복 분할합니다. 깊이에 따라 복잡도가 달라집니다.</p>
+    </div>
+    <div class="feature-item">
+      <h3>SVM</h3>
+      <p>두 그룹 사이에 가장 넓은 마진의 경계를 찾습니다.</p>
+    </div>
+    <div class="feature-item">
+      <h3>로지스틱 회귀</h3>
+      <p>각 그룹에 속할 확률을 계산하여 분류합니다.</p>
+    </div>
+  </div>
+
+  <div class="btn-center">
+    <a href="mission.html" class="btn-next">체험하기 →</a>
+  </div>
+</div>
+
+</body>
+</html>

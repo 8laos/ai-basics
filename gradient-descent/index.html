@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경사하강법 시각화</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  background: #f5f5f0;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 상단 바 */
+.topbar {
+  background: #2e7d32;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 48px;
+}
+.topbar h1 { font-size: 16px; font-weight: 600; }
+
+/* 소개 영역 */
+.intro {
+  text-align: center;
+  padding: 48px 24px 36px;
+}
+.intro h2 {
+  font-size: 32px;
+  color: #1b5e20;
+  margin-bottom: 12px;
+}
+.intro p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.7;
+}
+
+/* 메인 컨텐츠 */
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+/* 캔버스 카드 */
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.canvas-wrap {
+  text-align: center;
+}
+.canvas-wrap canvas {
+  background: #fafaf5;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  max-width: 100%;
+}
+
+/* 슬라이더 */
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.slider-wrap label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 600;
+}
+input[type=range] {
+  width: 200px;
+  accent-color: #2e7d32;
+}
+.lr-val {
+  font-family: monospace;
+  font-weight: bold;
+  color: #1b5e20;
+  min-width: 40px;
+  font-size: 16px;
+}
+.lr-status {
+  font-size: 12px;
+  padding: 3px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.status-ok  { background: #e8f5e9; color: #2e7d32; }
+.status-warn { background: #fff8e1; color: #f57f17; }
+.status-bad  { background: #fce4ec; color: #c62828; }
+
+/* 버튼 */
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.btn-primary {
+  background: #e8a0aa;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary:hover { background: #dba0ad; }
+.btn-secondary {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-secondary:hover { background: #f5f5f0; }
+
+/* 정보 패널 */
+.info-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px 28px;
+}
+.info-card h3 {
+  font-size: 16px;
+  color: #1b5e20;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0e8;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { color: #888; font-size: 13px; }
+.info-val { color: #1b5e20; font-weight: bold; font-family: monospace; font-size: 14px; }
+.topbar h1, .intro h2 { font-family: 'Orbit', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>기계학습 &gt; 경사하강법 시각화</h1>
+</div>
+
+<div class="intro">
+  <h2>경사하강법</h2>
+  <p>학습률(α)을 조절하며 손실 함수의 최솟값을 찾아가는 과정을 확인해보세요.<br>학습률이 너무 크면 발산하고, 적절하면 수렴합니다.</p>
+</div>
+
+<div class="content">
+  <div class="card">
+    <div class="canvas-wrap">
+      <canvas id="c" width="580" height="380"></canvas>
+    </div>
+
+    <div class="slider-wrap">
+      <label>학습률 α =</label>
+      <input type="range" id="lr-slider" min="0.05" max="1.15" step="0.05" value="0.1">
+      <span class="lr-val" id="lr-val">0.10</span>
+      <span class="lr-status status-ok" id="lr-status">수렴</span>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" id="step">한 스텝 →</button>
+      <button class="btn-primary" id="run">자동 실행 ▶</button>
+      <button class="btn-secondary" id="reset">초기화</button>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>현재 상태</h3>
+    <div class="info-row"><span class="info-label">함수</span><span class="info-val">y = (x − 3)²</span></div>
+    <div class="info-row"><span class="info-label">스텝</span><span class="info-val" id="i-step">0</span></div>
+    <div class="info-row"><span class="info-label">현재 x</span><span class="info-val" id="i-x">0.0000</span></div>
+    <div class="info-row"><span class="info-label">현재 y (손실)</span><span class="info-val" id="i-y">9.0000</span></div>
+    <div class="info-row"><span class="info-label">기울기 dy/dx</span><span class="info-val" id="i-g">-6.0000</span></div>
+    <div class="info-row"><span class="info-label" id="i-formula-label">다음 x = x − 0.10×기울기</span><span class="info-val" id="i-nx">0.6000</span></div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const PAD = 50;
+
+const xMin = -2, xMax = 8, yMin = -1, yMax = 18;
+function tx(x) { return PAD + (x - xMin) / (xMax - xMin) * (W - PAD*2); }
+function ty(y) { return H - PAD - (y - yMin) / (yMax - yMin) * (H - PAD*2); }
+
+const f  = x => (x-3)**2;
+const df = x => 2*(x-3);
+
+let lr = 0.1;
+let history = [{x: 0, y: f(0)}];
+let running = false;
+let timer = null;
+
+const slider = document.getElementById('lr-slider');
+const lrValEl = document.getElementById('lr-val');
+const lrStatusEl = document.getElementById('lr-status');
+
+function updateLrStatus(v) {
+  lrValEl.textContent = v.toFixed(2);
+  if (v < 0.9) {
+    lrStatusEl.textContent = '수렴';
+    lrStatusEl.className = 'lr-status status-ok';
+  } else if (v < 1.0) {
+    lrStatusEl.textContent = '진동';
+    lrStatusEl.className = 'lr-status status-warn';
+  } else {
+    lrStatusEl.textContent = '발산';
+    lrStatusEl.className = 'lr-status status-bad';
+  }
+}
+
+slider.oninput = function() {
+  lr = parseFloat(this.value);
+  updateLrStatus(lr);
+  resetAll();
+};
+
+function drawAxes() {
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(tx(xMin), ty(0)); ctx.lineTo(tx(xMax), ty(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tx(0), ty(yMin)); ctx.lineTo(tx(0), ty(yMax)); ctx.stroke();
+  ctx.fillStyle = '#999'; ctx.font = '11px monospace';
+  for (let x = -1; x <= 7; x++) {
+    ctx.beginPath(); ctx.moveTo(tx(x), ty(0)-4); ctx.lineTo(tx(x), ty(0)+4); ctx.stroke();
+    ctx.fillText(x, tx(x)-4, ty(0)+15);
+  }
+  for (let y = 0; y <= 16; y+=4) {
+    ctx.beginPath(); ctx.moveTo(tx(0)-4, ty(y)); ctx.lineTo(tx(0)+4, ty(y)); ctx.stroke();
+    if(y>0) ctx.fillText(y, tx(0)-22, ty(y)+4);
+  }
+  ctx.fillStyle = '#888'; ctx.font = '13px sans-serif';
+  ctx.fillText('x', tx(xMax)-10, ty(0)-10);
+  ctx.fillText('y', tx(0)+8, ty(yMax)+14);
+}
+
+function drawCurve() {
+  ctx.strokeStyle = '#2e7d32';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (let px = 0; px < W; px++) {
+    const x = xMin + (px / W) * (xMax - xMin);
+    const y = f(x);
+    if (y > yMax + 2) { ctx.beginPath(); continue; }
+    if (px === 0) ctx.moveTo(tx(x), ty(y));
+    else ctx.lineTo(tx(x), ty(y));
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#2e7d32'; ctx.font = '13px sans-serif';
+  ctx.fillText('y = (x−3)²', tx(5.5), ty(f(5.5))-10);
+}
+
+function drawMinimum() {
+  ctx.strokeStyle = '#a5d6a7';
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(tx(3), ty(0)); ctx.lineTo(tx(3), ty(0.5)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#2e7d32'; ctx.font = '12px sans-serif';
+  ctx.fillText('최솟값 x=3', tx(3)+6, ty(0)-8);
+}
+
+function drawHistory() {
+  const maxShow = 30;
+  const h = history.length > maxShow ? history.slice(-maxShow) : history;
+
+  if (h.length > 1) {
+    ctx.strokeStyle = '#e8a0aa';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    h.forEach((p, i) => {
+      const cy = Math.max(Math.min(p.y, yMax+1), yMin);
+      if (i === 0) ctx.moveTo(tx(p.x), ty(cy));
+      else ctx.lineTo(tx(p.x), ty(cy));
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  h.forEach((p, i) => {
+    const isLast = i === h.length - 1;
+    const cy = Math.max(Math.min(p.y, yMax+1), yMin);
+    ctx.beginPath();
+    ctx.arc(tx(p.x), ty(cy), isLast ? 7 : 4, 0, Math.PI*2);
+    ctx.fillStyle = isLast ? '#e8a0aa' : '#f0c0a0';
+    ctx.fill();
+    if (isLast) { ctx.strokeStyle = '#c6808a'; ctx.lineWidth = 1.5; ctx.stroke(); }
+    const globalIdx = history.length > maxShow ? (history.length - maxShow + i) : i;
+    if (i > 0 && i < 7) {
+      ctx.fillStyle = '#555'; ctx.font = '10px monospace';
+      ctx.fillText(globalIdx, tx(p.x)+8, ty(cy)-4);
+    }
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawAxes();
+  drawCurve();
+  drawMinimum();
+  drawHistory();
+}
+
+function updateInfo() {
+  const cur = history[history.length - 1];
+  const g = df(cur.x);
+  const nx = cur.x - lr * g;
+  document.getElementById('i-step').textContent = history.length - 1;
+  document.getElementById('i-x').textContent = cur.x.toFixed(4);
+  document.getElementById('i-y').textContent = cur.y.toFixed(4);
+  document.getElementById('i-g').textContent = g.toFixed(4);
+  document.getElementById('i-nx').textContent = isFinite(nx) ? nx.toFixed(4) : '∞';
+  document.getElementById('i-formula-label').textContent = `다음 x = x − ${lr.toFixed(2)}×기울기`;
+}
+
+function isDone() {
+  const cur = history[history.length - 1];
+  return !isFinite(cur.x) || !isFinite(cur.y) || Math.abs(cur.y) > 1000;
+}
+
+function stepForward() {
+  if (isDone()) return;
+  const cur = history[history.length - 1];
+  if (Math.abs(cur.x - 3) < 0.0005 && lr < 0.9) return;
+  const nx = cur.x - lr * df(cur.x);
+  history.push({x: nx, y: f(nx)});
+  draw();
+  updateInfo();
+}
+
+function resetAll() {
+  clearInterval(timer); running = false;
+  document.getElementById('run').textContent = '자동 실행 ▶';
+  history = [{x: 0, y: f(0)}];
+  draw(); updateInfo();
+}
+
+document.getElementById('step').onclick = stepForward;
+document.getElementById('run').onclick = function() {
+  if (running) {
+    clearInterval(timer); running = false;
+    this.textContent = '자동 실행 ▶';
+  } else {
+    running = true;
+    this.textContent = '정지 ■';
+    timer = setInterval(() => {
+      if (isDone() || history.length > 60) {
+        clearInterval(timer); running = false;
+        document.getElementById('run').textContent = '자동 실행 ▶';
+        return;
+      }
+      if (Math.abs(history[history.length-1].x - 3) < 0.0005 && lr < 0.9) {
+        clearInterval(timer); running = false;
+        document.getElementById('run').textContent = '자동 실행 ▶';
+        return;
+      }
+      stepForward();
+    }, 350);
+  }
+};
+document.getElementById('reset').onclick = resetAll;
+
+draw();
+updateInfo();
+updateLrStatus(lr);
+</script>
+</body>
+</html>
