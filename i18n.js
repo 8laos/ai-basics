@@ -91,7 +91,9 @@
       bar.style.minHeight = bar.offsetHeight + 'px';
       bar.style.height = 'auto';
       bar.style.flexWrap = 'wrap';
-      bar.style.rowGap = '4px';
+      bar.style.rowGap = '6px';
+      bar.style.paddingTop = '10px';
+      bar.style.paddingBottom = '10px';
     }
   }
 
@@ -101,7 +103,7 @@
       '.lang-toggle button { border: none; background: #f2f1df; color: #3a3a2a; font-size: .72rem; padding: 4px 10px; cursor: pointer; font-family: inherit; }',
       '.lang-toggle button.active { background: #e8a0aa; color: #fff; font-weight: 700; }',
       '.lang-toggle button:hover:not(.active) { background: #e6e3cc; }',
-      '.level-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f2f1df; color: #3a3a2a; vertical-align: middle; white-space: nowrap; }',
+      '.level-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 8px; margin: 4px 0; border-radius: 999px; background: #f2f1df; color: #3a3a2a; vertical-align: middle; white-space: nowrap; line-height: 1.4; }',
       '.level-badge[data-level-class="beginner"] { background: #cfe3c6; color: #2f4d2a; }',
       '.level-badge[data-level-class="intermediate"] { background: #f3dfa0; color: #5a4a10; }',
       '.level-badge[data-level-class="advanced"] { background: #e8a0aa; color: #fff; }'
