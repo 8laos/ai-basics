@@ -10,13 +10,14 @@
 <body>
 
 <div class="topbar">
-  <h1>기계학습 &gt; 분류 알고리즘의 비교</h1>
+  <h1 data-i18n="topbar_title">기계학습 &gt; 분류 알고리즘의 비교</h1>
+  <span class="level-badge" data-level="beginner"></span>
 </div>
 
 <div class="progress">
-  <div class="progress-step active"><div class="step-circle">1</div>소개</div>
+  <div class="progress-step active"><div class="step-circle">1</div><span data-i18n="step_intro">소개</span></div>
   <span class="progress-arrow">›</span>
-  <div class="progress-step"><div class="step-circle">2</div>체험</div>
+  <div class="progress-step"><div class="step-circle">2</div><span data-i18n="step_try">체험</span></div>
 </div>
 
 <div class="intro-hero">
@@ -43,8 +44,8 @@
       <ellipse cx="33" cy="78" rx="7" ry="3" fill="#E65100"/>
     </svg>
     <div>
-      <h2>오리와 거위 분류하기</h2>
-      <p>같은 데이터를 4개의 분류 알고리즘으로 나눠보세요.<br>알고리즘마다 분류 경계가 어떻게 달라지는지 직접 확인할 수 있습니다.</p>
+      <h2 data-i18n="hero_title">오리와 거위 분류하기</h2>
+      <p data-i18n="hero_desc">같은 데이터를 4개의 분류 알고리즘으로 나눠보세요.<br>알고리즘마다 분류 경계가 어떻게 달라지는지 직접 확인할 수 있습니다.</p>
     </div>
     <svg class="goose-anim" width="80" height="100" viewBox="0 0 80 100">
       <ellipse cx="40" cy="60" rx="22" ry="18" fill="#2e7d32"/>
@@ -67,27 +68,66 @@
 <div class="content">
   <div class="feature-grid">
     <div class="feature-item">
-      <h3>K-최근접 이웃 (KNN)</h3>
-      <p>가까운 데이터를 보고 다수결로 분류합니다. k값에 따라 경계가 달라집니다.</p>
+      <h3 data-i18n="f_knn_t">K-최근접 이웃 (KNN)</h3>
+      <p data-i18n="f_knn_d">가까운 데이터를 보고 다수결로 분류합니다. k값에 따라 경계가 달라집니다.</p>
     </div>
     <div class="feature-item">
-      <h3>결정트리</h3>
-      <p>데이터를 기준에 따라 반복 분할합니다. 깊이에 따라 복잡도가 달라집니다.</p>
+      <h3 data-i18n="f_dt_t">결정트리</h3>
+      <p data-i18n="f_dt_d">데이터를 기준에 따라 반복 분할합니다. 깊이에 따라 복잡도가 달라집니다.</p>
     </div>
     <div class="feature-item">
-      <h3>SVM</h3>
-      <p>두 그룹 사이에 가장 넓은 마진의 경계를 찾습니다.</p>
+      <h3 data-i18n="f_svm_t">SVM</h3>
+      <p data-i18n="f_svm_d">두 그룹 사이에 가장 넓은 마진의 경계를 찾습니다.</p>
     </div>
     <div class="feature-item">
-      <h3>로지스틱 회귀</h3>
-      <p>각 그룹에 속할 확률을 계산하여 분류합니다.</p>
+      <h3 data-i18n="f_lr_t">로지스틱 회귀</h3>
+      <p data-i18n="f_lr_d">각 그룹에 속할 확률을 계산하여 분류합니다.</p>
     </div>
   </div>
 
   <div class="btn-center">
-    <a href="mission.html" class="btn-next">체험하기 →</a>
+    <a href="mission.html" class="btn-next" data-i18n="btn_try">체험하기 →</a>
   </div>
 </div>
 
+<script>
+window.DICT = {
+  ko: {
+    __title: '분류 알고리즘의 비교',
+    topbar_title: '기계학습 &gt; 분류 알고리즘의 비교',
+    step_intro: '소개',
+    step_try: '체험',
+    hero_title: '오리와 거위 분류하기',
+    hero_desc: '같은 데이터를 4개의 분류 알고리즘으로 나눠보세요.<br>알고리즘마다 분류 경계가 어떻게 달라지는지 직접 확인할 수 있습니다.',
+    f_knn_t: 'K-최근접 이웃 (KNN)',
+    f_knn_d: '가까운 데이터를 보고 다수결로 분류합니다. k값에 따라 경계가 달라집니다.',
+    f_dt_t: '결정트리',
+    f_dt_d: '데이터를 기준에 따라 반복 분할합니다. 깊이에 따라 복잡도가 달라집니다.',
+    f_svm_t: 'SVM',
+    f_svm_d: '두 그룹 사이에 가장 넓은 마진의 경계를 찾습니다.',
+    f_lr_t: '로지스틱 회귀',
+    f_lr_d: '각 그룹에 속할 확률을 계산하여 분류합니다.',
+    btn_try: '체험하기 →'
+  },
+  en: {
+    __title: 'Comparing Classification Algorithms',
+    topbar_title: 'Machine Learning &gt; Comparing Classification Algorithms',
+    step_intro: 'Intro',
+    step_try: 'Try It',
+    hero_title: 'Classifying Ducks and Geese',
+    hero_desc: 'Split the same data with four classification algorithms.<br>See for yourself how the decision boundary changes from one algorithm to the next.',
+    f_knn_t: 'K-Nearest Neighbors (KNN)',
+    f_knn_d: 'Classifies by majority vote among the nearest data points. The boundary changes with k.',
+    f_dt_t: 'Decision Tree',
+    f_dt_d: 'Repeatedly splits the data by thresholds. Complexity changes with depth.',
+    f_svm_t: 'SVM',
+    f_svm_d: 'Finds the boundary with the widest margin between the two groups.',
+    f_lr_t: 'Logistic Regression',
+    f_lr_d: 'Classifies by computing the probability of belonging to each group.',
+    btn_try: 'Try It →'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 </body>
 </html>

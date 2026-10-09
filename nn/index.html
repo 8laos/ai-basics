@@ -125,22 +125,24 @@ button:hover { background: #f0f0f0; }
 #speed-slider { accent-color: #2e7d32; width: 140px; cursor: pointer; }
 #speed-label { color: #2e7d32; min-width: 36px; font-weight: 600; }
 #top-bar h1, #intro h2 { font-family: 'Orbit', sans-serif; }
+#top-bar { padding-right: 190px; }
+#top-bar .level-badge { margin-left: 10px; }
 </style>
 </head>
 <body>
-<div id="top-bar"><h1>딥러닝 &gt; 순전파 · 역전파 시각화</h1></div>
+<div id="top-bar"><h1 data-i18n="topbar">딥러닝 &gt; 순전파 · 역전파 시각화</h1><span class="level-badge" data-level="advanced"></span></div>
 <div id="intro">
-  <h2>순전파 · 역전파 시각화</h2>
-  <div id="subtitle">예시: 목 길이(x₁)와 부리 크기(x₂)로 오리 / 거위를 분류합니다 &nbsp;|&nbsp; 출력값 ≥ 0.5 → 거위 &nbsp;|&nbsp; 출력값 &lt; 0.5 → 오리</div>
+  <h2 data-i18n="h2">순전파 · 역전파 시각화</h2>
+  <div id="subtitle" data-i18n="subtitle">예시: 목 길이(x₁)와 부리 크기(x₂)로 오리 / 거위를 분류합니다 &nbsp;|&nbsp; 출력값 ≥ 0.5 → 거위 &nbsp;|&nbsp; 출력값 &lt; 0.5 → 오리</div>
 </div>
 <div id="main-content">
   <div id="canvas-wrap">
     <canvas id="canvas" width="760" height="400"></canvas>
   </div>
   <div id="controls">
-    <button id="btn-reset">↺ 초기화</button>
-    <button id="btn-prev">◀ 이전</button>
-    <button id="btn-next">다음 ▶</button>
+    <button id="btn-reset" data-i18n="btn_reset">↺ 초기화</button>
+    <button id="btn-prev" data-i18n="btn_prev">◀ 이전</button>
+    <button id="btn-next" data-i18n="btn_next">다음 ▶</button>
     <button id="btn-play">⏵ 전체 재생</button>
   </div>
   <div id="info-panel">
@@ -148,15 +150,130 @@ button:hover { background: #f0f0f0; }
     <div id="step-desc"></div>
   </div>
   <div id="stat-row">
-    학습 횟수: <span id="epoch-info">0</span>회 &nbsp;|&nbsp; 마지막 손실: <span id="loss-display">—</span>
+    <span data-i18n="stat_epoch">학습 횟수: </span><span id="epoch-info">0</span><span data-i18n="stat_epoch_unit">회</span> &nbsp;|&nbsp; <span data-i18n="stat_loss">마지막 손실: </span><span id="loss-display">—</span>
   </div>
   <div id="speed-row">
-    재생 속도 &nbsp;
+    <span data-i18n="speed_title">재생 속도</span> &nbsp;
     <input type="range" id="speed-slider" min="1" max="5" value="2" step="1">
     &nbsp;<span id="speed-label">보통</span>
   </div>
 </div>
 
+<script>
+window.DICT = {
+  ko: {
+    __title: '순전파 · 역전파 시각화 — 오리 vs 거위',
+    topbar: '딥러닝 &gt; 순전파 · 역전파 시각화',
+    h2: '순전파 · 역전파 시각화',
+    subtitle: '예시: 목 길이(x₁)와 부리 크기(x₂)로 오리 / 거위를 분류합니다 &nbsp;|&nbsp; 출력값 ≥ 0.5 → 거위 &nbsp;|&nbsp; 출력값 &lt; 0.5 → 오리',
+    btn_reset: '↺ 초기화',
+    btn_prev: '◀ 이전',
+    btn_next: '다음 ▶',
+    btn_play: '⏵ 전체 재생',
+    btn_pause: '⏸ 일시정지',
+    stat_epoch: '학습 횟수: ',
+    stat_epoch_unit: '회',
+    stat_loss: '마지막 손실: ',
+    speed_title: '재생 속도',
+    speed1: '느리게',
+    speed2: '보통',
+    speed3: '빠르게',
+    speed4: '매우 빠름',
+    speed5: '최고속',
+    trained: ' ✓ 학습완료',
+    layer_in: '입력층',
+    layer_hid: '은닉층',
+    layer_out: '출력층',
+    in_label1: '목 길이',
+    in_label2: '부리 크기',
+    goose: '거위',
+    duck: '오리',
+    goose_e: '거위 🪿',
+    duck_e: '오리 🦆',
+    goose_e2: '거위🪿',
+    duck_e2: '오리🦆',
+    data_name: '{kind} {n}',
+    loss_pred: '예측: {v}',
+    loss_answer: '정답: {v}',
+    loss_loss: '손실: {v}',
+    footer_left: '[{name}]  정답: {ans} ({l})  ·  데이터 {i}/{n}',
+    footer_step: '단계 {i} / {n}',
+    step1_name: '① 초기 상태',
+    step1_desc: '목 길이(x₁ = {x1})와 부리 크기(x₂ = {x2})가 입력됩니다. 정답: {ans}\n연결선의 숫자가 가중치(w)입니다. 지금은 무작위로 설정된 상태입니다.',
+    step2_name: '② 순전파 — 입력층 → 은닉층',
+    step2_desc: '입력값에 가중치(w)를 곱하고 더한 뒤 ReLU를 통과시킵니다.\nReLU: 음수 → 0, 양수 → 그대로. 불필요한 신호를 차단합니다.',
+    step3_name: '③ 순전파 — 은닉층 → 출력층',
+    step3_desc: '은닉층 출력에 가중치를 곱하고 더한 뒤 Sigmoid를 통과시킵니다.\nSigmoid: 결과를 0~1 확률로 변환합니다. 0.5 이상이면 거위, 미만이면 오리로 예측합니다.',
+    step4_name: '④ 오차 계산 (손실함수)',
+    step4_desc0: '순전파 결과로 오차를 계산합니다.',
+    step4_desc: '모델 예측: {pred} ({out})  /  정답: {ans} ({l})\n손실 L = ({out} − {l})² = {loss}   {judge}\n이 오차를 줄이는 방향으로 가중치를 역방향으로 조정합니다.',
+    step4_ok: '✓ 방향은 맞음',
+    step4_bad: '✗ 틀림 → 수정 필요',
+    step5_name: '⑤ 역전파 — 출력층 → 은닉층',
+    step5_desc: '오차 신호를 역방향으로 전달합니다.\n각 연결의 기울기(∂L/∂w)를 계산하여 가중치가 오차에 얼마나 기여했는지 파악합니다.',
+    step6_name: '⑥ 역전파 — 은닉층 → 입력층',
+    step6_desc: '은닉층까지 기울기를 전파합니다.\n모든 가중치의 기울기 계산이 완료되었습니다.',
+    step7_name: '⑦ 가중치 업데이트',
+    step7_desc: '경사 하강법: w_새값 = w − 학습률({lr}) × 기울기\n노란색 연결이 이번에 변경된 가중치입니다. 반복할수록 거위/오리 분류 정확도가 올라갑니다.\n→ 다음 사이클 준비 완료'
+  },
+  en: {
+    __title: 'Forward & Backpropagation Visualizer — Duck vs Goose',
+    topbar: 'Deep Learning &gt; Forward &amp; Backpropagation Visualizer',
+    h2: 'Forward &amp; Backpropagation Visualizer',
+    subtitle: 'Example: classify duck / goose by neck length (x₁) and beak size (x₂) &nbsp;|&nbsp; output ≥ 0.5 → goose &nbsp;|&nbsp; output &lt; 0.5 → duck',
+    btn_reset: '↺ Reset',
+    btn_prev: '◀ Prev',
+    btn_next: 'Next ▶',
+    btn_play: '⏵ Play All',
+    btn_pause: '⏸ Pause',
+    stat_epoch: 'Training steps: ',
+    stat_epoch_unit: '',
+    stat_loss: 'Last loss: ',
+    speed_title: 'Playback speed',
+    speed1: 'Slow',
+    speed2: 'Normal',
+    speed3: 'Fast',
+    speed4: 'Very fast',
+    speed5: 'Max',
+    trained: ' ✓ Trained',
+    layer_in: 'Input layer',
+    layer_hid: 'Hidden layer',
+    layer_out: 'Output layer',
+    in_label1: 'Neck length',
+    in_label2: 'Beak size',
+    goose: 'Goose',
+    duck: 'Duck',
+    goose_e: 'Goose 🪿',
+    duck_e: 'Duck 🦆',
+    goose_e2: 'Goose🪿',
+    duck_e2: 'Duck🦆',
+    data_name: '{kind} {n}',
+    loss_pred: 'Prediction: {v}',
+    loss_answer: 'Answer: {v}',
+    loss_loss: 'Loss: {v}',
+    footer_left: '[{name}]  Answer: {ans} ({l})  ·  Sample {i}/{n}',
+    footer_step: 'Step {i} / {n}',
+    step1_name: '① Initial State',
+    step1_desc: 'Neck length (x₁ = {x1}) and beak size (x₂ = {x2}) are fed in. Answer: {ans}\nThe numbers on the connections are the weights (w). Right now they are set randomly.',
+    step2_name: '② Forward Propagation — Input → Hidden',
+    step2_desc: 'Multiply the inputs by the weights (w), sum them, and pass the result through ReLU.\nReLU: negative → 0, positive → unchanged. It blocks unnecessary signals.',
+    step3_name: '③ Forward Propagation — Hidden → Output',
+    step3_desc: 'Multiply the hidden outputs by the weights, sum them, and pass the result through Sigmoid.\nSigmoid: converts the result to a probability in 0–1. At or above 0.5 predicts goose, below predicts duck.',
+    step4_name: '④ Error Calculation (Loss Function)',
+    step4_desc0: 'Compute the error from the forward-propagation result.',
+    step4_desc: 'Model prediction: {pred} ({out})  /  Answer: {ans} ({l})\nLoss L = ({out} − {l})² = {loss}   {judge}\nThe weights are adjusted backward in the direction that reduces this error.',
+    step4_ok: '✓ Direction is right',
+    step4_bad: '✗ Wrong → needs correction',
+    step5_name: '⑤ Backpropagation — Output → Hidden',
+    step5_desc: 'The error signal is sent backward.\nThe gradient (∂L/∂w) of each connection is computed to see how much each weight contributed to the error.',
+    step6_name: '⑥ Backpropagation — Hidden → Input',
+    step6_desc: 'Gradients are propagated back to the hidden layer.\nGradient computation for all weights is complete.',
+    step7_name: '⑦ Weight Update',
+    step7_desc: 'Gradient descent: w_new = w − learning rate ({lr}) × gradient\nOrange connections are the weights changed this time. With repetition, goose/duck classification accuracy improves.\n→ Ready for the next cycle'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -178,7 +295,7 @@ const ARCH = [2, 3, 1];
 const LR = 0.1;
 const NODE_R = 30;
 const LAYER_X = [110, 330, 600];
-const INPUT_LABELS = ['목 길이', '부리 크기'];
+const INPUT_LABELS = ['in_label1', 'in_label2'];
 
 function nodeY(layer, idx) {
   const spacing = 90;
@@ -189,34 +306,37 @@ function nodeY(layer, idx) {
 function relu(x) { return Math.max(0, x); }
 function sigmoid(x) { return 1 / (1 + Math.exp(-x)); }
 function sigmoidDeriv(x) { const s = sigmoid(x); return s * (1 - s); }
-function predict(out) { return out >= 0.5 ? '거위 🪿' : '오리 🦆'; }
+function predict(out) { return out >= 0.5 ? t('goose_e') : t('duck_e'); }
+function ansName(l) { return l === 1 ? t('goose_e') : t('duck_e'); }
+function ansName2(l) { return l === 1 ? t('goose_e2') : t('duck_e2'); }
+function dataName(d) { return t('data_name', { kind: t(d.label === 1 ? 'goose' : 'duck'), n: d.num }); }
 
 // ─── 고정 데이터셋 ───
 const DATASET = [
-  { input: [0.90, 0.80], label: 1, name: '거위 01' },
-  { input: [0.80, 0.90], label: 1, name: '거위 02' },
-  { input: [0.70, 0.80], label: 1, name: '거위 03' },
-  { input: [0.85, 0.75], label: 1, name: '거위 04' },
-  { input: [0.75, 0.85], label: 1, name: '거위 05' },
-  { input: [0.95, 0.70], label: 1, name: '거위 06' },
-  { input: [0.65, 0.90], label: 1, name: '거위 07' },
-  { input: [0.88, 0.82], label: 1, name: '거위 08' },
-  { input: [0.72, 0.78], label: 1, name: '거위 09' },
-  { input: [0.93, 0.65], label: 1, name: '거위 10' },
-  { input: [0.78, 0.92], label: 1, name: '거위 11' },
-  { input: [0.68, 0.72], label: 1, name: '거위 12' },
-  { input: [0.20, 0.20], label: 0, name: '오리 01' },
-  { input: [0.10, 0.30], label: 0, name: '오리 02' },
-  { input: [0.30, 0.10], label: 0, name: '오리 03' },
-  { input: [0.15, 0.25], label: 0, name: '오리 04' },
-  { input: [0.25, 0.15], label: 0, name: '오리 05' },
-  { input: [0.05, 0.20], label: 0, name: '오리 06' },
-  { input: [0.35, 0.22], label: 0, name: '오리 07' },
-  { input: [0.12, 0.18], label: 0, name: '오리 08' },
-  { input: [0.28, 0.08], label: 0, name: '오리 09' },
-  { input: [0.08, 0.32], label: 0, name: '오리 10' },
-  { input: [0.22, 0.28], label: 0, name: '오리 11' },
-  { input: [0.32, 0.12], label: 0, name: '오리 12' },
+  { input: [0.90, 0.80], label: 1, num: '01' },
+  { input: [0.80, 0.90], label: 1, num: '02' },
+  { input: [0.70, 0.80], label: 1, num: '03' },
+  { input: [0.85, 0.75], label: 1, num: '04' },
+  { input: [0.75, 0.85], label: 1, num: '05' },
+  { input: [0.95, 0.70], label: 1, num: '06' },
+  { input: [0.65, 0.90], label: 1, num: '07' },
+  { input: [0.88, 0.82], label: 1, num: '08' },
+  { input: [0.72, 0.78], label: 1, num: '09' },
+  { input: [0.93, 0.65], label: 1, num: '10' },
+  { input: [0.78, 0.92], label: 1, num: '11' },
+  { input: [0.68, 0.72], label: 1, num: '12' },
+  { input: [0.20, 0.20], label: 0, num: '01' },
+  { input: [0.10, 0.30], label: 0, num: '02' },
+  { input: [0.30, 0.10], label: 0, num: '03' },
+  { input: [0.15, 0.25], label: 0, num: '04' },
+  { input: [0.25, 0.15], label: 0, num: '05' },
+  { input: [0.05, 0.20], label: 0, num: '06' },
+  { input: [0.35, 0.22], label: 0, num: '07' },
+  { input: [0.12, 0.18], label: 0, num: '08' },
+  { input: [0.28, 0.08], label: 0, num: '09' },
+  { input: [0.08, 0.32], label: 0, num: '10' },
+  { input: [0.22, 0.28], label: 0, num: '11' },
+  { input: [0.32, 0.12], label: 0, num: '12' },
 ];
 
 // 매 에폭 시작 시 셔플된 순서로 진행
@@ -353,7 +473,7 @@ function drawAll() {
 
   // 레이어 라벨
   ctx.font = '13px Segoe UI, Malgun Gothic, sans-serif'; ctx.fillStyle = C.textDim; ctx.textAlign = 'center';
-  ['입력층', '은닉층', '출력층'].forEach((t, l) => ctx.fillText(t, LAYER_X[l], 22));
+  ['layer_in', 'layer_hid', 'layer_out'].forEach((k, l) => ctx.fillText(t(k), LAYER_X[l], 22));
   ctx.font = '11px Segoe UI, Malgun Gothic, sans-serif';
   ctx.fillStyle = '#2e7d32'; ctx.fillText('ReLU', LAYER_X[1], H - 12);
   ctx.fillStyle = '#c0627a'; ctx.fillText('Sigmoid', LAYER_X[2], H - 12);
@@ -411,7 +531,7 @@ function drawAll() {
         ctx.font = 'bold 13px monospace'; ctx.fillStyle = C.text;
         ctx.fillText(inputData[n].toFixed(2), x, y + 4);
         ctx.font = '10px Segoe UI, Malgun Gothic, sans-serif'; ctx.fillStyle = C.textDim;
-        ctx.fillText(INPUT_LABELS[n], x, y - NODE_R - 6);
+        ctx.fillText(t(INPUT_LABELS[n]), x, y - NODE_R - 6);
       } else if (hasVal) {
         ctx.font = 'bold 12px monospace'; ctx.fillStyle = C.text;
         ctx.fillText(val.toFixed(3), x, y + 4);
@@ -419,7 +539,7 @@ function drawAll() {
         if (l === ARCH.length - 1) {
           ctx.font = '11px Segoe UI, Malgun Gothic, sans-serif';
           ctx.fillStyle = val >= 0.5 ? '#d4760a' : '#2e7d32';
-          ctx.fillText(val >= 0.5 ? '거위🪿' : '오리🦆', x, y + NODE_R + 16);
+          ctx.fillText(val >= 0.5 ? t('goose_e2') : t('duck_e2'), x, y + NODE_R + 16);
         }
       } else {
         ctx.font = '14px monospace'; ctx.fillStyle = '#aaa'; ctx.fillText('?', x, y + 5);
@@ -439,68 +559,66 @@ function drawAll() {
     ctx.strokeRect(px, py, boxW, boxH);
     ctx.textAlign = 'left'; ctx.font = '12px Segoe UI, Malgun Gothic, sans-serif';
     ctx.fillStyle = '#2e7d32';
-    ctx.fillText(`예측: ${out.toFixed(3)}`, px + 12, py + 20);
+    ctx.fillText(t('loss_pred', { v: out.toFixed(3) }), px + 12, py + 20);
     ctx.fillStyle = out >= 0.5 ? '#d4760a' : '#2e7d32';
     ctx.fillText(`→ ${predict(out)}`, px + 12, py + 38);
     ctx.fillStyle = C.textDim;
-    ctx.fillText(`정답: ${label === 1 ? '거위🪿' : '오리🦆'}`, px + 12, py + 56);
+    ctx.fillText(t('loss_answer', { v: ansName2(label) }), px + 12, py + 56);
     ctx.fillStyle = C.weightChanged;
-    ctx.fillText(`손실: ${loss}`, px + 12, py + 74);
+    ctx.fillText(t('loss_loss', { v: loss }), px + 12, py + 74);
   }
 
   // 하단 정답 표시
   ctx.font = '12px Segoe UI, Malgun Gothic, sans-serif'; ctx.fillStyle = C.textDim; ctx.textAlign = 'left';
-  ctx.fillText(`[${DATASET[dataIdx].name}]  정답: ${label === 1 ? '거위 🪿' : '오리 🦆'} (${label})  ·  데이터 ${dataIdx+1}/${DATASET.length}`, 10, H - 10);
+  ctx.fillText(t('footer_left', { name: dataName(DATASET[dataIdx]), ans: ansName(label), l: label, i: dataIdx + 1, n: DATASET.length }), 10, H - 10);
   ctx.textAlign = 'right';
-  ctx.fillText(`단계 ${currentStep + 1} / ${STEPS.length}`, W - 10, H - 10);
+  ctx.fillText(t('footer_step', { i: currentStep + 1, n: STEPS.length }), W - 10, H - 10);
 }
 
 // ─── 단계 정의 ───
 const STEPS = [
   {
     id: 'init',
-    name: '① 초기 상태',
+    get name() { return t('step1_name'); },
     get desc() {
-      return `목 길이(x₁ = ${inputData[0].toFixed(2)})와 부리 크기(x₂ = ${inputData[1].toFixed(2)})가 입력됩니다. 정답: ${label===1?'거위 🪿':'오리 🦆'}\n연결선의 숫자가 가중치(w)입니다. 지금은 무작위로 설정된 상태입니다.`;
+      return t('step1_desc', { x1: inputData[0].toFixed(2), x2: inputData[1].toFixed(2), ans: ansName(label) });
     },
   },
   {
     id: 'forward1',
-    name: '② 순전파 — 입력층 → 은닉층',
-    desc: '입력값에 가중치(w)를 곱하고 더한 뒤 ReLU를 통과시킵니다.\nReLU: 음수 → 0, 양수 → 그대로. 불필요한 신호를 차단합니다.',
+    get name() { return t('step2_name'); },
+    get desc() { return t('step2_desc'); },
   },
   {
     id: 'forward2',
-    name: '③ 순전파 — 은닉층 → 출력층',
-    desc: '은닉층 출력에 가중치를 곱하고 더한 뒤 Sigmoid를 통과시킵니다.\nSigmoid: 결과를 0~1 확률로 변환합니다. 0.5 이상이면 거위, 미만이면 오리로 예측합니다.',
+    get name() { return t('step3_name'); },
+    get desc() { return t('step3_desc'); },
   },
   {
     id: 'loss',
-    name: '④ 오차 계산 (손실함수)',
+    get name() { return t('step4_name'); },
     get desc() {
-      if (!acts[ARCH.length - 1]) return '순전파 결과로 오차를 계산합니다.';
+      if (!acts[ARCH.length - 1]) return t('step4_desc0');
       const out = acts[ARCH.length - 1][0];
       const loss = ((out - label) ** 2).toFixed(5);
       const correct = (out >= 0.5 && label === 1) || (out < 0.5 && label === 0);
-      return `모델 예측: ${predict(out)} (${out.toFixed(3)})  /  정답: ${label===1?'거위 🪿':'오리 🦆'} (${label})\n손실 L = (${out.toFixed(3)} − ${label})² = ${loss}   ${correct ? '✓ 방향은 맞음' : '✗ 틀림 → 수정 필요'}\n이 오차를 줄이는 방향으로 가중치를 역방향으로 조정합니다.`;
+      return t('step4_desc', { pred: predict(out), out: out.toFixed(3), ans: ansName(label), l: label, loss: loss, judge: correct ? t('step4_ok') : t('step4_bad') });
     },
   },
   {
     id: 'backward1',
-    name: '⑤ 역전파 — 출력층 → 은닉층',
-    desc: '오차 신호를 역방향으로 전달합니다.\n각 연결의 기울기(∂L/∂w)를 계산하여 가중치가 오차에 얼마나 기여했는지 파악합니다.',
+    get name() { return t('step5_name'); },
+    get desc() { return t('step5_desc'); },
   },
   {
     id: 'backward2',
-    name: '⑥ 역전파 — 은닉층 → 입력층',
-    desc: '은닉층까지 기울기를 전파합니다.\n모든 가중치의 기울기 계산이 완료되었습니다.',
+    get name() { return t('step6_name'); },
+    get desc() { return t('step6_desc'); },
   },
   {
     id: 'update',
-    name: '⑦ 가중치 업데이트',
-    get desc() {
-      return `경사 하강법: w_새값 = w − 학습률(${LR}) × 기울기\n노란색 연결이 이번에 변경된 가중치입니다. 반복할수록 거위/오리 분류 정확도가 올라갑니다.\n→ 다음 사이클 준비 완료`;
-    },
+    get name() { return t('step7_name'); },
+    get desc() { return t('step7_desc', { lr: LR }); },
   },
 ];
 
@@ -524,16 +642,18 @@ function execStep(id) {
       const currentLoss = acts[ARCH.length - 1] ? ((acts[ARCH.length - 1][0] - label) ** 2) : 1;
       if (currentLoss < 0.01) {
         totalLoss = currentLoss;
+        trained = true;
         document.getElementById('epoch-info').textContent = epoch;
-        document.getElementById('loss-display').textContent = currentLoss.toFixed(5) + ' ✓ 학습완료';
+        renderLossDisplay();
         // 재생 중이면 멈춤
         isPlaying = false; clearInterval(playTimer);
         if (animFrame2) { cancelAnimationFrame(animFrame2); animFrame2 = null; }
-        document.getElementById('btn-play').textContent = '⏵ 전체 재생';
+        renderPlayBtn();
       } else {
         applyWeights();
+        trained = false;
         document.getElementById('epoch-info').textContent = epoch;
-        document.getElementById('loss-display').textContent = totalLoss.toFixed(5);
+        renderLossDisplay();
       }
       // 다음 데이터로 이동, 에폭 끝나면 셔플
       dataIdx++;
@@ -565,6 +685,26 @@ function updateUI() {
   document.getElementById('step-name').textContent = s.name;
   document.getElementById('step-desc').textContent = s.desc;
 }
+
+// ─── 언어 의존 동적 문구 렌더 ───
+let trained = false;        // 마지막 손실 표시에 '학습완료' 붙었는지
+let lossShown = false;      // 손실값이 한 번이라도 표시되었는지
+function renderLossDisplay() {
+  lossShown = true;
+  document.getElementById('loss-display').textContent = totalLoss.toFixed(5) + (trained ? t('trained') : '');
+}
+function renderPlayBtn() {
+  document.getElementById('btn-play').textContent = isPlaying ? t('btn_pause') : t('btn_play');
+}
+function renderSpeedLabel() {
+  document.getElementById('speed-label').textContent = t('speed' + document.getElementById('speed-slider').value);
+}
+window.onLangChange = function () {
+  updateUI();
+  renderPlayBtn();
+  renderSpeedLabel();
+  if (lossShown) renderLossDisplay();
+};
 
 function goStep(idx) {
   currentStep = idx;
@@ -602,13 +742,12 @@ document.getElementById('btn-next').addEventListener('click', () => { if (!isPla
 document.getElementById('btn-prev').addEventListener('click', () => { if (!isPlaying) prevStep(); });
 
 const SPEED_MAP = { 1: 2000, 2: 800, 3: 300, 4: 80, 5: 0 };
-const SPEED_NAME = { 1: '느리게', 2: '보통', 3: '빠르게', 4: '매우 빠름', 5: '최고속' };
 let playInterval = 1000;
 
 document.getElementById('speed-slider').addEventListener('input', function () {
   const v = parseInt(this.value);
   playInterval = SPEED_MAP[v];
-  document.getElementById('speed-label').textContent = SPEED_NAME[v];
+  renderSpeedLabel();
   if (isPlaying) {
     clearInterval(playTimer);
     if (animFrame2) { cancelAnimationFrame(animFrame2); animFrame2 = null; }
@@ -639,17 +778,17 @@ document.getElementById('btn-play').addEventListener('click', function () {
     isPlaying = false;
     clearInterval(playTimer);
     if (animFrame2) { cancelAnimationFrame(animFrame2); animFrame2 = null; }
-    this.textContent = '⏵ 전체 재생';
+    renderPlayBtn();
   } else {
-    isPlaying = true; this.textContent = '⏸ 일시정지';
+    isPlaying = true; renderPlayBtn();
     nextStep(); startPlay();
   }
 });
 
 document.getElementById('btn-reset').addEventListener('click', () => {
   isPlaying = false; clearInterval(playTimer);
-  document.getElementById('btn-play').textContent = '⏵ 전체 재생';
-  initWeights(); epoch = 0; totalLoss = 0;
+  renderPlayBtn();
+  initWeights(); epoch = 0; totalLoss = 0; trained = false; lossShown = false;
   const first = DATASET[shuffledOrder[0]];
   inputData = first.input.slice(); label = first.label; particles = [];
   document.getElementById('epoch-info').textContent = '0';
@@ -667,6 +806,8 @@ document.addEventListener('keydown', e => {
 // ─── 시작 ───
 initWeights();
 goStep(0);
+renderPlayBtn();
+renderSpeedLabel();
 loop();
 </script>
 </body>

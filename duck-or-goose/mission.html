@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
 body { font-size: 13px; }
+.topbar { padding-right: 190px; }
 .main {
   display: flex;
   height: calc(100vh - 48px - 57px);
@@ -160,18 +161,19 @@ canvas {
 <body>
 
 <div class="topbar">
-  <h1>기계학습 &gt; 분류 알고리즘의 비교</h1>
+  <h1 data-i18n="topbar_title">기계학습 &gt; 분류 알고리즘의 비교</h1>
+  <span class="level-badge" data-level="beginner"></span>
   <div class="topbar-sep"></div>
   <div class="topbar-item">
-    데이터셋
+    <span data-i18n="lbl_dataset">데이터셋</span>
     <select id="ds" onchange="changeDs(this.value)">
-      <option value="normal">기본</option>
-      <option value="easy">쉬움</option>
-      <option value="hard">어려움</option>
-      <option value="moon">초승달</option>
+      <option value="normal" data-i18n="ds_normal">기본</option>
+      <option value="easy" data-i18n="ds_easy">쉬움</option>
+      <option value="hard" data-i18n="ds_hard">어려움</option>
+      <option value="moon" data-i18n="ds_moon">초승달</option>
     </select>
   </div>
-  <button class="btn-sm" onclick="resetData()">초기화</button>
+  <button class="btn-sm" onclick="resetData()" data-i18n="btn_reset">초기화</button>
   <div class="topbar-right">
     <div class="data-info" id="dataInfo">오리 60 / 거위 60</div>
     <div class="topbar-sep"></div>
@@ -180,22 +182,22 @@ canvas {
 </div>
 
 <div class="progress">
-  <div class="progress-step done"><div class="step-circle">✓</div>소개</div>
+  <div class="progress-step done"><div class="step-circle">✓</div><span data-i18n="step_intro">소개</span></div>
   <span class="progress-arrow">›</span>
-  <div class="progress-step active"><div class="step-circle">2</div>체험</div>
+  <div class="progress-step active"><div class="step-circle">2</div><span data-i18n="step_try">체험</span></div>
 </div>
 
 <div class="main">
   <!-- 좁은 사이드바 -->
   <div class="nav-bar">
-    <div class="nav-item active" data-sec="observe" onclick="openSection('observe')">데이터 관찰</div>
-    <div class="nav-label">알고리즘</div>
+    <div class="nav-item active" data-sec="observe" onclick="openSection('observe')" data-i18n="nav_observe">데이터 관찰</div>
+    <div class="nav-label" data-i18n="nav_algo">알고리즘</div>
     <div class="nav-item" data-sec="knn" onclick="openSection('knn')">KNN</div>
-    <div class="nav-item" data-sec="dt" onclick="openSection('dt')">결정트리</div>
+    <div class="nav-item" data-sec="dt" onclick="openSection('dt')" data-i18n="nav_dt">결정트리</div>
     <div class="nav-item" data-sec="svm" onclick="openSection('svm')">SVM</div>
-    <div class="nav-item" data-sec="lr" onclick="openSection('lr')">로지스틱 회귀</div>
-    <div class="nav-label">심화</div>
-    <div class="nav-item" data-sec="experiment" onclick="openSection('experiment')">추가 실험</div>
+    <div class="nav-item" data-sec="lr" onclick="openSection('lr')" data-i18n="nav_lr">로지스틱 회귀</div>
+    <div class="nav-label" data-i18n="nav_adv">심화</div>
+    <div class="nav-item" data-sec="experiment" onclick="openSection('experiment')" data-i18n="nav_experiment">추가 실험</div>
   </div>
 
   <!-- 상세 패널 -->
@@ -209,83 +211,194 @@ canvas {
   <div class="canvas-area">
     <canvas id="plotCanvas" width="600" height="600"></canvas>
     <div class="canvas-footer">
-      <div class="legend-item"><div class="legend-dot" style="background:#FF8F00"></div> 오리</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#2e7d32"></div> 거위</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FF8F00"></div> <span data-i18n="legend_duck">오리</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2e7d32"></div> <span data-i18n="legend_goose">거위</span></div>
       <span style="color:#ccc">|</span>
-      <span>클릭 = 오리</span><span>Shift+클릭 = 거위</span>
+      <span data-i18n="hint_click">클릭 = 오리</span><span data-i18n="hint_shift">Shift+클릭 = 거위</span>
     </div>
   </div>
 </div>
 
 <script>
-// === 섹션 데이터 ===
+window.DICT = {
+  ko: {
+    __title: '미션 체험 — 분류 알고리즘의 비교',
+    topbar_title: '기계학습 &gt; 분류 알고리즘의 비교',
+    lbl_dataset: '데이터셋',
+    ds_normal: '기본',
+    ds_easy: '쉬움',
+    ds_hard: '어려움',
+    ds_moon: '초승달',
+    btn_reset: '초기화',
+    data_info: '오리 {d} / 거위 {g}',
+    acc: '정확도 {v}%',
+    step_intro: '소개',
+    step_try: '체험',
+    nav_observe: '데이터 관찰',
+    nav_algo: '알고리즘',
+    nav_dt: '결정트리',
+    nav_lr: '로지스틱 회귀',
+    nav_adv: '심화',
+    nav_experiment: '추가 실험',
+    legend_duck: '오리',
+    legend_goose: '거위',
+    hint_click: '클릭 = 오리',
+    hint_shift: 'Shift+클릭 = 거위',
+    sec_observe: '데이터 관찰',
+    q1_1: '산점도에서 오리(주황)와 거위(초록)가 어떻게 분포되어 있나요?',
+    q1_2: '두 그룹이 겹치는 영역이 있나요? 왜 겹칠까요?',
+    sec_knn: 'KNN (K-최근접 이웃)',
+    knn_label: 'k값',
+    knn_desc: '가까운 k개의 데이터를 보고 다수결로 분류합니다.',
+    q2_1: 'k=1로 설정해보세요. 경계선이 어떤 모양인가요?',
+    q2_2: 'k=15로 바꿔보세요. 경계선이 어떻게 변했나요?',
+    q2_3: 'k=1일 때 정확도가 100%입니다. 이게 정말 좋은 건가요?',
+    sec_dt: '결정트리',
+    dt_label: '트리 깊이',
+    dt_desc: '특성값을 기준으로 반복 분할합니다. 수직/수평 직선으로 나눕니다.',
+    q3_1: '깊이를 1로 설정해보세요. 경계선이 어떤가요?',
+    q3_2: '깊이를 점점 늘려보세요. 경계가 어떻게 변하나요?',
+    q3_3: '깊이 10일 때 경계선 모양을 관찰해보세요. 과적합일까요?',
+    sec_svm: 'SVM',
+    svm_label: '감마 (γ)',
+    svm_desc: '두 클래스 사이에 가장 넓은 마진의 경계를 찾습니다.',
+    q4_1: '감마를 0.1로 설정해보세요. 경계선이 어떤가요?',
+    q4_2: '감마를 5.0으로 올려보세요. 어떤 변화가 있나요?',
+    q4_3: 'KNN의 k값과 SVM의 감마는 어떤 공통점이 있을까요?',
+    sec_lr: '로지스틱 회귀',
+    lr_desc: '각 클래스에 속할 확률을 계산하여 0.5 기준으로 분류합니다. 조정할 파라미터가 없습니다.',
+    q5_1: '다른 알고리즘과 경계선 모양을 비교해보세요.',
+    q5_2: '왜 항상 부드러운 직선 경계가 나올까요?',
+    sec_experiment: '추가 실험',
+    q6_1: '상단에서 데이터셋을 "초승달"로 바꿔보세요.',
+    q6_2: '초승달 데이터에서 어떤 알고리즘이 잘 분류하나요?',
+    q6_3: '경계 근처를 클릭해서 데이터를 추가해보세요. 경계가 어떻게 변하나요?'
+  },
+  en: {
+    __title: 'Mission — Comparing Classification Algorithms',
+    topbar_title: 'Machine Learning &gt; Comparing Classification Algorithms',
+    lbl_dataset: 'Dataset',
+    ds_normal: 'Normal',
+    ds_easy: 'Easy',
+    ds_hard: 'Hard',
+    ds_moon: 'Moons',
+    btn_reset: 'Reset',
+    data_info: 'Ducks {d} / Geese {g}',
+    acc: 'Accuracy {v}%',
+    step_intro: 'Intro',
+    step_try: 'Try It',
+    nav_observe: 'Observe Data',
+    nav_algo: 'Algorithms',
+    nav_dt: 'Decision Tree',
+    nav_lr: 'Logistic Regression',
+    nav_adv: 'Advanced',
+    nav_experiment: 'More Experiments',
+    legend_duck: 'Duck',
+    legend_goose: 'Goose',
+    hint_click: 'Click = Duck',
+    hint_shift: 'Shift+Click = Goose',
+    sec_observe: 'Observe Data',
+    q1_1: 'How are the ducks (orange) and geese (green) distributed in the scatter plot?',
+    q1_2: 'Is there a region where the two groups overlap? Why might they overlap?',
+    sec_knn: 'KNN (K-Nearest Neighbors)',
+    knn_label: 'k',
+    knn_desc: 'Classifies by majority vote among the k nearest data points.',
+    q2_1: 'Set k=1. What does the boundary look like?',
+    q2_2: 'Change k to 15. How did the boundary change?',
+    q2_3: 'With k=1 the accuracy is 100%. Is that really a good thing?',
+    sec_dt: 'Decision Tree',
+    dt_label: 'Tree depth',
+    dt_desc: 'Repeatedly splits on feature values. Splits are vertical/horizontal straight lines.',
+    q3_1: 'Set the depth to 1. What does the boundary look like?',
+    q3_2: 'Increase the depth step by step. How does the boundary change?',
+    q3_3: 'Look at the boundary at depth 10. Is this overfitting?',
+    sec_svm: 'SVM',
+    svm_label: 'Gamma (γ)',
+    svm_desc: 'Finds the boundary with the widest margin between the two classes.',
+    q4_1: 'Set gamma to 0.1. What does the boundary look like?',
+    q4_2: 'Raise gamma to 5.0. What changes?',
+    q4_3: 'What do k in KNN and gamma in SVM have in common?',
+    sec_lr: 'Logistic Regression',
+    lr_desc: 'Computes the probability of each class and classifies at a 0.5 threshold. There is no parameter to adjust.',
+    q5_1: 'Compare the boundary shape with the other algorithms.',
+    q5_2: 'Why is the boundary always a smooth straight line?',
+    sec_experiment: 'More Experiments',
+    q6_1: 'Change the dataset at the top to "Moons".',
+    q6_2: 'Which algorithm classifies the moons data well?',
+    q6_3: 'Click near the boundary to add data points. How does the boundary change?'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
+<script>
+// === 섹션 데이터 (문구는 DICT 키로 보관, 렌더 시 t()로 변환) ===
 const sections = {
   observe: {
-    title: '데이터 관찰',
+    title: 'sec_observe',
     param: null,
     missions: [
-      {id:'Q1-1', text:'산점도에서 오리(주황)와 거위(초록)가 어떻게 분포되어 있나요?'},
-      {id:'Q1-2', text:'두 그룹이 겹치는 영역이 있나요? 왜 겹칠까요?'}
+      {id:'Q1-1', text:'q1_1'},
+      {id:'Q1-2', text:'q1_2'}
     ]
   },
   knn: {
-    title: 'KNN (K-최근접 이웃)',
+    title: 'sec_knn',
     param: {
-      label: 'k값', id: 'kV', min:1, max:25, step:2, value:5,
-      desc: '가까운 k개의 데이터를 보고 다수결로 분류합니다.',
+      label: 'knn_label', id: 'kV', min:1, max:25, step:2, value:5,
+      desc: 'knn_desc',
       onchange: (v) => { params.knn.k = v; }
     },
     missions: [
-      {id:'Q2-1', text:'k=1로 설정해보세요. 경계선이 어떤 모양인가요?'},
-      {id:'Q2-2', text:'k=15로 바꿔보세요. 경계선이 어떻게 변했나요?'},
-      {id:'Q2-3', text:'k=1일 때 정확도가 100%입니다. 이게 정말 좋은 건가요?'}
+      {id:'Q2-1', text:'q2_1'},
+      {id:'Q2-2', text:'q2_2'},
+      {id:'Q2-3', text:'q2_3'}
     ]
   },
   dt: {
-    title: '결정트리',
+    title: 'sec_dt',
     param: {
-      label: '트리 깊이', id: 'dV', min:1, max:10, step:1, value:4,
-      desc: '특성값을 기준으로 반복 분할합니다. 수직/수평 직선으로 나눕니다.',
+      label: 'dt_label', id: 'dV', min:1, max:10, step:1, value:4,
+      desc: 'dt_desc',
       onchange: (v) => { params.dt.depth = v; }
     },
     missions: [
-      {id:'Q3-1', text:'깊이를 1로 설정해보세요. 경계선이 어떤가요?'},
-      {id:'Q3-2', text:'깊이를 점점 늘려보세요. 경계가 어떻게 변하나요?'},
-      {id:'Q3-3', text:'깊이 10일 때 경계선 모양을 관찰해보세요. 과적합일까요?'}
+      {id:'Q3-1', text:'q3_1'},
+      {id:'Q3-2', text:'q3_2'},
+      {id:'Q3-3', text:'q3_3'}
     ]
   },
   svm: {
-    title: 'SVM',
+    title: 'sec_svm',
     param: {
-      label: '감마 (γ)', id: 'gV', min:0.1, max:5, step:0.1, value:1.0,
-      desc: '두 클래스 사이에 가장 넓은 마진의 경계를 찾습니다.',
+      label: 'svm_label', id: 'gV', min:0.1, max:5, step:0.1, value:1.0,
+      desc: 'svm_desc',
       onchange: (v) => { params.svm.gamma = v; },
       format: (v) => (+v).toFixed(1)
     },
     missions: [
-      {id:'Q4-1', text:'감마를 0.1로 설정해보세요. 경계선이 어떤가요?'},
-      {id:'Q4-2', text:'감마를 5.0으로 올려보세요. 어떤 변화가 있나요?'},
-      {id:'Q4-3', text:'KNN의 k값과 SVM의 감마는 어떤 공통점이 있을까요?'}
+      {id:'Q4-1', text:'q4_1'},
+      {id:'Q4-2', text:'q4_2'},
+      {id:'Q4-3', text:'q4_3'}
     ]
   },
   lr: {
-    title: '로지스틱 회귀',
+    title: 'sec_lr',
     param: {
       label: null,
-      desc: '각 클래스에 속할 확률을 계산하여 0.5 기준으로 분류합니다. 조정할 파라미터가 없습니다.'
+      desc: 'lr_desc'
     },
     missions: [
-      {id:'Q5-1', text:'다른 알고리즘과 경계선 모양을 비교해보세요.'},
-      {id:'Q5-2', text:'왜 항상 부드러운 직선 경계가 나올까요?'}
+      {id:'Q5-1', text:'q5_1'},
+      {id:'Q5-2', text:'q5_2'}
     ]
   },
   experiment: {
-    title: '추가 실험',
+    title: 'sec_experiment',
     param: null,
     missions: [
-      {id:'Q6-1', text:'상단에서 데이터셋을 "초승달"로 바꿔보세요.'},
-      {id:'Q6-2', text:'초승달 데이터에서 어떤 알고리즘이 잘 분류하나요?'},
-      {id:'Q6-3', text:'경계 근처를 클릭해서 데이터를 추가해보세요. 경계가 어떻게 변하나요?'}
+      {id:'Q6-1', text:'q6_1'},
+      {id:'Q6-2', text:'q6_2'},
+      {id:'Q6-3', text:'q6_3'}
     ]
   }
 };
@@ -302,20 +415,20 @@ function openSection(sec) {
   // 패널 열기
   const panel = document.getElementById('detailPanel');
   panel.classList.add('open');
-  document.getElementById('detailHeader').textContent = s.title;
+  document.getElementById('detailHeader').textContent = t(s.title);
 
   // 파라미터
   const paramDiv = document.getElementById('detailParam');
   if (s.param && s.param.label) {
     const fmt = s.param.format || (v => v);
     paramDiv.innerHTML = `<div class="detail-param">
-      <div class="param-label">${s.param.label} <span id="${s.param.id}">${fmt(s.param.value)}</span></div>
+      <div class="param-label">${t(s.param.label)} <span id="${s.param.id}">${fmt(s.param.value)}</span></div>
       <input type="range" min="${s.param.min}" max="${s.param.max}" step="${s.param.step}" value="${s.param.value}"
         oninput="sectionParamChange('${sec}',this.value)">
-      <div class="algo-desc">${s.param.desc}</div>
+      <div class="algo-desc">${t(s.param.desc)}</div>
     </div>`;
   } else if (s.param && !s.param.label) {
-    paramDiv.innerHTML = `<div class="detail-param"><div class="algo-desc">${s.param.desc}</div></div>`;
+    paramDiv.innerHTML = `<div class="detail-param"><div class="algo-desc">${t(s.param.desc)}</div></div>`;
   } else {
     paramDiv.innerHTML = '';
   }
@@ -323,7 +436,7 @@ function openSection(sec) {
   // 미션
   const mDiv = document.getElementById('detailMission');
   mDiv.innerHTML = s.missions.map((m, i) =>
-    `<div class="q-item" onclick="selectQ(this)"><span class="q-num">${m.id}</span> ${m.text}</div>`
+    `<div class="q-item" onclick="selectQ(this)"><span class="q-num">${m.id}</span> ${t(m.text)}</div>`
   ).join('');
 
   // 알고리즘 전환
@@ -345,6 +458,17 @@ function selectQ(el) {
   document.querySelectorAll('.q-item').forEach(q => q.classList.remove('active'));
   el.classList.add('active');
 }
+
+// 언어 전환 시 현재 섹션 패널·캔버스 문구 다시 그리기 (선택한 질문 유지)
+window.onLangChange = function(lang) {
+  const items = Array.from(document.querySelectorAll('.q-item'));
+  const activeIdx = items.findIndex(q => q.classList.contains('active'));
+  openSection(curSection);
+  if (activeIdx >= 0) {
+    const q = document.querySelectorAll('.q-item')[activeIdx];
+    if (q) q.classList.add('active');
+  }
+};
 
 // === 데이터 ===
 function rand(m,s){const u1=Math.random(),u2=Math.random();return m+s*Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);}
@@ -394,9 +518,9 @@ function render(){
   for(let i=0;i<=10;i++){cx.beginPath();cx.moveTo(i*W/10,0);cx.lineTo(i*W/10,H);cx.stroke();cx.beginPath();cx.moveTo(0,i*H/10);cx.lineTo(W,i*H/10);cx.stroke();}
   for(const d of norm){const px=((d[0]-xMin)/(xMax-xMin))*W,py=((yMax-d[1])/(yMax-yMin))*H;cx.beginPath();cx.arc(px,py,5,0,Math.PI*2);cx.fillStyle=d[2]===0?'#FF8F00':'#2e7d32';cx.fill();cx.strokeStyle='#fff';cx.lineWidth=1.5;cx.stroke();}
   let correct=0;for(const d of norm){let pred;switch(curAlgo){case'knn':pred=knnP(norm,[d[0],d[1]],params.knn.k);break;case'dt':pred=dtP(tree,[d[0],d[1]]);break;case'svm':pred=svmP(norm,[d[0],d[1]],params.svm.gamma);break;case'lr':pred=lrP(lrM,[d[0],d[1]]);break;}if(pred===d[2])correct++;}
-  document.getElementById('accDisplay').textContent='정확도 '+(correct/norm.length*100).toFixed(1)+'%';
+  document.getElementById('accDisplay').textContent=t('acc',{v:(correct/norm.length*100).toFixed(1)});
   const dk=data.filter(d=>d.label===0).length,gs=data.filter(d=>d.label===1).length;
-  document.getElementById('dataInfo').textContent=`오리 ${dk} / 거위 ${gs}`;
+  document.getElementById('dataInfo').textContent=t('data_info',{d:dk,g:gs});
   cv._r={xMin,xMax,yMin,yMax,xM,yM,xS,yS};
 }
 cv.addEventListener('click',(e)=>{const rect=cv.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const px=(e.clientX-rect.left)*sx,py=(e.clientY-rect.top)*sy;const r=cv._r;if(!r)return;const nx=r.xMin+(px/W)*(r.xMax-r.xMin),ny=r.yMax-(py/H)*(r.yMax-r.yMin);data.push({x:nx*r.xS+r.xM,y:ny*r.yS+r.yM,label:e.shiftKey?1:0});render();});

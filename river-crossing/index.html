@@ -27,10 +27,11 @@ body {
   background: #2e7d32;
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 190px 0 24px;
   flex-shrink: 0;
 }
 h1 { font-size: 16px; color: #fff; font-weight: 600; }
+h1 .level-badge { margin-left: 10px; font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; }
 
 /* 소개 영역 */
 .intro {
@@ -101,19 +102,19 @@ button { flex:1; padding:10px 8px; border:none; border-radius:6px; cursor:pointe
 <body>
 
 <div class="topbar">
-  <h1>탐색과 문제해결 &gt; 강 건너기 탐색 시각화</h1>
+  <h1><span data-i18n="h1">탐색과 문제해결 &gt; 강 건너기 탐색 시각화</span><span class="level-badge" data-level="intermediate"></span></h1>
 </div>
 
 <div class="intro">
-  <h2>강 건너기 문제</h2>
-  <p class="subtitle">농부·늑대·양·양배추를 모두 강 오른쪽으로 옮기는 문제</p>
+  <h2 data-i18n="intro_h2">강 건너기 문제</h2>
+  <p class="subtitle" data-i18n="subtitle">농부·늑대·양·양배추를 모두 강 오른쪽으로 옮기는 문제</p>
 </div>
 
 <div class="content-wrap">
 
 <div class="tabs">
-  <button class="tab active" id="tabDFS" onclick="switchTab('dfs')">깊이 우선 탐색 (DFS)</button>
-  <button class="tab"        id="tabBFS" onclick="switchTab('bfs')">너비 우선 탐색 (BFS)</button>
+  <button class="tab active" id="tabDFS" onclick="switchTab('dfs')" data-i18n="tab_dfs">깊이 우선 탐색 (DFS)</button>
+  <button class="tab"        id="tabBFS" onclick="switchTab('bfs')" data-i18n="tab_bfs">너비 우선 탐색 (BFS)</button>
 </div>
 
 <div class="main">
@@ -121,12 +122,12 @@ button { flex:1; padding:10px 8px; border:none; border-radius:6px; cursor:pointe
     <canvas id="river" width="300" height="330"></canvas>
     <div class="panel">
       <div class="speed-row">
-        <span>⚡ 속도</span>
+        <span data-i18n="speed">⚡ 속도</span>
         <input type="range" id="speed" min="1" max="10" value="4">
       </div>
       <div class="btns">
-        <button id="resetBtn">↺ 초기화</button>
-        <button id="startBtn">🚣 자동 탐색</button>
+        <button id="resetBtn" data-i18n="reset_btn">↺ 초기화</button>
+        <button id="startBtn" data-i18n="start_btn">🚣 자동 탐색</button>
       </div>
     </div>
     <div class="sbox" id="sbox">탐색 준비 중...</div>
@@ -139,12 +140,12 @@ button { flex:1; padding:10px 8px; border:none; border-radius:6px; cursor:pointe
     </div>
     <canvas id="tree" width="780" height="700"></canvas>
     <div class="legend">
-      <span class="litem"><span class="ldot" style="background:#4a4a6a"></span>미탐색(대기)</span>
-      <span class="litem"><span class="ldot" style="background:#f5c518"></span>탐색 중</span>
-      <span class="litem"><span class="ldot" style="background:#4ade80"></span>유효(안전)</span>
-      <span class="litem"><span class="ldot" style="background:#f87171"></span>무효/이미방문</span>
-      <span class="litem"><span class="ldot" style="background:#666"></span>백트래킹</span>
-      <span class="litem"><span class="ldot" style="background:#60a5fa"></span>해 경로</span>
+      <span class="litem"><span class="ldot" style="background:#4a4a6a"></span><span data-i18n="lg_pending">미탐색(대기)</span></span>
+      <span class="litem"><span class="ldot" style="background:#f5c518"></span><span data-i18n="lg_trying">탐색 중</span></span>
+      <span class="litem"><span class="ldot" style="background:#4ade80"></span><span data-i18n="lg_safe">유효(안전)</span></span>
+      <span class="litem"><span class="ldot" style="background:#f87171"></span><span data-i18n="lg_conflict">무효/이미방문</span></span>
+      <span class="litem"><span class="ldot" style="background:#666"></span><span data-i18n="lg_backtrack">백트래킹</span></span>
+      <span class="litem"><span class="ldot" style="background:#60a5fa"></span><span data-i18n="lg_solution">해 경로</span></span>
     </div>
   </div>
 </div>
@@ -152,14 +153,100 @@ button { flex:1; padding:10px 8px; border:none; border-radius:6px; cursor:pointe
 </div>
 
 <script>
+window.DICT = {
+  ko: {
+    __title: '강 건너기 탐색 시각화',
+    h1: '탐색과 문제해결 &gt; 강 건너기 탐색 시각화',
+    intro_h2: '강 건너기 문제',
+    subtitle: '농부·늑대·양·양배추를 모두 강 오른쪽으로 옮기는 문제',
+    tab_dfs: '깊이 우선 탐색 (DFS)',
+    tab_bfs: '너비 우선 탐색 (BFS)',
+    speed: '⚡ 속도',
+    reset_btn: '↺ 초기화',
+    start_btn: '🚣 자동 탐색',
+    ready: '탐색 준비 중...',
+    mode_label: '🌳 상태 공간 트리 — {mode}',
+    mode_dfs: 'DFS (깊이 우선)',
+    mode_bfs: 'BFS (너비 우선)',
+    visited: '방문: {n}',
+    lg_pending: '미탐색(대기)',
+    lg_trying: '탐색 중',
+    lg_safe: '유효(안전)',
+    lg_conflict: '무효/이미방문',
+    lg_backtrack: '백트래킹',
+    lg_solution: '해 경로',
+    start: '시작',
+    mv_alone: '혼자',
+    mv_wolf: '늑대',
+    mv_sheep: '양',
+    mv_cabbage: '양배추',
+    bank_left: '왼쪽',
+    bank_river: '강',
+    bank_right: '오른쪽',
+    river_alone: '농부 혼자 이동',
+    river_with: '농부 + {x} 이동',
+    goal_done: '🎉 목표 달성!',
+    goal_hint: '초기: 모두 왼쪽 → 목표: 모두 오른쪽',
+    st_trying: '「{x}」 이동 시도 중...',
+    st_safe: '✅ 「{x}」 — 유효한 상태',
+    st_conflict: '❌ 「{x}」 — 무효 또는 이미 방문',
+    st_backtrack: '↩ 「{x}」 — 백트래킹',
+    st_solved: '🎉 탐색 성공! 모두 강을 건넜습니다.'
+  },
+  en: {
+    __title: 'River Crossing Search Visualization',
+    h1: 'Search &amp; Problem Solving &gt; River Crossing Search Visualization',
+    intro_h2: 'River Crossing Problem',
+    subtitle: 'Move the farmer, wolf, sheep, and cabbage all to the right bank',
+    tab_dfs: 'Depth-First Search (DFS)',
+    tab_bfs: 'Breadth-First Search (BFS)',
+    speed: '⚡ Speed',
+    reset_btn: '↺ Reset',
+    start_btn: '🚣 Auto Search',
+    ready: 'Ready to search...',
+    mode_label: '🌳 State Space Tree — {mode}',
+    mode_dfs: 'DFS (depth-first)',
+    mode_bfs: 'BFS (breadth-first)',
+    visited: 'Visited: {n}',
+    lg_pending: 'Unexplored (pending)',
+    lg_trying: 'Exploring',
+    lg_safe: 'Valid (safe)',
+    lg_conflict: 'Invalid / visited',
+    lg_backtrack: 'Backtracking',
+    lg_solution: 'Solution path',
+    start: 'Start',
+    mv_alone: 'Alone',
+    mv_wolf: 'Wolf',
+    mv_sheep: 'Sheep',
+    mv_cabbage: 'Cabbage',
+    bank_left: 'Left',
+    bank_river: 'River',
+    bank_right: 'Right',
+    river_alone: 'Farmer crosses alone',
+    river_with: 'Farmer + {x} cross',
+    goal_done: '🎉 Goal reached!',
+    goal_hint: 'Start: all on left → Goal: all on right',
+    st_trying: 'Trying move "{x}"...',
+    st_safe: '✅ "{x}" — valid state',
+    st_conflict: '❌ "{x}" — invalid or already visited',
+    st_backtrack: '↩ "{x}" — backtracking',
+    st_solved: '🎉 Search succeeded! Everyone crossed the river.'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
+
+<script>
 'use strict';
 
 // ── 문제 정의 ─────────────────────────────────────────────────────
 // State: [farmer, wolf, sheep, cabbage]  0=왼쪽  1=오른쪽
 // 캐릭터 인덱스: 0=농부, 1=늑대, 2=양, 3=양배추
+// label 은 내부 키(alone/wolf/sheep/cabbage/start). 화면 표시는 t('mv_'+label)
 const GOAL = '1111';
 const EMOJI = ['🧑‍🌾','🐺','🐑','🥬'];
-const CARRIED_IDX = {'혼자':-1,'늑대':1,'양':2,'양배추':3};
+const CARRIED_IDX = {'alone':-1,'wolf':1,'sheep':2,'cabbage':3};
+function mvName(label){ return label==='start' ? t('start') : t('mv_'+label); }
 
 function key(s){ return s.join(''); }
 
@@ -172,10 +259,10 @@ function isValid(s){
 
 function getMoves(s){
   const [f,w,sh,c]=s, nf=1-f, m=[];
-  m.push({label:'혼자',   emoji:'🚣',  next:[nf,w,sh,c]});
-  if(w===f)  m.push({label:'늑대',   emoji:'🐺', next:[nf,nf,sh,c]});
-  if(sh===f) m.push({label:'양',     emoji:'🐑', next:[nf,w,nf,c]});
-  if(c===f)  m.push({label:'양배추', emoji:'🥬', next:[nf,w,sh,nf]});
+  m.push({label:'alone',   emoji:'🚣',  next:[nf,w,sh,c]});
+  if(w===f)  m.push({label:'wolf',    emoji:'🐺', next:[nf,nf,sh,c]});
+  if(sh===f) m.push({label:'sheep',   emoji:'🐑', next:[nf,w,nf,c]});
+  if(c===f)  m.push({label:'cabbage', emoji:'🥬', next:[nf,w,sh,nf]});
   return m;
 }
 
@@ -198,7 +285,7 @@ function buildDFS(){
   let uid=0;
   const visited=new Set(['0000']);
 
-  const root={id:uid++,parentId:null,label:'시작',emoji:'',state:[0,0,0,0],level:0,children:[]};
+  const root={id:uid++,parentId:null,label:'start',emoji:'',state:[0,0,0,0],level:0,children:[]};
   nodeMap[root.id]=root;
   steps.push({t:'node',id:root.id,status:'safe'});
   steps.push({t:'river',prev:[0,0,0,0],cur:[0,0,0,0],moving:null});
@@ -250,7 +337,7 @@ function buildBFS(){
   const visited=new Set(['0000']);
   const pathOf={};
 
-  const root={id:uid++,parentId:null,label:'시작',emoji:'',state:[0,0,0,0],level:0,children:[]};
+  const root={id:uid++,parentId:null,label:'start',emoji:'',state:[0,0,0,0],level:0,children:[]};
   nodeMap[root.id]=root;
   pathOf[root.id]=[root.id];
   steps.push({t:'node',id:root.id,status:'safe'});
@@ -346,9 +433,9 @@ function drawRiverAt(prev,cur,moving,carriedIdx,bx){
 
   // 레이블
   ctx.font='bold 11px Arial'; ctx.textAlign='center';
-  ctx.fillStyle='#88cc88'; ctx.fillText('왼쪽',BOAT_L,15);
-  ctx.fillStyle='#88aaee'; ctx.fillText('강',LBW+RIVW/2,15);
-  ctx.fillStyle='#88cc88'; ctx.fillText('오른쪽',BOAT_R,15);
+  ctx.fillStyle='#88cc88'; ctx.fillText(t('bank_left'),BOAT_L,15);
+  ctx.fillStyle='#88aaee'; ctx.fillText(t('bank_river'),LBW+RIVW/2,15);
+  ctx.fillStyle='#88cc88'; ctx.fillText(t('bank_right'),BOAT_R,15);
 
   // 강변 캐릭터 (이동 중엔 prev 위치 유지, 동반자는 배에)
   const inTransit=(moving!==null);
@@ -388,11 +475,11 @@ function drawRiverAt(prev,cur,moving,carriedIdx,bx){
   ctx.font='11px Arial'; ctx.textAlign='center'; ctx.textBaseline='bottom';
   if(inTransit){
     ctx.fillStyle='#f5c518';
-    ctx.fillText(moving==='혼자'?'농부 혼자 이동':`농부 + ${moving} 이동`, RW/2, RH-8);
+    ctx.fillText(moving==='alone'?t('river_alone'):t('river_with',{x:mvName(moving)}), RW/2, RH-8);
   } else {
     const ok=cur.every(x=>x===1);
     ctx.fillStyle=ok?'#4ade80':'#555';
-    ctx.fillText(ok?'🎉 목표 달성!':'초기: 모두 왼쪽 → 목표: 모두 오른쪽', RW/2, RH-8);
+    ctx.fillText(ok?t('goal_done'):t('goal_hint'), RW/2, RH-8);
   }
 }
 
@@ -431,9 +518,9 @@ function drawTree(){
     ctx.lineWidth=hot?2:1; ctx.stroke();
 
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    if(n.label==='시작'){
+    if(n.label==='start'){
       ctx.fillStyle='#ffffffee'; ctx.font='bold 10px Arial';
-      ctx.fillText('시작',n.x,n.y);
+      ctx.fillText(t('start'),n.x,n.y);
     } else {
       ctx.font='14px serif';
       const textColor = (st==='pending'||st==='backtrack') ? '#aaaacc' : '#ffffffee';
@@ -441,7 +528,7 @@ function drawTree(){
       ctx.fillText(n.emoji,n.x,n.y-6);
       ctx.font='bold 7.5px Arial';
       ctx.fillStyle=textColor;
-      ctx.fillText(n.label,n.x,n.y+8);
+      ctx.fillText(mvName(n.label),n.x,n.y+8);
     }
   }
 }
@@ -455,9 +542,18 @@ function getDelay(){
   return Math.max(60,1250-s*115);
 }
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-function setStatus(msg,ok=false){
+let lastStatus={key:'ready',vars:null,ok:false};   // 언어 전환 시 재렌더용
+function setStatus(key,vars=null,ok=false){
+  lastStatus={key,vars,ok};
   const el=document.getElementById('sbox');
-  el.textContent=msg; el.className='sbox'+(ok?' ok':'');
+  el.textContent=t(key,vars); el.className='sbox'+(ok?' ok':'');
+}
+function setVisited(){
+  document.getElementById('vcnt').textContent=t('visited',{n:visitCnt});
+}
+function setModeLabel(){
+  document.getElementById('modeLabel').textContent=
+    t('mode_label',{mode:t(currentMode==='dfs'?'mode_dfs':'mode_bfs')});
 }
 
 async function runAnim(){
@@ -474,8 +570,8 @@ async function runAnim(){
         const n=nodeMap[step.id];
         if(step.status==='trying'){
           visitCnt++;
-          document.getElementById('vcnt').textContent=`방문: ${visitCnt}`;
-          setStatus(`「${n.label}」 이동 시도 중...`);
+          setVisited();
+          setStatus('st_trying',{x:mvName(n.label)});
         }
         break;
       }
@@ -485,14 +581,14 @@ async function runAnim(){
         const n=nodeMap[step.id];
         if(step.status==='trying'){
           visitCnt++;
-          document.getElementById('vcnt').textContent=`방문: ${visitCnt}`;
-          setStatus(`「${n.label}」 이동 시도 중...`);
+          setVisited();
+          setStatus('st_trying',{x:mvName(n.label)});
         } else if(step.status==='safe')
-          setStatus(`✅ 「${n.label}」 — 유효한 상태`);
+          setStatus('st_safe',{x:mvName(n.label)});
         else if(step.status==='conflict')
-          setStatus(`❌ 「${n.label}」 — 무효 또는 이미 방문`);
+          setStatus('st_conflict',{x:mvName(n.label)});
         else if(step.status==='backtrack')
-          setStatus(`↩ 「${n.label}」 — 백트래킹`);
+          setStatus('st_backtrack',{x:mvName(n.label)});
         break;
       }
       case 'river':{
@@ -528,7 +624,7 @@ async function runAnim(){
       }
       case 'solved':
         step.pathIds.forEach(id=>{nodeState[id]='solution';});
-        setStatus('🎉 탐색 성공! 모두 강을 건넜습니다.',true);
+        setStatus('st_solved',null,true);
         break;
     }
     drawTree();
@@ -544,17 +640,16 @@ function switchTab(mode){
   currentMode=mode;
   document.getElementById('tabDFS').className='tab'+(mode==='dfs'?' active':'');
   document.getElementById('tabBFS').className='tab'+(mode==='bfs'?' active':'');
-  document.getElementById('modeLabel').textContent=
-    `🌳 상태 공간 트리 — ${mode==='dfs'?'DFS (깊이 우선)':'BFS (너비 우선)'}`;
+  setModeLabel();
   reset();
 }
 
 function reset(){
   runId++;
   visitCnt=0; revealed=new Set(); nodeState={}; activeId=null;
-  document.getElementById('vcnt').textContent='방문: 0';
+  setVisited();
   document.getElementById('startBtn').disabled=false;
-  setStatus('탐색 준비 중...');
+  setStatus('ready');
   if(currentMode==='dfs') buildDFS(); else buildBFS();
   assignPositions();
   drawRiverAt([0,0,0,0],[0,0,0,0],null,-1,BOAT_L);
@@ -563,7 +658,17 @@ function reset(){
 
 document.getElementById('startBtn').addEventListener('click',()=>{reset();setTimeout(runAnim,80);});
 document.getElementById('resetBtn').addEventListener('click',reset);
+setModeLabel();
 reset();
+
+// 언어 전환 시 현재 상태 그대로 다시 그리기
+window.onLangChange=function(){
+  setModeLabel();
+  setVisited();
+  setStatus(lastStatus.key,lastStatus.vars,lastStatus.ok);
+  drawRiverAt(lastRiver.prev,lastRiver.cur,null,-1,lastRiver.bx);
+  drawTree();
+};
 </script>
 </body>
 </html>

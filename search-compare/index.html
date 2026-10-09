@@ -29,6 +29,7 @@ body {
   flex-shrink: 0;
 }
 h1 { font-size: 16px; color: #fff; font-weight: 600; }
+.topbar .level-badge { margin-left: 10px; }
 
 /* 소개 영역 */
 .intro {
@@ -134,50 +135,127 @@ button {
 <body>
 
 <div class="topbar">
-  <h1>탐색과 문제해결 &gt; 탐색 알고리즘 비교</h1>
+  <h1 data-i18n="topbar">탐색과 문제해결 &gt; 탐색 알고리즘 비교</h1>
+  <span class="level-badge" data-level="advanced"></span>
 </div>
 
 <div class="intro">
-  <h2>탐색 알고리즘 비교</h2>
-  <p class="subtitle">격자에 장애물을 그린 뒤, 탭을 골라 각 알고리즘이 어떻게 탐색하는지 확인해보세요</p>
+  <h2 data-i18n="heading">탐색 알고리즘 비교</h2>
+  <p class="subtitle" data-i18n="subtitle">격자에 장애물을 그린 뒤, 탭을 골라 각 알고리즘이 어떻게 탐색하는지 확인해보세요</p>
 </div>
 
 <div class="content">
   <div class="tabs">
-    <div class="tab active" id="tab0" onclick="switchTab(0)">🏔️ 언덕 등반</div>
-    <div class="tab"        id="tab1" onclick="switchTab(1)">⭐ 최상 우선</div>
-    <div class="tab"        id="tab2" onclick="switchTab(2)">🎯 A*</div>
+    <div class="tab active" id="tab0" onclick="switchTab(0)" data-i18n="tab0">🏔️ 언덕 등반</div>
+    <div class="tab"        id="tab1" onclick="switchTab(1)" data-i18n="tab1">⭐ 최상 우선</div>
+    <div class="tab"        id="tab2" onclick="switchTab(2)" data-i18n="tab2">🎯 A*</div>
   </div>
 
   <div class="panel">
     <div class="algo-desc" id="desc"></div>
 
     <div class="controls">
-      <button class="btn-maze"  id="clearBtn">🗑️ 장애물 초기화</button>
-      <span class="ctrl-label">⚡ 속도</span>
+      <button class="btn-maze"  id="clearBtn" data-i18n="btn_clear">🗑️ 장애물 초기화</button>
+      <span class="ctrl-label" data-i18n="speed">⚡ 속도</span>
       <input type="range" id="speed" min="1" max="10" value="5">
-      <button class="btn-reset" id="resetBtn">↺ 탐색 초기화</button>
-      <button class="btn-start" id="startBtn">▶ 탐색 시작</button>
+      <button class="btn-reset" id="resetBtn" data-i18n="btn_reset">↺ 탐색 초기화</button>
+      <button class="btn-start" id="startBtn" data-i18n="btn_start">▶ 탐색 시작</button>
     </div>
 
     <canvas id="grid"></canvas>
 
-    <div class="stats" id="stats">탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요</div>
+    <div class="stats" id="stats" data-i18n="stats_before">탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요</div>
 
     <div class="legend">
-      <span class="litem"><span class="ldot" style="background:#60a5fa"></span>시작(S)</span>
-      <span class="litem"><span class="ldot" style="background:#e8a0aa"></span>목표(G)</span>
-      <span class="litem"><span class="ldot" style="background:#2a3820"></span>장애물</span>
-      <span class="litem"><span class="ldot" style="background:#fde68a"></span>방문</span>
-      <span class="litem"><span class="ldot" style="background:#d0edbc"></span>대기(frontier)</span>
-      <span class="litem"><span class="ldot" style="background:#f59e0b"></span>현재 탐색</span>
-      <span class="litem"><span class="ldot" style="background:#f97316"></span>최종 경로</span>
-      <span class="litem"><span class="ldot" style="background:#f87171"></span>막힘</span>
-      <span class="litem"><span class="ldot" style="background:#f2f1df;border:1px solid #999"></span>숫자=h값</span>
+      <span class="litem"><span class="ldot" style="background:#60a5fa"></span><span data-i18n="lg_start">시작(S)</span></span>
+      <span class="litem"><span class="ldot" style="background:#e8a0aa"></span><span data-i18n="lg_goal">목표(G)</span></span>
+      <span class="litem"><span class="ldot" style="background:#2a3820"></span><span data-i18n="lg_wall">장애물</span></span>
+      <span class="litem"><span class="ldot" style="background:#fde68a"></span><span data-i18n="lg_visited">방문</span></span>
+      <span class="litem"><span class="ldot" style="background:#d0edbc"></span><span data-i18n="lg_frontier">대기(frontier)</span></span>
+      <span class="litem"><span class="ldot" style="background:#f59e0b"></span><span data-i18n="lg_current">현재 탐색</span></span>
+      <span class="litem"><span class="ldot" style="background:#f97316"></span><span data-i18n="lg_path">최종 경로</span></span>
+      <span class="litem"><span class="ldot" style="background:#f87171"></span><span data-i18n="lg_stuck">막힘</span></span>
+      <span class="litem"><span class="ldot" style="background:#f2f1df;border:1px solid #999"></span><span data-i18n="lg_h">숫자=h값</span></span>
     </div>
-    <p class="tip">💡 빈 칸 클릭 → 장애물 추가 &nbsp;|&nbsp; 장애물 클릭 → 제거 &nbsp;|&nbsp; 탐색 중엔 편집 불가</p>
+    <p class="tip" data-i18n="tip">💡 빈 칸 클릭 → 장애물 추가 &nbsp;|&nbsp; 장애물 클릭 → 제거 &nbsp;|&nbsp; 탐색 중엔 편집 불가</p>
   </div>
 </div>
+
+<script>
+window.DICT = {
+  ko: {
+    __title: '정보 이용 탐색 알고리즘 비교',
+    topbar: '탐색과 문제해결 &gt; 탐색 알고리즘 비교',
+    heading: '탐색 알고리즘 비교',
+    subtitle: '격자에 장애물을 그린 뒤, 탭을 골라 각 알고리즘이 어떻게 탐색하는지 확인해보세요',
+    tab0: '🏔️ 언덕 등반',
+    tab1: '⭐ 최상 우선',
+    tab2: '🎯 A*',
+    btn_clear: '🗑️ 장애물 초기화',
+    speed: '⚡ 속도',
+    btn_reset: '↺ 탐색 초기화',
+    btn_start: '▶ 탐색 시작',
+    stats_before: '탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요',
+    lg_start: '시작(S)',
+    lg_goal: '목표(G)',
+    lg_wall: '장애물',
+    lg_visited: '방문',
+    lg_frontier: '대기(frontier)',
+    lg_current: '현재 탐색',
+    lg_path: '최종 경로',
+    lg_stuck: '막힘',
+    lg_h: '숫자=h값',
+    tip: '💡 빈 칸 클릭 → 장애물 추가 &nbsp;|&nbsp; 장애물 클릭 → 제거 &nbsp;|&nbsp; 탐색 중엔 편집 불가',
+    algo_name0: '언덕 등반 탐색',
+    algo_desc0: '현재 위치의 이웃 중 h값(목표까지 거리)이 가장 작은 곳으로 한 칸씩 이동합니다. 빠르지만 막다른 곳에 도달하면 실패합니다.',
+    algo_name1: '최상 우선 탐색',
+    algo_desc1: '우선순위 큐를 사용해 h값이 가장 낮은 노드를 우선 탐색합니다. 언덕 등반보다 탐색 범위가 넓어 막히지 않지만, 최단 경로를 보장하지 않습니다.',
+    algo_name2: 'A* 탐색',
+    algo_desc2: 'f(n) = g(n) + h(n)을 사용합니다. 실제 이동 비용(g)과 예상 거리(h)를 함께 고려하므로 최단 경로를 보장합니다.',
+    st_ok: '✅ 성공',
+    st_fail: '❌ 실패 (막힘)',
+    st_running: '⏳ 탐색 중',
+    st_line: '방문 <b>{vis}</b>칸 &nbsp;|&nbsp; 대기 <b>{front}</b>칸 &nbsp;|&nbsp; 경로 <b>{path}</b> &nbsp; {status}',
+    st_path_cells: '{n} 칸'
+  },
+  en: {
+    __title: 'Informed Search Algorithm Comparison',
+    topbar: 'Search &amp; Problem Solving &gt; Search Algorithm Comparison',
+    heading: 'Search Algorithm Comparison',
+    subtitle: 'Draw obstacles on the grid, then pick a tab to see how each algorithm searches',
+    tab0: '🏔️ Hill Climbing',
+    tab1: '⭐ Best-First',
+    tab2: '🎯 A*',
+    btn_clear: '🗑️ Clear Obstacles',
+    speed: '⚡ Speed',
+    btn_reset: '↺ Reset Search',
+    btn_start: '▶ Start Search',
+    stats_before: 'Not started — draw obstacles on the grid and start the search',
+    lg_start: 'Start (S)',
+    lg_goal: 'Goal (G)',
+    lg_wall: 'Obstacle',
+    lg_visited: 'Visited',
+    lg_frontier: 'Frontier',
+    lg_current: 'Current',
+    lg_path: 'Final path',
+    lg_stuck: 'Stuck',
+    lg_h: 'Number = h value',
+    tip: '💡 Click an empty cell → add obstacle &nbsp;|&nbsp; Click an obstacle → remove &nbsp;|&nbsp; No editing while searching',
+    algo_name0: 'Hill Climbing Search',
+    algo_desc0: 'Moves one cell at a time to the neighbor with the smallest h value (distance to the goal). Fast, but fails when it reaches a dead end.',
+    algo_name1: 'Best-First Search',
+    algo_desc1: 'Uses a priority queue to expand the node with the lowest h value first. It explores more widely than hill climbing so it does not get stuck, but it does not guarantee the shortest path.',
+    algo_name2: 'A* Search',
+    algo_desc2: 'Uses f(n) = g(n) + h(n). Because it considers both the actual cost so far (g) and the estimated distance (h), it guarantees the shortest path.',
+    st_ok: '✅ Success',
+    st_fail: '❌ Failed (stuck)',
+    st_running: '⏳ Searching',
+    st_line: 'Visited <b>{vis}</b> &nbsp;|&nbsp; Frontier <b>{front}</b> &nbsp;|&nbsp; Path <b>{path}</b> &nbsp; {status}',
+    st_path_cells: '{n} cells'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 
 <script>
 'use strict';
@@ -189,18 +267,18 @@ const startPos={r:0,c:0}, goalPos={r:ROWS-1,c:COLS-1};
 
 const ALGO_INFO=[
   {
-    name:'언덕 등반 탐색',
-    desc:'현재 위치의 이웃 중 h값(목표까지 거리)이 가장 작은 곳으로 한 칸씩 이동합니다. 빠르지만 막다른 곳에 도달하면 실패합니다.',
+    name:'algo_name0',
+    desc:'algo_desc0',
     visited:'#fde68a', frontier:null,    current:'#f59e0b', path:'#f97316', stuck:'#f87171'
   },
   {
-    name:'최상 우선 탐색',
-    desc:'우선순위 큐를 사용해 h값이 가장 낮은 노드를 우선 탐색합니다. 언덕 등반보다 탐색 범위가 넓어 막히지 않지만, 최단 경로를 보장하지 않습니다.',
+    name:'algo_name1',
+    desc:'algo_desc1',
     visited:'#c4b5fd', frontier:'#d0edbc', current:'#8b5cf6', path:'#7c3aed', stuck:'#f87171'
   },
   {
-    name:'A* 탐색',
-    desc:'f(n) = g(n) + h(n)을 사용합니다. 실제 이동 비용(g)과 예상 거리(h)를 함께 고려하므로 최단 경로를 보장합니다.',
+    name:'algo_name2',
+    desc:'algo_desc2',
     visited:'#a5f3fc', frontier:'#d0edbc', current:'#06b6d4', path:'#0284c7', stuck:'#f87171'
   },
 ];
@@ -291,12 +369,12 @@ function updateStats(){
     if(st==='stuck') stuck=true;
   }
   if(!algoRan[currentTab]){
-    document.getElementById('stats').innerHTML='탐색 전 — 격자에 장애물을 그리고 탐색을 시작하세요';
+    document.getElementById('stats').innerHTML=t('stats_before');
     return;
   }
-  const status=found?`<span class="ok">✅ 성공</span>`:stuck?`<span class="fail">❌ 실패 (막힘)</span>`:'⏳ 탐색 중';
+  const status=found?`<span class="ok">${t('st_ok')}</span>`:stuck?`<span class="fail">${t('st_fail')}</span>`:t('st_running');
   document.getElementById('stats').innerHTML=
-    `방문 <b>${vis}</b>칸 &nbsp;|&nbsp; 대기 <b>${front}</b>칸 &nbsp;|&nbsp; 경로 <b>${found?path+' 칸':'—'}</b> &nbsp; ${status}`;
+    t('st_line',{vis:vis,front:front,path:found?t('st_path_cells',{n:path}):'—',status:status});
 }
 
 // ── 단계 생성 ──────────────────────────────────────────────────
@@ -423,10 +501,16 @@ function switchTab(ai){
   [0,1,2].forEach(i=>{
     document.getElementById(`tab${i}`).className='tab'+(i===ai?' active':'');
   });
-  document.getElementById('desc').textContent=ALGO_INFO[ai].desc;
+  document.getElementById('desc').textContent=t(ALGO_INFO[ai].desc);
   document.getElementById('startBtn').disabled=false;
   draw(); updateStats();
 }
+
+// ── 언어 전환 시 동적 문구 다시 그리기 ─────────────────────────
+window.onLangChange=function(){
+  document.getElementById('desc').textContent=t(ALGO_INFO[currentTab].desc);
+  updateStats();
+};
 
 // ── 탐색 초기화 (현재 탭만) ────────────────────────────────────
 function resetAlgo(){

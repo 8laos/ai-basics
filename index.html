@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인공지능 기초 시뮬레이션</title>
+<title>AI Basics Playground</title>
 <link rel="icon" href="thumbnails/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
 <style>
@@ -12,12 +12,15 @@
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumMedium.woff') format('woff');
   font-weight: 400;
 }
+
 @font-face {
   font-family: 'KoPub World 돋움';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2102_ko@1.0/KoPubWorldDotumBold.woff') format('woff');
   font-weight: 700;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
   background: #f5f3e8;
   background-image: radial-gradient(circle, rgba(107,140,99,.12) 1px, transparent 1px);
@@ -27,10 +30,12 @@ body {
   min-height: 100vh;
   padding: 32px 16px;
 }
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
 }
+
 h1 {
   font-family: 'Orbit', 'KoPub World 돋움', sans-serif;
   font-size: 3rem;
@@ -39,12 +44,25 @@ h1 {
   letter-spacing: .04em;
   color: #3a3a2a;
 }
+
 .subtitle {
   text-align: center;
   font-size: .95rem;
   color: #888;
+  margin-bottom: 14px;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: .78rem;
+  color: #777;
   margin-bottom: 32px;
 }
+
 .category {
   margin-bottom: 28px;
   background: #6b8c63;
@@ -52,6 +70,7 @@ h1 {
   padding: 22px 22px 24px;
   box-shadow: 0 6px 20px rgba(0,0,0,.15);
 }
+
 .category-header {
   display: inline-block;
   background: #e8a0aa;
@@ -59,6 +78,7 @@ h1 {
   padding: 8px 24px 10px;
   margin-bottom: 8px;
 }
+
 .category-title {
   font-family: 'Orbit', sans-serif;
   font-size: 1.3rem;
@@ -66,16 +86,19 @@ h1 {
   font-weight: 700;
   color: #f2f1df;
 }
+
 .category-desc {
   font-size: .95rem;
   color: #b0c4a0;
   margin-bottom: 14px;
 }
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
 }
+
 .card {
   background: rgba(255,255,255,.85);
   border-radius: 10px;
@@ -87,11 +110,13 @@ h1 {
   flex-direction: column;
   overflow: hidden;
 }
+
 .card:hover {
   transform: translateY(-4px);
   background: rgba(255,255,255,.95);
   box-shadow: 0 8px 24px rgba(0,0,0,.1);
 }
+
 .card-thumb {
   width: 100%;
   aspect-ratio: 16/9;
@@ -100,21 +125,18 @@ h1 {
   display: block;
   transition: transform .3s;
 }
+
 .card:hover .card-thumb {
   transform: scale(1.05);
 }
-.card-thumb-placeholder {
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: rgba(107,140,99,.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-}
+
 .card-body {
   padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
+
 .card-title {
   font-family: 'Orbit', sans-serif;
   font-size: 1.1rem;
@@ -122,6 +144,7 @@ h1 {
   margin-bottom: 6px;
   color: #2a2a1a;
 }
+
 .tag {
   display: inline-block;
   font-size: .65rem;
@@ -133,32 +156,31 @@ h1 {
   vertical-align: middle;
   margin-right: 2px;
 }
+
 .card-desc {
   font-size: .82rem;
   color: #666;
   line-height: 1.5;
+  flex: 1;
 }
+
+.card-foot {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
 .bounce-title span {
   display: inline-block;
   animation: bounce 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * .08s);
 }
-.bounce-title span:nth-child(1)  { animation-delay: 0s; }
-.bounce-title span:nth-child(2)  { animation-delay: .1s; }
-.bounce-title span:nth-child(3)  { animation-delay: .2s; }
-.bounce-title span:nth-child(4)  { animation-delay: .3s; }
-.bounce-title span:nth-child(5)  { animation-delay: .4s; }
-.bounce-title span:nth-child(6)  { animation-delay: .5s; }
-.bounce-title span:nth-child(7)  { animation-delay: .6s; }
-.bounce-title span:nth-child(8)  { animation-delay: .7s; }
-.bounce-title span:nth-child(9)  { animation-delay: .8s; }
-.bounce-title span:nth-child(10) { animation-delay: .9s; }
-.bounce-title span:nth-child(11) { animation-delay: 1s; }
-.bounce-title span:nth-child(12) { animation-delay: 1.1s; }
-.bounce-title span:nth-child(13) { animation-delay: 1.2s; }
+
 footer {
   text-align: center;
   margin-top: 48px;
@@ -167,117 +189,240 @@ footer {
   font-size: .7rem;
   color: #9a9a7a;
 }
+
+footer a {
+  color: #9a9a7a;
+  text-decoration: underline;
+}
+
+.maker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.maker img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  vertical-align: middle;
+  object-fit: cover;
+}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1 class="bounce-title"><span>인</span><span>공</span><span>지</span><span>능</span><span>기</span><span>초</span><span> </span><span>시</span><span>뮬</span><span>레</span><span>이</span><span>션</span></h1>
-  <p class="subtitle">인터랙티브 교육 자료 모음</p>
+  <h1 class="bounce-title" aria-label="AI Basics Playground"><span style="--i:0">A</span><span style="--i:1">I</span><span style="--i:2">&nbsp;</span><span style="--i:3">B</span><span style="--i:4">a</span><span style="--i:5">s</span><span style="--i:6">i</span><span style="--i:7">c</span><span style="--i:8">s</span><span style="--i:9">&nbsp;</span><span style="--i:10">P</span><span style="--i:11">l</span><span style="--i:12">a</span><span style="--i:13">y</span><span style="--i:14">g</span><span style="--i:15">r</span><span style="--i:16">o</span><span style="--i:17">u</span><span style="--i:18">n</span><span style="--i:19">d</span></h1>
+  <p class="subtitle" data-i18n="subtitle"></p>
+  <div class="legend">
+    <span data-i18n="legend"></span>
+    <span class="level-badge" data-level="beginner"></span>
+    <span class="level-badge" data-level="intermediate"></span>
+    <span class="level-badge" data-level="advanced"></span>
+  </div>
 
   <div class="category">
-    <div class="category-header"><div class="category-title">탐색과 문제해결</div>
-    </div><div class="category-desc">인공지능은 문제의 정답을 어떻게 탐색할까요?</div>
+    <div class="category-header"><div class="category-title" data-i18n="cat1"></div></div>
+    <div class="category-desc" data-i18n="cat1_desc"></div>
     <div class="cards">
       <a class="card" href="4queen/index.html">
-        <img class="card-thumb" src="thumbnails/4queen.png" alt="4-Queen 탐색 시각화">
+        <img class="card-thumb" src="thumbnails/4queen.png" data-i18n-attr="alt:c_4queen">
         <div class="card-body">
-          <div class="card-title">4-Queen 탐색 시각화</div>
-          <div class="card-desc">DFS + 백트래킹으로 4-Queen 문제를 푸는 과정을 상태 공간 트리로 시각화</div>
+          <div class="card-title" data-i18n="c_4queen"></div>
+          <div class="card-desc" data-i18n="c_4queen_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="intermediate"></span></div>
         </div>
       </a>
       <a class="card" href="search-compare/index.html">
-        <img class="card-thumb" src="thumbnails/search-compare.png" alt="탐색 알고리즘 비교">
+        <img class="card-thumb" src="thumbnails/search-compare.png" data-i18n-attr="alt:c_search">
         <div class="card-body">
-          <div class="card-title">탐색 알고리즘 비교</div>
-          <div class="card-desc">언덕 등반 · 최상 우선 · A* 탐색을 같은 격자에서 동시 비교</div>
+          <div class="card-title" data-i18n="c_search"></div>
+          <div class="card-desc" data-i18n="c_search_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="advanced"></span></div>
         </div>
       </a>
       <a class="card" href="river-crossing/index.html">
-        <img class="card-thumb" src="thumbnails/river-crossing.png" alt="강 건너기 탐색 시각화">
+        <img class="card-thumb" src="thumbnails/river-crossing.png" data-i18n-attr="alt:c_river">
         <div class="card-body">
-          <div class="card-title">강 건너기 탐색 시각화</div>
-          <div class="card-desc">강 건너기 문제를 DFS · BFS로 푸는 과정을 상태 공간 트리로 시각화</div>
+          <div class="card-title" data-i18n="c_river"></div>
+          <div class="card-desc" data-i18n="c_river_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="intermediate"></span></div>
         </div>
       </a>
     </div>
   </div>
 
   <div class="category">
-    <div class="category-header"><div class="category-title">논리와 추론</div>
-    </div><div class="category-desc">인공지능은 지식을 어떻게 표현하고, 새로운 결론을 도출할까요?</div>
+    <div class="category-header"><div class="category-title" data-i18n="cat2"></div></div>
+    <div class="category-desc" data-i18n="cat2_desc"></div>
     <div class="cards">
       <a class="card" href="truthtable/index.html">
-        <img class="card-thumb" src="thumbnails/truthtable.png" alt="명제 논리 진리표 생성기">
+        <img class="card-thumb" src="thumbnails/truthtable.png" data-i18n-attr="alt:c_truth">
         <div class="card-body">
-          <div class="card-title">명제 논리 진리표 생성기</div>
-          <div class="card-desc">명제 논리 수식을 입력하면 진리표를 자동 생성</div>
+          <div class="card-title" data-i18n="c_truth"></div>
+          <div class="card-desc" data-i18n="c_truth_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="beginner"></span></div>
         </div>
       </a>
       <a class="card" href="predicate/index.html">
-        <img class="card-thumb" src="thumbnails/predicate.png" alt="술어 논리 추론 도구">
+        <img class="card-thumb" src="thumbnails/predicate.png" data-i18n-attr="alt:c_pred">
         <div class="card-body">
-          <div class="card-title">술어 논리 추론 도구</div>
-          <div class="card-desc">학생 데이터로 명제를 도출하고 새 개체를 추론하는 술어 논리 교육 도구</div>
+          <div class="card-title" data-i18n="c_pred"></div>
+          <div class="card-desc" data-i18n="c_pred_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="advanced"></span></div>
         </div>
       </a>
     </div>
   </div>
 
   <div class="category">
-    <div class="category-header"><div class="category-title">기계학습</div>
-    </div><div class="category-desc">인공지능은 데이터에서 어떻게 패턴을 학습할까요?</div>
+    <div class="category-header"><div class="category-title" data-i18n="cat3"></div></div>
+    <div class="category-desc" data-i18n="cat3_desc"></div>
     <div class="cards">
       <a class="card" href="gradient-descent/index.html">
-        <img class="card-thumb" src="thumbnails/gradient-descent.png" alt="경사하강법 시각화">
+        <img class="card-thumb" src="thumbnails/gradient-descent.png" data-i18n-attr="alt:c_gd">
         <div class="card-body">
-          <div class="card-title">경사하강법 시각화</div>
-          <div class="card-desc">경사하강법의 동작 과정을 인터랙티브로 체험</div>
+          <div class="card-title" data-i18n="c_gd"></div>
+          <div class="card-desc" data-i18n="c_gd_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="advanced"></span></div>
         </div>
       </a>
       <a class="card" href="duck-or-goose/index.html">
-        <img class="card-thumb" src="thumbnails/duck-or-goose.png" alt="오리일까 거위일까?">
+        <img class="card-thumb" src="thumbnails/duck-or-goose.png" data-i18n-attr="alt:c_duck">
         <div class="card-body">
-          <div class="card-title"><span class="tag">지도</span> 오리일까 거위일까?</div>
-          <div class="card-desc">분류 알고리즘(KNN · SVM · 결정트리 · 로지스틱 회귀)의 결정 경계 비교</div>
+          <div class="card-title"><span class="tag" data-i18n="tag_sup"></span> <span data-i18n="c_duck"></span></div>
+          <div class="card-desc" data-i18n="c_duck_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="beginner"></span></div>
         </div>
       </a>
       <a class="card" href="kmeans/index.html">
-        <img class="card-thumb" src="thumbnails/kmeans.png" alt="K-means 클러스터링">
+        <img class="card-thumb" src="thumbnails/kmeans.png" data-i18n-attr="alt:c_kmeans">
         <div class="card-body">
-          <div class="card-title"><span class="tag">비지도</span> K-means 클러스터링</div>
-          <div class="card-desc">K-means 알고리즘의 군집화 과정을 단계별로 시각화</div>
+          <div class="card-title"><span class="tag" data-i18n="tag_unsup"></span> <span data-i18n="c_kmeans"></span></div>
+          <div class="card-desc" data-i18n="c_kmeans_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="intermediate"></span></div>
         </div>
       </a>
       <a class="card" href="https://8laos.github.io/reinforced-duck/" target="_blank">
-        <img class="card-thumb" src="thumbnails/reinforced-duck.png" alt="강화학습 게임">
+        <img class="card-thumb" src="thumbnails/reinforced-duck.png" data-i18n-attr="alt:c_rl">
         <div class="card-body">
-          <div class="card-title"><span class="tag">강화</span> 강화학습 게임</div>
-          <div class="card-desc">강화학습 에이전트가 학습하는 과정을 게임으로 체험</div>
+          <div class="card-title"><span class="tag" data-i18n="tag_rl"></span> <span data-i18n="c_rl"></span></div>
+          <div class="card-desc" data-i18n="c_rl_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="beginner"></span></div>
         </div>
       </a>
     </div>
   </div>
 
   <div class="category">
-    <div class="category-header"><div class="category-title">딥러닝</div>
-    </div><div class="category-desc">신경망은 어떻게 학습할까요?</div>
+    <div class="category-header"><div class="category-title" data-i18n="cat4"></div></div>
+    <div class="category-desc" data-i18n="cat4_desc"></div>
     <div class="cards">
       <a class="card" href="nn/index.html">
-        <img class="card-thumb" src="thumbnails/nn.png" alt="순전파 · 역전파 시각화">
+        <img class="card-thumb" src="thumbnails/nn.png" data-i18n-attr="alt:c_nn">
         <div class="card-body">
-          <div class="card-title">순전파 · 역전파 시각화</div>
-          <div class="card-desc">신경망의 순전파와 역전파 과정을 오리 vs 거위 분류로 시각화</div>
+          <div class="card-title" data-i18n="c_nn"></div>
+          <div class="card-desc" data-i18n="c_nn_desc"></div>
+          <div class="card-foot"><span class="level-badge" data-level="advanced"></span></div>
         </div>
       </a>
     </div>
   </div>
 
   <footer>
-    <div>인공지능기초 교육자료 · <a href="guide/index.html" style="color:#9a9a7a;text-decoration:underline;">교사 가이드 페이지</a></div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
-      만든 사람 · <img src="thumbnails/avatar.png" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;object-fit:cover;"> · <a href="mailto:seok1251@knue.ac.kr" style="color:#9a9a7a;text-decoration:underline;">문의하기</a>
+    <div><span data-i18n="foot_site"></span> · <a href="guide/index.html" data-i18n="foot_guide"></a></div>
+    <div class="maker">
+      <span data-i18n="foot_maker"></span> · <img src="thumbnails/avatar.png" alt=""> · <a href="mailto:seok1251@knue.ac.kr" data-i18n="foot_contact"></a>
     </div>
   </footer>
 </div>
+
+<script>
+window.DICT = {
+  ko: {
+    __title: 'AI Basics Playground · AI 기초 시뮬레이션',
+    subtitle: 'AI 기초 개념을 인터랙티브 시뮬레이션으로 체험하는 곳',
+    legend: '수준 표시',
+    cat1: '탐색과 문제해결',
+    cat1_desc: '인공지능은 문제의 정답을 어떻게 탐색할까요?',
+    cat2: '논리와 추론',
+    cat2_desc: '인공지능은 지식을 어떻게 표현하고, 새로운 결론을 도출할까요?',
+    cat3: '기계학습',
+    cat3_desc: '인공지능은 데이터에서 어떻게 패턴을 학습할까요?',
+    cat4: '딥러닝',
+    cat4_desc: '신경망은 어떻게 학습할까요?',
+    c_4queen: '4-Queen 탐색 시각화',
+    c_4queen_desc: 'DFS + 백트래킹으로 4-Queen 문제를 푸는 과정을 상태 공간 트리로 시각화',
+    c_search: '탐색 알고리즘 비교',
+    c_search_desc: '언덕 등반 · 최상 우선 · A* 탐색을 같은 격자에서 동시 비교',
+    c_river: '강 건너기 탐색 시각화',
+    c_river_desc: '강 건너기 문제를 DFS · BFS로 푸는 과정을 상태 공간 트리로 시각화',
+    c_truth: '명제 논리 진리표 생성기',
+    c_truth_desc: '명제 논리 수식을 입력하면 진리표를 자동 생성',
+    c_pred: '술어 논리 추론 도구',
+    c_pred_desc: '학생 데이터로 명제를 도출하고 새 개체를 추론하는 술어 논리 교육 도구',
+    c_gd: '경사하강법 시각화',
+    c_gd_desc: '경사하강법의 동작 과정을 인터랙티브로 체험',
+    c_duck: '오리일까 거위일까?',
+    c_duck_desc: '분류 알고리즘(KNN · SVM · 결정트리 · 로지스틱 회귀)의 결정 경계 비교',
+    c_kmeans: 'K-means 클러스터링',
+    c_kmeans_desc: 'K-means 알고리즘의 군집화 과정을 단계별로 시각화',
+    c_rl: '강화학습 게임',
+    c_rl_desc: '강화학습 에이전트가 학습하는 과정을 게임으로 체험',
+    c_nn: '순전파 · 역전파 시각화',
+    c_nn_desc: '신경망의 순전파와 역전파 과정을 오리 vs 거위 분류로 시각화',
+    tag_sup: '지도',
+    tag_unsup: '비지도',
+    tag_rl: '강화',
+    foot_site: 'AI 기초 교육자료',
+    foot_guide: '교사 가이드 페이지',
+    foot_maker: '만든 사람',
+    foot_contact: '문의하기'
+  },
+  en: {
+    __title: 'AI Basics Playground',
+    subtitle: 'Explore core AI concepts through interactive simulations',
+    legend: 'Levels',
+    cat1: 'Search & Problem Solving',
+    cat1_desc: 'How does AI search for the answer to a problem?',
+    cat2: 'Logic & Reasoning',
+    cat2_desc: 'How does AI represent knowledge and draw new conclusions?',
+    cat3: 'Machine Learning',
+    cat3_desc: 'How does AI learn patterns from data?',
+    cat4: 'Deep Learning',
+    cat4_desc: 'How does a neural network learn?',
+    c_4queen: '4-Queens Search Visualizer',
+    c_4queen_desc: 'Solving the 4-Queens problem with DFS + backtracking, shown as a state-space tree',
+    c_search: 'Search Algorithm Comparison',
+    c_search_desc: 'Hill climbing, best-first and A* search compared side by side on the same grid',
+    c_river: 'River Crossing Search Visualizer',
+    c_river_desc: 'Solving the river-crossing puzzle with DFS and BFS, shown as a state-space tree',
+    c_truth: 'Truth Table Generator',
+    c_truth_desc: 'Type a propositional logic formula and get its truth table instantly',
+    c_pred: 'Predicate Logic Reasoning Tool',
+    c_pred_desc: 'Derive propositions from student data and infer facts about new individuals',
+    c_gd: 'Gradient Descent Visualizer',
+    c_gd_desc: 'Experience how gradient descent works, step by step',
+    c_duck: 'Duck or Goose?',
+    c_duck_desc: 'Compare decision boundaries of classifiers (KNN, SVM, decision tree, logistic regression)',
+    c_kmeans: 'K-means Clustering',
+    c_kmeans_desc: 'Step-by-step visualization of how K-means forms clusters',
+    c_rl: 'Reinforcement Learning Game',
+    c_rl_desc: 'Watch a reinforcement learning agent learn, as a game',
+    c_nn: 'Forward & Backpropagation Visualizer',
+    c_nn_desc: 'Forward and backward passes of a neural network, shown with duck-vs-goose classification',
+    tag_sup: 'Supervised',
+    tag_unsup: 'Unsupervised',
+    tag_rl: 'Reinforcement',
+    foot_site: 'AI Basics Learning Materials',
+    foot_guide: 'Teacher Guide',
+    foot_maker: 'Made by',
+    foot_contact: 'Contact'
+  }
+};
+</script>
+<script src="i18n.js"></script>
 </body>
 </html>

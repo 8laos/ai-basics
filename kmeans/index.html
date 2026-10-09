@@ -71,11 +71,11 @@
 </head>
 <body>
 <div class="topbar">
-  <h1>기계학습 &gt; K-Means 클러스터링</h1>
+  <h1><span data-i18n="topbar">기계학습 &gt; K-Means 클러스터링</span> <span class="level-badge" data-level="intermediate"></span></h1>
 </div>
 <div class="container">
-  <div class="page-title">K-Means 클러스터링 체험</div>
-  <p class="subtitle">비지도 학습 — 데이터의 군집을 찾아보세요</p>
+  <div class="page-title" data-i18n="page_title">K-Means 클러스터링 체험</div>
+  <p class="subtitle" data-i18n="subtitle">비지도 학습 — 데이터의 군집을 찾아보세요</p>
 
   <div class="main-layout">
     <div class="left-panel">
@@ -95,14 +95,14 @@
 
     <div class="right-panel">
       <div class="card">
-        <h2>진행 단계</h2>
+        <h2 data-i18n="h_progress">진행 단계</h2>
         <div class="step-info" id="stepInfo">
-          <div class="step-label">시작</div>
-          <div class="step-desc">아래 그래프를 참고하여 K값을 선택하고, "K 확정" 버튼을 눌러주세요.</div>
+          <div class="step-label"></div>
+          <div class="step-desc"></div>
         </div>
 
         <div id="kSelectorArea">
-          <h3 style="margin-bottom:8px; font-size:0.85em;">실루엣 점수 (높을수록 좋음)</h3>
+          <h3 style="margin-bottom:8px; font-size:0.85em;" data-i18n="h_sil">실루엣 점수 (높을수록 좋음)</h3>
           <canvas id="silhouetteChart" width="300" height="160" style="max-width:100%; cursor:pointer;"></canvas>
           <div class="k-selector" style="margin-top:10px; justify-content:center;">
             <label>K =</label>
@@ -112,29 +112,29 @@
               <option value="4">4</option>
               <option value="5">5</option>
             </select>
-            <button class="btn btn-primary btn-sm" id="btnConfirmK">K 확정</button>
+            <button class="btn btn-primary btn-sm" id="btnConfirmK" data-i18n="btn_confirm">K 확정</button>
           </div>
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-accent" id="btnNext" disabled>다음 단계 →</button>
-          <button class="btn btn-outline btn-sm" id="btnReset">처음부터</button>
+          <button class="btn btn-accent" id="btnNext" disabled data-i18n="btn_next">다음 단계 →</button>
+          <button class="btn btn-outline btn-sm" id="btnReset" data-i18n="btn_reset">처음부터</button>
         </div>
       </div>
 
       <div class="card">
-        <h2>현재 상태</h2>
+        <h2 data-i18n="h_status">현재 상태</h2>
         <div id="statusArea" style="font-size:0.9em; color:#555; line-height:1.7;">
-          데이터 포인트: <strong id="pointCount">0</strong>개<br>
-          선택한 K: <strong id="selectedK">-</strong><br>
-          반복 횟수: <strong id="iterNum">0</strong><br>
-          현재 단계: <strong id="currentPhase">K 선택</strong>
+          <span data-i18n="st_points">데이터 포인트: </span><strong id="pointCount">0</strong><span data-i18n="st_points_unit">개</span><br>
+          <span data-i18n="st_k">선택한 K: </span><strong id="selectedK">-</strong><br>
+          <span data-i18n="st_iter">반복 횟수: </span><strong id="iterNum">0</strong><br>
+          <span data-i18n="st_phase">현재 단계: </span><strong id="currentPhase"></strong>
         </div>
       </div>
 
       <div class="card">
-        <h2>단계 설명</h2>
-        <div style="font-size:0.85em; color:#666; line-height:1.7;">
+        <h2 data-i18n="h_steps">단계 설명</h2>
+        <div style="font-size:0.85em; color:#666; line-height:1.7;" data-i18n="steps_body">
           <strong>① K 선택</strong> — 몇 개 군집?<br>
           <strong>② 초기 중심점 배치</strong> — 캔버스 클릭<br>
           <strong>③ 배정</strong> — 각 점 → 가장 가까운 중심<br>
@@ -146,6 +146,89 @@
   </div>
 </div>
 
+<script>
+window.DICT = {
+  ko: {
+    __title: 'K-Means 클러스터링 체험',
+    topbar: '기계학습 &gt; K-Means 클러스터링',
+    page_title: 'K-Means 클러스터링 체험',
+    subtitle: '비지도 학습 — 데이터의 군집을 찾아보세요',
+    h_progress: '진행 단계',
+    h_sil: '실루엣 점수 (높을수록 좋음)',
+    btn_confirm: 'K 확정',
+    btn_next: '다음 단계 →',
+    btn_reset: '처음부터',
+    h_status: '현재 상태',
+    st_points: '데이터 포인트: ',
+    st_points_unit: '개',
+    st_k: '선택한 K: ',
+    st_iter: '반복 횟수: ',
+    st_phase: '현재 단계: ',
+    h_steps: '단계 설명',
+    steps_body: '<strong>① K 선택</strong> — 몇 개 군집?<br><strong>② 초기 중심점 배치</strong> — 캔버스 클릭<br><strong>③ 배정</strong> — 각 점 → 가장 가까운 중심<br><strong>④ 갱신</strong> — 중심 → 군집 평균으로 이동<br>③↔④ 반복, 변화 없으면 완료!',
+    legend_points: '데이터 포인트',
+    legend_cluster: '군집 {n}',
+    legend_centroid: '중심점',
+    canvas_place: '캔버스를 클릭하여 중심점을 배치하세요 ({placed}/{k})',
+    ph_select_label: '① K 선택',
+    ph_select_desc: '아래 실루엣 그래프를 참고하여 적절한 K를 선택하세요.',
+    ph_select_short: 'K 선택',
+    ph_place_label: '② 초기 중심점 배치',
+    ph_place_desc: '캔버스를 클릭하여 {k}개의 초기 중심점을 배치하세요. ({placed}/{k})',
+    ph_place_short: '중심점 배치',
+    ph_assign_label: '③ 배정 (반복 {n})',
+    ph_assign_desc: '각 데이터 포인트를 가장 가까운 중심점의 군집으로 배정합니다. "다음 단계"를 눌러주세요.',
+    ph_assign_short: '배정 대기',
+    ph_update_label: '④ 갱신 (반복 {n})',
+    ph_update_desc: '각 군집의 평균 위치로 중심점을 이동합니다. "다음 단계"를 눌러주세요.',
+    ph_update_short: '갱신 대기',
+    ph_done_label: '✓ 완료!',
+    ph_done_desc: '{n}번 반복 후 중심점이 더 이상 변하지 않습니다. 군집화가 완료되었습니다!',
+    ph_done_short: '완료',
+    iter_counter: '반복 {n}회'
+  },
+  en: {
+    __title: 'K-Means Clustering Playground',
+    topbar: 'Machine Learning &gt; K-Means Clustering',
+    page_title: 'K-Means Clustering Playground',
+    subtitle: 'Unsupervised learning — find the clusters in the data',
+    h_progress: 'Progress',
+    h_sil: 'Silhouette score (higher is better)',
+    btn_confirm: 'Confirm K',
+    btn_next: 'Next step →',
+    btn_reset: 'Start over',
+    h_status: 'Current State',
+    st_points: 'Data points: ',
+    st_points_unit: '',
+    st_k: 'Selected K: ',
+    st_iter: 'Iterations: ',
+    st_phase: 'Current phase: ',
+    h_steps: 'How It Works',
+    steps_body: '<strong>① Choose K</strong> — how many clusters?<br><strong>② Place initial centroids</strong> — click the canvas<br><strong>③ Assign</strong> — each point → nearest centroid<br><strong>④ Update</strong> — centroid → mean of its cluster<br>Repeat ③↔④; done when nothing changes!',
+    legend_points: 'Data points',
+    legend_cluster: 'Cluster {n}',
+    legend_centroid: 'Centroid',
+    canvas_place: 'Click the canvas to place centroids ({placed}/{k})',
+    ph_select_label: '① Choose K',
+    ph_select_desc: 'Use the silhouette chart below to choose a suitable K.',
+    ph_select_short: 'Choose K',
+    ph_place_label: '② Place initial centroids',
+    ph_place_desc: 'Click the canvas to place {k} initial centroids. ({placed}/{k})',
+    ph_place_short: 'Placing centroids',
+    ph_assign_label: '③ Assign (iteration {n})',
+    ph_assign_desc: 'Each data point is assigned to the cluster of its nearest centroid. Press "Next step".',
+    ph_assign_short: 'Ready to assign',
+    ph_update_label: '④ Update (iteration {n})',
+    ph_update_desc: 'Each centroid moves to the mean position of its cluster. Press "Next step".',
+    ph_update_short: 'Ready to update',
+    ph_done_label: '✓ Done!',
+    ph_done_desc: 'After {n} iterations the centroids no longer move. Clustering is complete!',
+    ph_done_short: 'Done',
+    iter_counter: 'Iteration {n}'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 <script>
 // === 색상 팔레트 ===
 const COLORS = ['#e07a5f', '#3d85c6', '#81b29a', '#f2cc8f', '#9b72aa'];
@@ -405,7 +488,7 @@ function drawMain() {
     ctx.fillStyle = 'rgba(107,140,99,0.85)';
     ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`캔버스를 클릭하여 중심점을 배치하세요 (${centroidsPlaced}/${K})`, mainCanvas.width / 2, 25);
+    ctx.fillText(t('canvas_place', { placed: centroidsPlaced, k: K }), mainCanvas.width / 2, 25);
   }
 
   // 범례 업데이트
@@ -415,14 +498,14 @@ function drawMain() {
 function updateLegend() {
   const legend = document.getElementById('legend');
   if (centroids.length === 0) {
-    legend.innerHTML = '<span class="legend-item"><span class="legend-dot" style="background:#aaa"></span> 데이터 포인트</span>';
+    legend.innerHTML = '<span class="legend-item"><span class="legend-dot" style="background:#aaa"></span> ' + t('legend_points') + '</span>';
     return;
   }
   let html = '';
   for (let i = 0; i < centroids.length; i++) {
-    html += `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[i]}"></span> 군집 ${i + 1}</span>`;
+    html += `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[i]}"></span> ${t('legend_cluster', { n: i + 1 })}</span>`;
   }
-  html += `<span class="legend-item"><span style="color:${CENTROID_COLORS[0]}; font-size:1.1em;">✚</span> 중심점</span>`;
+  html += `<span class="legend-item"><span style="color:${CENTROID_COLORS[0]}; font-size:1.1em;">✚</span> ${t('legend_centroid')}</span>`;
   legend.innerHTML = html;
 }
 
@@ -437,46 +520,52 @@ function updateStepInfo() {
 
   switch (phase) {
     case 'select_k':
-      label.textContent = '① K 선택';
-      desc.textContent = '아래 실루엣 그래프를 참고하여 적절한 K를 선택하세요.';
+      label.textContent = t('ph_select_label');
+      desc.textContent = t('ph_select_desc');
       document.getElementById('phase0').classList.add('active');
-      document.getElementById('currentPhase').textContent = 'K 선택';
+      document.getElementById('currentPhase').textContent = t('ph_select_short');
       break;
     case 'place_centroids':
-      label.textContent = '② 초기 중심점 배치';
-      desc.textContent = `캔버스를 클릭하여 ${K}개의 초기 중심점을 배치하세요. (${centroidsPlaced}/${K})`;
+      label.textContent = t('ph_place_label');
+      desc.textContent = t('ph_place_desc', { k: K, placed: centroidsPlaced });
       document.getElementById('phase0').classList.add('done');
       document.getElementById('phase1').classList.add('active');
-      document.getElementById('currentPhase').textContent = '중심점 배치';
+      document.getElementById('currentPhase').textContent = t('ph_place_short');
       break;
     case 'assign':
-      label.textContent = `③ 배정 (반복 ${iteration + 1})`;
-      desc.textContent = '각 데이터 포인트를 가장 가까운 중심점의 군집으로 배정합니다. "다음 단계"를 눌러주세요.';
+      label.textContent = t('ph_assign_label', { n: iteration + 1 });
+      desc.textContent = t('ph_assign_desc');
       document.getElementById('phase0').classList.add('done');
       document.getElementById('phase1').classList.add('done');
       document.getElementById('phase2').classList.add('active');
-      document.getElementById('currentPhase').textContent = '배정 대기';
+      document.getElementById('currentPhase').textContent = t('ph_assign_short');
       break;
     case 'update':
-      label.textContent = `④ 갱신 (반복 ${iteration + 1})`;
-      desc.textContent = '각 군집의 평균 위치로 중심점을 이동합니다. "다음 단계"를 눌러주세요.';
+      label.textContent = t('ph_update_label', { n: iteration + 1 });
+      desc.textContent = t('ph_update_desc');
       document.getElementById('phase0').classList.add('done');
       document.getElementById('phase1').classList.add('done');
       document.getElementById('phase2').classList.add('done');
       document.getElementById('phase3').classList.add('active');
-      document.getElementById('currentPhase').textContent = '갱신 대기';
+      document.getElementById('currentPhase').textContent = t('ph_update_short');
       break;
     case 'done':
-      label.textContent = '✓ 완료!';
-      desc.textContent = `${iteration}번 반복 후 중심점이 더 이상 변하지 않습니다. 군집화가 완료되었습니다!`;
+      label.textContent = t('ph_done_label');
+      desc.textContent = t('ph_done_desc', { n: iteration });
       document.querySelectorAll('.phase-dot').forEach(d => d.classList.add('done'));
-      document.getElementById('currentPhase').textContent = '완료';
+      document.getElementById('currentPhase').textContent = t('ph_done_short');
       break;
   }
 
   document.getElementById('iterNum').textContent = iteration;
-  document.getElementById('iterCounter').textContent = iteration > 0 ? `반복 ${iteration}회` : '';
+  document.getElementById('iterCounter').textContent = iteration > 0 ? t('iter_counter', { n: iteration }) : '';
 }
+
+// === 언어 전환 시 동적 영역 다시 그리기 ===
+window.onLangChange = function () {
+  updateStepInfo();
+  drawMain();
+};
 
 // === 이벤트 ===
 btnConfirmK.addEventListener('click', () => {

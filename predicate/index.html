@@ -21,9 +21,9 @@ body {
   width: 100%; height: 48px;
   background: #2e7d32; color: #fff;
   display: flex; align-items: center;
-  padding: 0 24px;
+  padding: 0 180px 0 24px;
 }
-h1 { font-size: 16px; color: #fff; }
+h1 { font-size: 16px; color: #fff; display: flex; align-items: center; gap: 10px; }
 /* 소개 영역 */
 .intro {
   text-align: center;
@@ -148,53 +148,53 @@ button {
 <body>
 
 <div class="top-bar">
-  <h1>논리와 추론 &gt; 술어 논리 추론 도구</h1>
+  <h1><span data-i18n="h1"></span><span class="level-badge" data-level="advanced"></span></h1>
 </div>
 
 <div class="intro">
-  <div class="intro-title">술어 논리 추론</div>
+  <div class="intro-title" data-i18n="intro_title"></div>
   <p class="subtitle">
-    ∀ 규칙과 ∃ 규칙을 직접 입력 → 새 개체에 알려진 속성을 선택 → ∀ 규칙으로 연역적 추론<br>
-    <span style="color:#888">∀ = 추론에 사용 &nbsp;|&nbsp; ∃ = 배경 지식 기록 (추론 불가)</span>
+    <span data-i18n="sub1"></span><br>
+    <span style="color:#888" data-i18n="sub2"></span>
   </p>
 </div>
 
 <div class="content-wrap">
 <!-- ① 규칙 정의 -->
 <div class="section">
-  <div class="sec-title"><span class="sec-num">1</span> 규칙 정의</div>
+  <div class="sec-title"><span class="sec-num">1</span> <span data-i18n="sec1"></span></div>
 
   <div class="rule-input">
     <select id="qType">
-      <option value="all">모든 (∀)</option>
-      <option value="some">어떤 (∃)</option>
+      <option value="all" data-i18n="opt_all"></option>
+      <option value="some" data-i18n="opt_some"></option>
     </select>
-    <input type="text" id="ruleA" placeholder="A 속성" style="width:150px">
-    <span>은(는)</span>
-    <input type="text" id="ruleB" placeholder="B 속성" style="width:150px">
-    <span>이다</span>
-    <button class="btn-add" onclick="addRule()">+ 추가</button>
+    <input type="text" id="ruleA" data-i18n-attr="placeholder:ph_a" style="width:150px">
+    <span data-i18n="particle1"></span>
+    <input type="text" id="ruleB" data-i18n-attr="placeholder:ph_b" style="width:150px">
+    <span data-i18n="particle2"></span>
+    <button class="btn-add" onclick="addRule()" data-i18n="btn_add"></button>
   </div>
 
   <div class="rule-list" id="ruleList">
-    <div class="empty-msg">아직 정의된 규칙이 없습니다.</div>
+    <div class="empty-msg" data-i18n="empty"></div>
   </div>
 
-  <p class="tip">∀ 예: 모든 <i>안경씀</i>은(는) <i>중학교</i>이다 &nbsp;|&nbsp; ∃ 예: 어떤 <i>학생</i>은(는) <i>서울출신</i>이다</p>
+  <p class="tip" data-i18n="tip"></p>
 </div>
 
 <!-- ② 새 개체로 추론 -->
 <div class="section" id="sec2" style="display:none">
-  <div class="sec-title"><span class="sec-num">2</span> 새 개체로 추론</div>
+  <div class="sec-title"><span class="sec-num">2</span> <span data-i18n="sec2"></span></div>
 
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-    <input type="text" id="indName" placeholder="이름 (예: 민수)" style="width:140px">
-    <span style="font-size:.85rem;color:#666">에 대해 알고 있는 속성:</span>
+    <input type="text" id="indName" data-i18n-attr="placeholder:ph_name" style="width:140px">
+    <span style="font-size:.85rem;color:#666" data-i18n="known_props"></span>
   </div>
 
   <div class="check-grid" id="propChecks"></div>
 
-  <button class="btn-main" onclick="doInfer()" style="align-self:flex-start">▶ 추론하기</button>
+  <button class="btn-main" onclick="doInfer()" style="align-self:flex-start" data-i18n="btn_infer"></button>
   <div id="resultArea"></div>
 </div>
 </div>
@@ -209,9 +209,9 @@ function addRule() {
   const type = document.getElementById('qType').value;
   const A = document.getElementById('ruleA').value.trim();
   const B = document.getElementById('ruleB').value.trim();
-  if (!A || !B) { alert('A와 B 속성을 모두 입력해주세요'); return; }
-  if (A === B)  { alert('A와 B가 같습니다'); return; }
-  if (rules.find(r => r.type===type && r.A===A && r.B===B)) { alert('이미 있는 규칙입니다'); return; }
+  if (!A || !B) { alert(t('alert_both')); return; }
+  if (A === B)  { alert(t('alert_same')); return; }
+  if (rules.find(r => r.type===type && r.A===A && r.B===B)) { alert(t('alert_dup')); return; }
   rules.push({type, A, B});
   document.getElementById('ruleA').value = '';
   document.getElementById('ruleB').value = '';
@@ -231,16 +231,16 @@ function delRule(i) {
 
 function renderRules() {
   const el = document.getElementById('ruleList');
-  if (!rules.length) { el.innerHTML = '<div class="empty-msg">아직 정의된 규칙이 없습니다.</div>'; return; }
+  if (!rules.length) { el.innerHTML = `<div class="empty-msg">${t('empty')}</div>`; return; }
   el.innerHTML = rules.map((r, i) => {
     const isAll = r.type === 'all';
     return `<div class="rule-card ${isAll?'univ':'exis'}">
       <div class="rule-text">
-        <div class="rule-ko">${isAll?'모든':'어떤'} <b>${r.A}</b>은(는) <b>${r.B}</b>이다</div>
+        <div class="rule-ko">${t('rule_sentence', {q: t(isAll?'q_all':'q_some'), A: r.A, B: r.B})}</div>
         <div class="rule-logic">${isAll?'∀':'∃'}x (${r.A}(x) ${isAll?'→':'∧'} ${r.B}(x))</div>
       </div>
-      <span class="rule-badge ${isAll?'badge-univ':'badge-exis'}">${isAll?'∀ 추론':'∃ 참고'}</span>
-      <button class="btn-del" onclick="delRule(${i})">삭제</button>
+      <span class="rule-badge ${isAll?'badge-univ':'badge-exis'}">${t(isAll?'badge_univ':'badge_exis')}</span>
+      <button class="btn-del" onclick="delRule(${i})">${t('btn_del')}</button>
     </div>`;
   }).join('');
 }
@@ -257,9 +257,9 @@ function renderChecks() {
 
 // ── 추론 ─────────────────────────────────────────────────────────
 function doInfer() {
-  const name    = document.getElementById('indName').value.trim() || '이 개체';
+  const name    = document.getElementById('indName').value.trim() || t('default_name');
   const checked = [...document.querySelectorAll('#propChecks input:checked')].map(el => el.value);
-  if (!checked.length) { alert('속성을 하나 이상 선택해주세요'); return; }
+  if (!checked.length) { alert(t('alert_select')); return; }
 
   const univRules = rules.filter(r => r.type === 'all');
   const exisRules = rules.filter(r => r.type === 'some');
@@ -289,43 +289,37 @@ function doInfer() {
   let html = `<div class="result-box">`;
 
   // 처음부터 알던 것
-  html += `<div><div class="res-label">처음부터 알고 있던 것</div>
+  html += `<div><div class="res-label">${t('res_known')}</div>
     <div class="tag-row">`;
   [...initial].forEach(p => { html += `<span class="tag known">${p}(${name})</span>`; });
   html += `</div></div>`;
 
   if (steps.length) {
-    html += `<div><div class="res-label">📎 추론 과정 (∀ 규칙 적용 — 연역)</div>
+    html += `<div><div class="res-label">${t('res_steps')}</div>
       <div class="step-list">`;
     steps.forEach(s => {
       html += `<div class="step">
         <div class="step-rule">∀x (${s.A}(x) → ${s.B}(x))</div>
         <div class="step-ko">
-          ${s.A}(${name}) 참
-          <span class="arr">→</span>
-          <span class="new">${s.B}(${name}) 도출!</span>
-          &nbsp;→&nbsp; "${name}은(는) <b>${s.B}</b>이다"
+          ${t('step_line', {A: s.A, B: s.B, name})}
         </div>
       </div>`;
     });
     html += `</div></div>`;
 
-    html += `<div><div class="res-label">추론으로 새로 알게 된 것</div>
+    html += `<div><div class="res-label">${t('res_derived')}</div>
       <div class="tag-row">`;
     [...derived].forEach(p => { html += `<span class="tag derived">${p}(${name})</span>`; });
     html += `</div></div>`;
   } else {
-    html += `<div style="font-size:.85rem;color:#888">적용 가능한 ∀ 규칙이 없어 새로 도출된 사실이 없습니다.</div>`;
+    html += `<div style="font-size:.85rem;color:#888">${t('res_none')}</div>`;
   }
 
   if (exNotes.length) {
     html += `<div class="ex-box">
-      <div class="ex-title">∃ 참고 — 확정할 수 없지만 가능한 사실</div>`;
+      <div class="ex-title">${t('ex_title')}</div>`;
     exNotes.forEach(r => {
-      html += `<div class="ex-item">"어떤 <b>${r.A}</b>은(는) <b>${r.B}</b>이다"
-        → ${name}이(가) ${r.A}이므로, <b>${r.B}</b>일 수도 있습니다
-        <span style="font-size:.74rem;color:#888">(∃ 규칙으로는 확정 불가)</span>
-      </div>`;
+      html += `<div class="ex-item">${t('ex_item', {A: r.A, B: r.B, name})}</div>`;
     });
     html += `</div>`;
   }
@@ -336,6 +330,100 @@ function doInfer() {
 
 // 엔터 키
 document.getElementById('ruleB').addEventListener('keydown', e => { if(e.key==='Enter') addRule(); });
+
+// 언어 전환 시 동적 영역 다시 그리기
+window.onLangChange = function () {
+  if (rules.length) renderRules();
+  const resultArea = document.getElementById('resultArea');
+  if (resultArea.innerHTML) {
+    const hasChecked = document.querySelector('#propChecks input:checked');
+    if (hasChecked) doInfer(); else resultArea.innerHTML = '';
+  }
+};
 </script>
+
+<script>
+window.DICT = {
+  ko: {
+    __title: '술어 논리 추론 도구',
+    h1: '논리와 추론 &gt; 술어 논리 추론 도구',
+    intro_title: '술어 논리 추론',
+    sub1: '∀ 규칙과 ∃ 규칙을 직접 입력 → 새 개체에 알려진 속성을 선택 → ∀ 규칙으로 연역적 추론',
+    sub2: '∀ = 추론에 사용 &nbsp;|&nbsp; ∃ = 배경 지식 기록 (추론 불가)',
+    sec1: '규칙 정의',
+    opt_all: '모든 (∀)',
+    opt_some: '어떤 (∃)',
+    ph_a: 'A 속성',
+    ph_b: 'B 속성',
+    particle1: '은(는)',
+    particle2: '이다',
+    btn_add: '+ 추가',
+    empty: '아직 정의된 규칙이 없습니다.',
+    tip: '∀ 예: 모든 <i>안경씀</i>은(는) <i>중학교</i>이다 &nbsp;|&nbsp; ∃ 예: 어떤 <i>학생</i>은(는) <i>서울출신</i>이다',
+    sec2: '새 개체로 추론',
+    ph_name: '이름 (예: 민수)',
+    known_props: '에 대해 알고 있는 속성:',
+    btn_infer: '▶ 추론하기',
+    alert_both: 'A와 B 속성을 모두 입력해주세요',
+    alert_same: 'A와 B가 같습니다',
+    alert_dup: '이미 있는 규칙입니다',
+    alert_select: '속성을 하나 이상 선택해주세요',
+    q_all: '모든',
+    q_some: '어떤',
+    rule_sentence: '{q} <b>{A}</b>은(는) <b>{B}</b>이다',
+    badge_univ: '∀ 추론',
+    badge_exis: '∃ 참고',
+    btn_del: '삭제',
+    default_name: '이 개체',
+    res_known: '처음부터 알고 있던 것',
+    res_steps: '📎 추론 과정 (∀ 규칙 적용 — 연역)',
+    step_line: '{A}({name}) 참 <span class="arr">→</span> <span class="new">{B}({name}) 도출!</span> &nbsp;→&nbsp; "{name}은(는) <b>{B}</b>이다"',
+    res_derived: '추론으로 새로 알게 된 것',
+    res_none: '적용 가능한 ∀ 규칙이 없어 새로 도출된 사실이 없습니다.',
+    ex_title: '∃ 참고 — 확정할 수 없지만 가능한 사실',
+    ex_item: '"어떤 <b>{A}</b>은(는) <b>{B}</b>이다" → {name}이(가) {A}이므로, <b>{B}</b>일 수도 있습니다 <span style="font-size:.74rem;color:#888">(∃ 규칙으로는 확정 불가)</span>'
+  },
+  en: {
+    __title: 'Predicate Logic Inference Tool',
+    h1: 'Logic &amp; Reasoning &gt; Predicate Logic Inference Tool',
+    intro_title: 'Predicate Logic Inference',
+    sub1: 'Enter ∀ and ∃ rules → select known properties of a new individual → deduce with ∀ rules',
+    sub2: '∀ = used for inference &nbsp;|&nbsp; ∃ = recorded as background knowledge (no inference)',
+    sec1: 'Define Rules',
+    opt_all: 'Every (∀)',
+    opt_some: 'Some (∃)',
+    ph_a: 'Property A',
+    ph_b: 'Property B',
+    particle1: 'is',
+    particle2: '',
+    btn_add: '+ Add',
+    empty: 'No rules defined yet.',
+    tip: '∀ example: Every <i>glasses-wearer</i> is a <i>middle-schooler</i> &nbsp;|&nbsp; ∃ example: Some <i>student</i> is <i>from Seoul</i>',
+    sec2: 'Infer about a New Individual',
+    ph_name: 'Name (e.g. Minsu)',
+    known_props: 'Known properties of this individual:',
+    btn_infer: '▶ Infer',
+    alert_both: 'Please enter both property A and property B',
+    alert_same: 'A and B are the same',
+    alert_dup: 'This rule already exists',
+    alert_select: 'Please select at least one property',
+    q_all: 'Every',
+    q_some: 'Some',
+    rule_sentence: '{q} <b>{A}</b> is <b>{B}</b>',
+    badge_univ: '∀ inference',
+    badge_exis: '∃ reference',
+    btn_del: 'Delete',
+    default_name: 'this individual',
+    res_known: 'Known from the start',
+    res_steps: '📎 Inference steps (applying ∀ rules — deduction)',
+    step_line: '{A}({name}) true <span class="arr">→</span> <span class="new">{B}({name}) derived!</span> &nbsp;→&nbsp; "{name} is <b>{B}</b>"',
+    res_derived: 'Newly derived by inference',
+    res_none: 'No applicable ∀ rule, so no new fact was derived.',
+    ex_title: '∃ reference — possible but not certain facts',
+    ex_item: '"Some <b>{A}</b> is <b>{B}</b>" → since {name} is {A}, {name} may also be <b>{B}</b> <span style="font-size:.74rem;color:#888">(cannot be confirmed by an ∃ rule)</span>'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 </body>
 </html>

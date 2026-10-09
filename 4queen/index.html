@@ -110,12 +110,12 @@ button {
 <body>
 
 <div class="topbar">
-  <h1>탐색과 문제해결 &gt; 4-Queen 탐색 시각화</h1>
+  <h1><span data-i18n="topbar_title">탐색과 문제해결 &gt; 4-Queen 탐색 시각화</span> <span class="level-badge" data-level="intermediate"></span></h1>
 </div>
 
 <div class="intro">
-  <h2>4-Queen 탐색 시각화</h2>
-  <p class="subtitle">깊이 우선 탐색(DFS) + 백트래킹으로 4-Queen 문제를 푸는 과정</p>
+  <h2 data-i18n="intro_title">4-Queen 탐색 시각화</h2>
+  <p class="subtitle" data-i18n="intro_sub">깊이 우선 탐색(DFS) + 백트래킹으로 4-Queen 문제를 푸는 과정</p>
 </div>
 
 <div class="content-wrap">
@@ -124,34 +124,87 @@ button {
     <canvas id="chess" width="272" height="272"></canvas>
     <div class="panel">
       <div class="speed-row">
-        <span>⚡ 속도</span>
+        <span data-i18n="speed">⚡ 속도</span>
         <input type="range" id="speed" min="1" max="10" value="4">
       </div>
       <div class="btns">
-        <button id="resetBtn">↺ 초기화</button>
-        <button id="startBtn">🤖 AI 자동 탐색</button>
+        <button id="resetBtn" data-i18n="btn_reset">↺ 초기화</button>
+        <button id="startBtn" data-i18n="btn_start">🤖 AI 자동 탐색</button>
       </div>
     </div>
-    <div class="sbox" id="sbox">탐색 준비 중...</div>
+    <div class="sbox" id="sbox"></div>
   </div>
 
   <div class="right">
     <div class="tree-hdr">
-      <span>🌳 상태 공간 트리</span>
-      <span id="vcnt">방문: 0</span>
+      <span data-i18n="tree_title">🌳 상태 공간 트리</span>
+      <span id="vcnt"></span>
     </div>
     <canvas id="tree" width="720" height="540"></canvas>
     <div class="legend">
-      <span class="litem"><span class="ldot" style="background:#f5c518"></span>탐색 시도</span>
-      <span class="litem"><span class="ldot" style="background:#4ade80"></span>배치(안전)</span>
-      <span class="litem"><span class="ldot" style="background:#f87171"></span>충돌(가지치기)</span>
-      <span class="litem"><span class="ldot" style="background:#777"></span>백트래킹(후퇴)</span>
-      <span class="litem"><span class="ldot" style="background:#60a5fa"></span>해(Solution)</span>
+      <span class="litem"><span class="ldot" style="background:#f5c518"></span><span data-i18n="lg_trying">탐색 시도</span></span>
+      <span class="litem"><span class="ldot" style="background:#4ade80"></span><span data-i18n="lg_safe">배치(안전)</span></span>
+      <span class="litem"><span class="ldot" style="background:#f87171"></span><span data-i18n="lg_conflict">충돌(가지치기)</span></span>
+      <span class="litem"><span class="ldot" style="background:#777"></span><span data-i18n="lg_backtrack">백트래킹(후퇴)</span></span>
+      <span class="litem"><span class="ldot" style="background:#60a5fa"></span><span data-i18n="lg_solution">해(Solution)</span></span>
     </div>
   </div>
 </div>
 </div>
 
+<script>
+window.DICT = {
+  ko: {
+    __title: '4-Queen 탐색 시각화',
+    topbar_title: '탐색과 문제해결 &gt; 4-Queen 탐색 시각화',
+    intro_title: '4-Queen 탐색 시각화',
+    intro_sub: '깊이 우선 탐색(DFS) + 백트래킹으로 4-Queen 문제를 푸는 과정',
+    speed: '⚡ 속도',
+    btn_reset: '↺ 초기화',
+    btn_start: '🤖 AI 자동 탐색',
+    tree_title: '🌳 상태 공간 트리',
+    visits: '방문: {n}',
+    lg_trying: '탐색 시도',
+    lg_safe: '배치(안전)',
+    lg_conflict: '충돌(가지치기)',
+    lg_backtrack: '백트래킹(후퇴)',
+    lg_solution: '해(Solution)',
+    lbl_start: '시작',
+    lbl_row: '{n}행',
+    st_ready: '탐색 준비 중...',
+    st_trying: '{r}행 {c}열 시도 중...',
+    st_safe: '✅ {r}행 {c}열 — 안전! 다음 행으로',
+    st_conflict: '❌ {r}행 {c}열 — 충돌! 가지치기',
+    st_backtrack: '↩ {r}행 {c}열 — 백트래킹',
+    st_solved: '🎉 탐색 성공! 4-Queen 완벽한 배치를 찾았습니다.'
+  },
+  en: {
+    __title: '4-Queen Search Visualizer',
+    topbar_title: 'Search &amp; Problem Solving &gt; 4-Queen Search Visualizer',
+    intro_title: '4-Queen Search Visualizer',
+    intro_sub: 'Solving the 4-Queen problem with depth-first search (DFS) + backtracking',
+    speed: '⚡ Speed',
+    btn_reset: '↺ Reset',
+    btn_start: '🤖 AI Auto Search',
+    tree_title: '🌳 State Space Tree',
+    visits: 'Visited: {n}',
+    lg_trying: 'Trying',
+    lg_safe: 'Placed (safe)',
+    lg_conflict: 'Conflict (pruned)',
+    lg_backtrack: 'Backtracking',
+    lg_solution: 'Solution',
+    lbl_start: 'Start',
+    lbl_row: 'Row {n}',
+    st_ready: 'Ready to search...',
+    st_trying: 'Trying row {r}, col {c}...',
+    st_safe: '✅ Row {r}, col {c} — safe! Moving to the next row',
+    st_conflict: '❌ Row {r}, col {c} — conflict! Pruning',
+    st_backtrack: '↩ Row {r}, col {c} — backtracking',
+    st_solved: '🎉 Search complete! Found a valid 4-Queen placement.'
+  }
+};
+</script>
+<script src="../i18n.js"></script>
 <script>
 'use strict';
 
@@ -290,13 +343,12 @@ function drawTree() {
 
   // 행 레이블
   const PY = 38, maxLv = 4;
-  const labels = ['시작', '0행', '1행', '2행', '3행'];
   ctx.font = '10px Arial';
   ctx.textAlign = 'left';
   for (let lv = 0; lv <= maxLv; lv++) {
     const y = PY + lv * (TH - PY * 2) / maxLv;
     ctx.fillStyle = '#3a3a60';
-    ctx.fillText(labels[lv], 2, y + 4);
+    ctx.fillText(lv === 0 ? t('lbl_start') : t('lbl_row', { n: lv - 1 }), 2, y + 4);
   }
 
   // 엣지
@@ -340,7 +392,7 @@ function drawTree() {
     ctx.font         = `bold ${n.row >= 0 ? 9 : 10}px Arial`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    const label = n.row >= 0 ? `R${n.row + 1}C${n.col + 1}` : '시작';
+    const label = n.row >= 0 ? `R${n.row + 1}C${n.col + 1}` : t('lbl_start');
     ctx.fillText(label, n.x, n.y);
   }
 }
@@ -356,11 +408,24 @@ function getDelay() {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function setStatus(msg, ok = false) {
+let lastStatus = { key: 'st_ready', vars: null, ok: false };
+
+function setStatus(key, vars = null, ok = false) {
+  lastStatus = { key, vars, ok };
   const el = document.getElementById('sbox');
-  el.textContent = msg;
+  el.textContent = t(key, vars);
   el.className   = 'sbox' + (ok ? ' ok' : '');
 }
+
+function setVisits() {
+  document.getElementById('vcnt').textContent = t('visits', { n: visitCnt });
+}
+
+window.onLangChange = function () {
+  setStatus(lastStatus.key, lastStatus.vars, lastStatus.ok);
+  setVisits();
+  drawTree();
+};
 
 async function runAnim() {
   const myId = ++runId;
@@ -376,8 +441,8 @@ async function runAnim() {
         activeId = step.id;
         if (step.status === 'trying' && step.row >= 0) {
           visitCnt++;
-          document.getElementById('vcnt').textContent = `방문: ${visitCnt}`;
-          setStatus(`${step.row}행 ${step.col}열 시도 중...`);
+          setVisits();
+          setStatus('st_trying', { r: step.row, c: step.col });
         }
         break;
       }
@@ -386,11 +451,11 @@ async function runAnim() {
         activeId = step.id;
         const n = nodeMap[step.id];
         if (step.status === 'safe')
-          setStatus(`✅ ${n.row}행 ${n.col}열 — 안전! 다음 행으로`);
+          setStatus('st_safe', { r: n.row, c: n.col });
         else if (step.status === 'conflict')
-          setStatus(`❌ ${n.row}행 ${n.col}열 — 충돌! 가지치기`);
+          setStatus('st_conflict', { r: n.row, c: n.col });
         else if (step.status === 'backtrack')
-          setStatus(`↩ ${n.row}행 ${n.col}열 — 백트래킹`);
+          setStatus('st_backtrack', { r: n.row, c: n.col });
         break;
       }
       case 'board': {
@@ -407,7 +472,7 @@ async function runAnim() {
         drawBoard(qs, null);
         // 해 경로 노드를 파란색으로 표시
         step.pathIds.forEach(id => { nodeState[id] = 'solution'; });
-        setStatus('🎉 탐색 성공! 4-Queen 완벽한 배치를 찾았습니다.', true);
+        setStatus('st_solved', null, true);
         break;
       }
     }
@@ -427,9 +492,9 @@ function reset() {
   revealed  = new Set();
   nodeState = {};
   activeId  = null;
-  document.getElementById('vcnt').textContent = '방문: 0';
+  setVisits();
   document.getElementById('startBtn').disabled = false;
-  setStatus('탐색 준비 중...');
+  setStatus('st_ready');
   drawBoard(new Array(N).fill(-1), null);
   drawTree();
 }
