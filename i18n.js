@@ -74,12 +74,31 @@
       if (b) setLang(b.getAttribute('data-lang'));
     });
     document.body.appendChild(div);
+    fitTopbar(div);
+    window.addEventListener('resize', function () { fitTopbar(div); });
+  }
+
+  // 상단바가 있으면 토글이 제목을 가리지 않도록 오른쪽 여백 확보
+  function fitTopbar(toggle) {
+    var bar = document.querySelector('.topbar, .top-bar, #top-bar, #topbar, header');
+    if (!bar) return;
+    var w = toggle.offsetWidth || 150;
+    bar.style.paddingRight = (w + 28) + 'px';
+    bar.style.boxSizing = 'border-box';
+    if (!bar.dataset.fitted) {
+      // 고정 height가 있어도 줄바꿈 시 잘리지 않도록 auto로 풀고 최소 높이만 유지
+      bar.dataset.fitted = '1';
+      bar.style.minHeight = bar.offsetHeight + 'px';
+      bar.style.height = 'auto';
+      bar.style.flexWrap = 'wrap';
+      bar.style.rowGap = '4px';
+    }
   }
 
   function injectCss() {
     var css = [
       '.lang-toggle { position: fixed; top: 12px; right: 14px; z-index: 9999; display: flex; gap: 0; border-radius: 999px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.2); font-family: "KoPub World 돋움", "Malgun Gothic", sans-serif; }',
-      '.lang-toggle button { border: none; background: #f2f1df; color: #3a3a2a; font-size: .8rem; padding: 6px 12px; cursor: pointer; font-family: inherit; }',
+      '.lang-toggle button { border: none; background: #f2f1df; color: #3a3a2a; font-size: .72rem; padding: 4px 10px; cursor: pointer; font-family: inherit; }',
       '.lang-toggle button.active { background: #e8a0aa; color: #fff; font-weight: 700; }',
       '.lang-toggle button:hover:not(.active) { background: #e6e3cc; }',
       '.level-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f2f1df; color: #3a3a2a; vertical-align: middle; white-space: nowrap; }',

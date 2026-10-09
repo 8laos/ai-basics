@@ -214,7 +214,7 @@ footer a {
 </head>
 <body>
 <div class="container">
-  <h1 class="bounce-title" aria-label="AI Basics Playground"><span style="--i:0">A</span><span style="--i:1">I</span><span style="--i:2">&nbsp;</span><span style="--i:3">B</span><span style="--i:4">a</span><span style="--i:5">s</span><span style="--i:6">i</span><span style="--i:7">c</span><span style="--i:8">s</span><span style="--i:9">&nbsp;</span><span style="--i:10">P</span><span style="--i:11">l</span><span style="--i:12">a</span><span style="--i:13">y</span><span style="--i:14">g</span><span style="--i:15">r</span><span style="--i:16">o</span><span style="--i:17">u</span><span style="--i:18">n</span><span style="--i:19">d</span></h1>
+  <h1 class="bounce-title" id="site-title"></h1>
   <p class="subtitle" data-i18n="subtitle"></p>
   <div class="legend">
     <span data-i18n="legend"></span>
@@ -342,7 +342,8 @@ footer a {
 <script>
 window.DICT = {
   ko: {
-    __title: 'AI Basics Playground · AI 기초 시뮬레이션',
+    __title: '인공지능 기초 시뮬레이션',
+    title: '인공지능 기초 시뮬레이션',
     subtitle: 'AI 기초 개념을 인터랙티브 시뮬레이션으로 체험하는 곳',
     legend: '수준 표시',
     cat1: '탐색과 문제해결',
@@ -383,6 +384,7 @@ window.DICT = {
   },
   en: {
     __title: 'AI Basics Playground',
+    title: 'AI Basics Playground',
     subtitle: 'Explore core AI concepts through interactive simulations',
     legend: 'Levels',
     cat1: 'Search & Problem Solving',
@@ -421,6 +423,14 @@ window.DICT = {
     foot_maker: 'Made by',
     foot_contact: 'Contact'
   }
+};
+window.onLangChange = function () {
+  var h = document.getElementById('site-title');
+  var txt = t('title');
+  h.setAttribute('aria-label', txt);
+  h.innerHTML = Array.prototype.map.call(txt, function (ch, i) {
+    return '<span style="--i:' + i + '">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>';
+  }).join('');
 };
 </script>
 <script src="i18n.js"></script>
