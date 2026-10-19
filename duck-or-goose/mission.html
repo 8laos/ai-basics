@@ -155,6 +155,85 @@ canvas {
   background: transparent; cursor: pointer; font-size: 11px; color: #fff;
 }
 .btn-sm:hover { background: rgba(255,255,255,0.15); }
+
+/* 폰·좁은 화면: 메뉴는 가로 탭, 패널과 그래프는 세로로 쌓기 */
+@media (max-width: 760px) {
+  .topbar {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    gap: 8px 10px;
+  }
+
+  .topbar h1 {
+    width: 100%;
+    font-size: 14px;
+    padding-right: 110px;
+  }
+
+  .topbar-sep {
+    display: none;
+  }
+
+  .topbar-right {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .progress {
+    padding: 10px 12px;
+  }
+
+  .main {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .nav-bar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    border-bottom: none;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  .nav-item.active {
+    border-right: 1px solid #f0f0f0;
+    box-shadow: inset 0 -3px 0 #2e7d32;
+  }
+
+  .nav-label,
+  .nav-finish {
+    display: none;
+  }
+
+  .detail-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .canvas-area {
+    padding: 12px;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .canvas-footer {
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    justify-content: center;
+  }
+}
 </style>
 </head>
 <body>
