@@ -29,6 +29,7 @@ body {
   font-family: 'KoPub World 돋움', 'Malgun Gothic', sans-serif;
   min-height: 100vh;
   padding: 32px 16px;
+  word-break: keep-all;
 }
 
 .container {
@@ -38,7 +39,7 @@ body {
 
 h1 {
   font-family: 'Orbit', 'KoPub World 돋움', sans-serif;
-  font-size: 3rem;
+  font-size: clamp(1.9rem, 9vw, 3rem);
   text-align: center;
   margin-bottom: 8px;
   letter-spacing: .04em;
@@ -179,6 +180,26 @@ h1 {
   display: inline-block;
   animation: bounce 2s ease-in-out infinite;
   animation-delay: calc(var(--i) * .08s);
+}
+
+.bounce-title .word {
+  white-space: nowrap;
+  animation: none;
+}
+
+/* 폰 화면 */
+@media (max-width: 480px) {
+  body {
+    padding: 24px 12px;
+  }
+
+  .category {
+    padding: 16px 14px 18px;
+  }
+
+  .category-header {
+    padding: 6px 16px 8px;
+  }
 }
 
 footer {
@@ -428,9 +449,15 @@ window.onLangChange = function () {
   var h = document.getElementById('site-title');
   var txt = t('title');
   h.setAttribute('aria-label', txt);
-  h.innerHTML = Array.prototype.map.call(txt, function (ch, i) {
-    return '<span style="--i:' + i + '">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>';
-  }).join('');
+  // 단어 단위로 묶어 단어 중간에서 줄이 바뀌지 않게 함
+  var i = 0;
+  h.innerHTML = txt.split(' ').map(function (word) {
+    var chars = Array.prototype.map.call(word, function (ch) {
+      return '<span style="--i:' + (i++) + '">' + ch + '</span>';
+    }).join('');
+    i++;
+    return '<span class="word">' + chars + '</span>';
+  }).join(' ');
 };
 </script>
 <script src="i18n.js"></script>
