@@ -156,6 +156,47 @@ canvas {
 }
 .btn-sm:hover { background: rgba(255,255,255,0.15); }
 
+/* 터치 기기용 오리·거위 전환 버튼 (기본은 숨김) */
+.add-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.add-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #666;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.add-btn.duck.active {
+  background: #FF8F00;
+  border-color: #FF8F00;
+  color: #fff;
+  font-weight: 700;
+}
+
+.add-btn.goose.active {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (max-width: 760px), (hover: none) {
+  .add-toggle {
+    display: flex;
+  }
+
+  .click-hint {
+    display: none;
+  }
+}
+
 /* 폰·좁은 화면: 메뉴는 가로 탭, 패널과 그래프는 세로로 쌓기 */
 @media (max-width: 760px) {
   .topbar {
@@ -292,7 +333,13 @@ canvas {
       <div class="legend-item"><div class="legend-dot" style="background:#FF8F00"></div> <span data-i18n="legend_duck">오리</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:#2e7d32"></div> <span data-i18n="legend_goose">거위</span></div>
       <span style="color:#ccc">|</span>
-      <span data-i18n="hint_click">클릭 = 오리</span><span data-i18n="hint_shift">Shift+클릭 = 거위</span>
+      <span class="click-hint" data-i18n="hint_click">클릭 = 오리</span><span class="click-hint" data-i18n="hint_shift">Shift+클릭 = 거위</span>
+      <!-- 터치 기기용: 탭으로 추가할 점 종류 선택 -->
+      <span class="add-toggle">
+        <span data-i18n="lbl_add">탭해서 추가</span>
+        <button class="add-btn duck active" onclick="setAddLabel(0)" data-i18n="legend_duck">오리</button>
+        <button class="add-btn goose" onclick="setAddLabel(1)" data-i18n="legend_goose">거위</button>
+      </span>
     </div>
   </div>
 </div>
@@ -322,6 +369,7 @@ window.DICT = {
     legend_goose: '거위',
     hint_click: '클릭 = 오리',
     hint_shift: 'Shift+클릭 = 거위',
+    lbl_add: '탭해서 추가',
     sec_observe: '데이터 관찰',
     q1_1: '산점도에서 오리(주황)와 거위(초록)가 어떻게 분포되어 있나요?',
     q1_2: '두 그룹이 겹치는 영역이 있나요? 왜 겹칠까요?',
@@ -375,6 +423,7 @@ window.DICT = {
     legend_goose: 'Goose',
     hint_click: 'Click = Duck',
     hint_shift: 'Shift+Click = Goose',
+    lbl_add: 'Tap to add',
     sec_observe: 'Observe Data',
     q1_1: 'How are the ducks (orange) and geese (green) distributed in the scatter plot?',
     q1_2: 'Is there a region where the two groups overlap? Why might they overlap?',
@@ -559,6 +608,12 @@ function genData(t='normal'){
   return d;
 }
 let data=genData(),curAlgo='knn',curDs='normal';
+// 터치 기기에서 탭으로 추가할 점 종류 (0 = 오리, 1 = 거위)
+let addLabel=0;
+function setAddLabel(v){
+  addLabel=v;
+  document.querySelectorAll('.add-btn').forEach((b,i)=>b.classList.toggle('active',i===v));
+}
 let params={knn:{k:5},dt:{depth:4},svm:{gamma:1.0},lr:{}};
 function changeDs(t){curDs=t;data=genData(t);render();}
 function resetData(){data=genData(curDs);render();}
@@ -601,7 +656,7 @@ function render(){
   document.getElementById('dataInfo').textContent=t('data_info',{d:dk,g:gs});
   cv._r={xMin,xMax,yMin,yMax,xM,yM,xS,yS};
 }
-cv.addEventListener('click',(e)=>{const rect=cv.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const px=(e.clientX-rect.left)*sx,py=(e.clientY-rect.top)*sy;const r=cv._r;if(!r)return;const nx=r.xMin+(px/W)*(r.xMax-r.xMin),ny=r.yMax-(py/H)*(r.yMax-r.yMin);data.push({x:nx*r.xS+r.xM,y:ny*r.yS+r.yM,label:e.shiftKey?1:0});render();});
+cv.addEventListener('click',(e)=>{const rect=cv.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const px=(e.clientX-rect.left)*sx,py=(e.clientY-rect.top)*sy;const r=cv._r;if(!r)return;const nx=r.xMin+(px/W)*(r.xMax-r.xMin),ny=r.yMax-(py/H)*(r.yMax-r.yMin);data.push({x:nx*r.xS+r.xM,y:ny*r.yS+r.yM,label:e.shiftKey?1:addLabel});render();});
 
 // 초기화
 openSection('observe');
